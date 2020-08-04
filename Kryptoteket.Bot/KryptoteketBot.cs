@@ -4,7 +4,6 @@ using Kryptoteket.Bot.Interfaces;
 using Kryptoteket.Bot.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration.EnvironmentVariables;
 using System.IO;
 using System.Threading.Tasks;
 
