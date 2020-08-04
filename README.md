@@ -18,7 +18,7 @@ Discord bot for retrieving crypto prices and tickers at [Kryptotekets discord](h
 ```
 
 These can be found under the Modules folder.\
-All data is currently retrieved by public APIs at [MiraiEx](https://doc.api.miraiex.com/).
+All data is currently retrieved by public APIs at [MiraiEx](https://developers.miraiex.com/).
 
 ## Contributing
 Pull requests are welcome, please discuss changes via Issues. 
