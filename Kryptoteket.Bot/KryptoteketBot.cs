@@ -37,6 +37,7 @@ namespace Kryptoteket.Bot
                 .AddSingleton(_configuration)
                 .AddSingleton<CommandHandlerService>()
                 .AddSingleton<StartupService>()
+                .AddSingleton<LoggingService>()
                 .AddSingleton<IMiraiexService, MiraiexService>()
                 .AddTransient<HttpResponseService>()
                 .AddTransient<EmbedService>();

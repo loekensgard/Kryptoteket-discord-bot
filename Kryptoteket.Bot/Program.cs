@@ -12,7 +12,8 @@ namespace Kryptoteket.Bot
 			}
 			catch (Exception e)
 			{
-				Console.WriteLine(e.Message);
+				Console.WriteLine($"{e.GetType().Name}: {e.Message}");
+				Console.WriteLine(e.StackTrace);
 			}
 		}
 	}
