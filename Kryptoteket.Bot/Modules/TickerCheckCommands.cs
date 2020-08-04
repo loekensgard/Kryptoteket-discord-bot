@@ -1,14 +1,6 @@
-﻿using Discord;
-using Discord.Commands;
-using Discord.WebSocket;
+﻿using Discord.Commands;
 using Kryptoteket.Bot.Interfaces;
-using Kryptoteket.Bot.Models;
 using Kryptoteket.Bot.Services;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Kryptoteket.Bot.Modules
@@ -46,5 +38,25 @@ namespace Kryptoteket.Bot.Modules
             await ReplyAsync(null, false, builder.Build());
         }
 
+        [Command("ticker ltcnok", RunMode = RunMode.Async)]
+        [Summary("Get btcnok ticker from Miraiex")]
+        public async Task GetLTCTickerMiraiex()
+        {
+            var ticker = await _miraiexService.GetTicker("ltcnok");
+            var builder = _embedService.EmbedTicker("ltcnok", ticker);
+
+            await ReplyAsync(null, false, builder.Build());
+        }
+
+
+        [Command("ticker xrpnok", RunMode = RunMode.Async)]
+        [Summary("Get xrpnok ticker from Miraiex")]
+        public async Task GetXRPTickerMiraiex()
+        {
+            var ticker = await _miraiexService.GetTicker("xrpnok");
+            var builder = _embedService.EmbedTicker("xrpnok", ticker);
+
+            await ReplyAsync(null, false, builder.Build());
+        }
     }
 }
