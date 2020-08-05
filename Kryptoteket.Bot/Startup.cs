@@ -1,11 +1,11 @@
 ﻿using Discord.Commands;
 using Discord.WebSocket;
+using Kryptoteket.Bot.Configurations;
 using Kryptoteket.Bot.Interfaces;
 using Kryptoteket.Bot.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
-using Serilog.Core;
 using Serilog.Exceptions;
 using System;
 using System.IO;
@@ -45,26 +45,7 @@ namespace Kryptoteket.Bot
 
         public async Task RunAsync()
         {
-            var services = new ServiceCollection()
-                .AddSingleton(new DiscordSocketClient(new DiscordSocketConfig
-                {
-                    LogLevel = Discord.LogSeverity.Verbose,
-                    MessageCacheSize = 1000
-                }))
-                .AddSingleton(new CommandService(new CommandServiceConfig
-                {
-                    DefaultRunMode = RunMode.Async,
-                    LogLevel = Discord.LogSeverity.Verbose,
-                    CaseSensitiveCommands = false,
-                    ThrowOnError = false
-                }))
-                .AddSingleton(_configuration)
-                .AddSingleton<CommandHandlerService>()
-                .AddSingleton<StartupService>()
-                .AddSingleton<LoggingService>()
-                .AddSingleton<IMiraiexService, MiraiexService>()
-                .AddTransient<HttpResponseService>()
-                .AddTransient<EmbedService>();
+            var services = ConfigureServices();
 
             var serviceProvider = services.BuildServiceProvider();
             serviceProvider.GetRequiredService<CommandHandlerService>();
@@ -72,6 +53,38 @@ namespace Kryptoteket.Bot
             Log.Information("Kryptoteket.Bot started");
             await serviceProvider.GetRequiredService<StartupService>().StartAsync();
             await Task.Delay(-1);
+        }
+
+        private IServiceCollection ConfigureServices()
+        {
+            var services = new ServiceCollection();
+
+            services.AddSingleton(new DiscordSocketClient(new DiscordSocketConfig
+            {
+                LogLevel = Discord.LogSeverity.Verbose,
+                MessageCacheSize = 1000
+            }));
+
+            services.AddSingleton(new CommandService(new CommandServiceConfig
+            {
+                DefaultRunMode = RunMode.Async,
+                LogLevel = Discord.LogSeverity.Verbose,
+                CaseSensitiveCommands = false,
+                ThrowOnError = false
+            }));
+
+            services.AddSingleton<IMiraiexService, MiraiexService>();
+            services.AddSingleton<CommandHandlerService>();
+            services.AddSingleton<StartupService>();
+            services.AddSingleton<LoggingService>();
+            services.AddTransient<HttpResponseService>();
+            services.AddTransient<EmbedService>();
+            services.AddSingleton(_configuration);
+
+            services.Configure<ExchangesConfiguration>(options => _configuration.GetSection("Exchanges").Bind(options));
+            services.Configure<DiscordConfiguration>(options => _configuration.GetSection("Discord").Bind(options));
+
+            return services;
         }
 
         private static void HandleUnhandledExceptions(object sender, UnhandledExceptionEventArgs e)
