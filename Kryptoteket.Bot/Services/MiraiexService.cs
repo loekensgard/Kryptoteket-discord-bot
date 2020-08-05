@@ -1,6 +1,8 @@
-﻿using Kryptoteket.Bot.Exceptions;
+﻿using Kryptoteket.Bot.Configurations;
+using Kryptoteket.Bot.Exceptions;
 using Kryptoteket.Bot.Interfaces;
 using Kryptoteket.Bot.Models;
+using Microsoft.Extensions.Options;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -9,17 +11,21 @@ namespace Kryptoteket.Bot.Services
 {
     public class MiraiexService : IMiraiexService
     {
+        private readonly ExchangesConfiguration _exchnagesConfiguration;
         private readonly HttpResponseService _httpResponseService;
 
-        public MiraiexService(HttpResponseService httpResponseService)
+        public MiraiexService(IOptions<ExchangesConfiguration> exchnagesConfiguration, HttpResponseService httpResponseService)
         {
+            _exchnagesConfiguration = exchnagesConfiguration.Value;
             _httpResponseService = httpResponseService;
+
+            if(string.IsNullOrEmpty(_exchnagesConfiguration.MiraiexAPIUri)) throw new ArgumentNullException(nameof(_exchnagesConfiguration.MiraiexAPIUri));
         }
 
         public async Task<Price> GetPrice(string pair)
         {
             using (var client = new HttpClient())
-            using (var requets = new HttpRequestMessage(HttpMethod.Get, $"https://api.miraiex.com/v2/markets/{pair.ToUpper()}"))
+            using (var requets = new HttpRequestMessage(HttpMethod.Get, $"{_exchnagesConfiguration.MiraiexAPIUri}markets/{pair.ToUpper()}"))
             {
                 using (var response = await client.SendAsync(requets, HttpCompletionOption.ResponseHeadersRead))
                 {
@@ -40,7 +46,7 @@ namespace Kryptoteket.Bot.Services
         public async Task<Ticker> GetTicker(string pair)
         {
             using (var client = new HttpClient())
-            using (var requets = new HttpRequestMessage(HttpMethod.Get, $"https://api.miraiex.com/v2/markets/{pair.ToUpper()}/ticker"))
+            using (var requets = new HttpRequestMessage(HttpMethod.Get, $"{_exchnagesConfiguration.MiraiexAPIUri}markets/{pair.ToUpper()}/ticker"))
             {
                 using (var response = await client.SendAsync(requets, HttpCompletionOption.ResponseHeadersRead))
                 {

@@ -1,5 +1,7 @@
 ﻿using Discord.Commands;
 using Discord.WebSocket;
+using Kryptoteket.Bot.Configurations;
+using Microsoft.Extensions.Options;
 using Serilog;
 using System;
 using System.Threading.Tasks;
@@ -11,13 +13,15 @@ namespace Kryptoteket.Bot.Services
         private readonly DiscordSocketClient _discordSocketClient;
         private readonly CommandService _commandService;
         private readonly IServiceProvider _services;
+        private readonly DiscordConfiguration _discordOptions;
         private const string _messageErrorTemplate = "Discord Error {reasonType} {reasonDescription} {message}";
 
-        public CommandHandlerService(DiscordSocketClient discordSocketClient, CommandService commandService, IServiceProvider services)
+        public CommandHandlerService(DiscordSocketClient discordSocketClient, CommandService commandService, IServiceProvider services, IOptions<DiscordConfiguration> discordOptions)
         {
             _discordSocketClient = discordSocketClient;
             _commandService = commandService;
             _services = services;
+            _discordOptions = discordOptions.Value;
 
             _discordSocketClient.MessageReceived += OnMessageReceivedAsync;
         }
@@ -35,7 +39,7 @@ namespace Kryptoteket.Bot.Services
             var context = new SocketCommandContext(_discordSocketClient, message);
 
             // Determine if the message is a command based on the prefix and make sure no bots trigger commands
-            if (!(message.HasCharPrefix('!', ref argPos) ||
+            if (!(message.HasCharPrefix(_discordOptions.Prefix, ref argPos) ||
                 message.HasMentionPrefix(_discordSocketClient.CurrentUser, ref argPos)) ||
                 message.Author.IsBot)
             {
