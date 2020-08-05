@@ -8,7 +8,7 @@ namespace Kryptoteket.Bot
 		{
 			try
 			{
-				new KryptoteketBot().StartAsync().GetAwaiter().GetResult();
+				new Startup().StartAsync().GetAwaiter().GetResult();
 			}
 			catch (Exception e)
 			{

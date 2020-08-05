@@ -26,7 +26,7 @@ namespace Kryptoteket.Bot.Services
         public async Task StartAsync()
         {
             var config = _configuration.GetSection("Discord");
-            var discordToken = config["Token"] ?? throw new Exception("Missing Discord Bot token");
+            var discordToken = !string.IsNullOrEmpty(config["Token"]) ? config["Token"] :  throw new Exception("Missing Discord Bot token");
 
             await _discordSocketClient.LoginAsync(TokenType.Bot, discordToken);
             await _discordSocketClient.StartAsync();
