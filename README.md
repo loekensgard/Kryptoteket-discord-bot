@@ -12,9 +12,15 @@ Discord bot for retrieving crypto prices and tickers at [Kryptotekets discord](h
 ```
 !ticker btcnok
 !ticker ethnok
+!ticker xrpnok
+!ticker ltcnok
 
 !price btcnok
 !price ethnok
+!price xrpnok
+!price ltcnok
+
+!help 
 ```
 
 These can be found under the Modules folder.\
