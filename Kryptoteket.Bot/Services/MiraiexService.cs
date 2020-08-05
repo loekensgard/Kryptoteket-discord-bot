@@ -1,4 +1,5 @@
-﻿using Kryptoteket.Bot.Interfaces;
+﻿using Kryptoteket.Bot.Exceptions;
+using Kryptoteket.Bot.Interfaces;
 using Kryptoteket.Bot.Models;
 using System;
 using System.Net.Http;
@@ -25,8 +26,13 @@ namespace Kryptoteket.Bot.Services
                     if (response.IsSuccessStatusCode)
                         return await _httpResponseService.DeserializeJsonFromStream<Price>(response);
 
-                    //AddErrorHandling
-                    throw new Exception("failed");
+                    var content = await _httpResponseService.StreamToStringAsync(await response.Content.ReadAsStreamAsync());
+
+                    throw new ApiException(message: content)
+                    {
+                        StatusCode = (int)response.StatusCode,
+                        Content = content
+                    };
                 }
             }
         }
@@ -41,8 +47,13 @@ namespace Kryptoteket.Bot.Services
                     if (response.IsSuccessStatusCode)
                         return await _httpResponseService.DeserializeJsonFromStream<Ticker>(response);
 
-                    //AddErrorHandling
-                    throw new Exception("failed");
+                    var content = await _httpResponseService.StreamToStringAsync(await response.Content.ReadAsStreamAsync());
+
+                    throw new ApiException(message: content)
+                    {
+                        StatusCode = (int)response.StatusCode,
+                        Content = content
+                    };
                 }
             }
         }
