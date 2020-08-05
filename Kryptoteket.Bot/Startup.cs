@@ -22,6 +22,7 @@ namespace Kryptoteket.Bot
             var _builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
+                .AddJsonFile($"appsettings.development.json", optional: true)
                 .AddEnvironmentVariables();
 
             _configuration = _builder.Build();
