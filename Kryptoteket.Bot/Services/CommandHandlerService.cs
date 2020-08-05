@@ -11,7 +11,7 @@ namespace Kryptoteket.Bot.Services
         private readonly DiscordSocketClient _discordSocketClient;
         private readonly CommandService _commandService;
         private readonly IServiceProvider _services;
-        private const string _messageErrorTemplate = "Discord Error {reasonType} {reasonDescription}";
+        private const string _messageErrorTemplate = "Discord Error {reasonType} {reasonDescription} {message}";
 
         public CommandHandlerService(DiscordSocketClient discordSocketClient, CommandService commandService, IServiceProvider services)
         {
@@ -52,7 +52,7 @@ namespace Kryptoteket.Bot.Services
                     services: _services);
 
                 if (!result.IsSuccess)
-                    Log.Error(_messageErrorTemplate, result.Error, result.ErrorReason);
+                    Log.Error(_messageErrorTemplate, result.Error, result.ErrorReason, message);
 
             }
             catch (Exception e)
