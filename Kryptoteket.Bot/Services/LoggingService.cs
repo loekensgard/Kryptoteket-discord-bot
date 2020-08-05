@@ -24,7 +24,6 @@ namespace Kryptoteket.Bot.Services
 
         private Task LogAsync(LogMessage msg)
         {
-
             var logText = $"{DateTime.UtcNow.ToString("hh:mm:ss")} [{msg.Severity}] {msg.Source}: {msg.Exception?.ToString() ?? msg.Message}";
             return Console.Out.WriteLineAsync(logText); 
         }
