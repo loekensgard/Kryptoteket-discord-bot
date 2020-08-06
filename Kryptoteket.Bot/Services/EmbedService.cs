@@ -33,7 +33,7 @@ namespace Kryptoteket.Bot.Services
             return builder;
         }
 
-        public EmbedBuilder EmbedCovidStats(string title, Uri source, long totalCases, long totalNewCasesToday, long totalDeaths, long totalNewDeathsToday, long totalRecovered)
+        public EmbedBuilder EmbedCovidStats(string title, long totalCases, long totalNewCasesToday, long totalDeaths, long totalNewDeathsToday, long totalRecovered, long updated)
         {
             EmbedBuilder builder = new EmbedBuilder();
             StringBuilder sb = new StringBuilder();
@@ -47,7 +47,12 @@ namespace Kryptoteket.Bot.Services
             builder.WithTitle($"Current Coronavirus Statistics for {title}");
             builder.WithDescription(sb.ToString());
             builder.WithColor(Color.Red);
-            builder.WithFooter(footer => footer.Text = $"Source: {source.AbsoluteUri}");
+
+            //Convert UNIX Epoch to readable string
+            var readabletime = new DateTime(1970, 1, 1, 0, 0, 0, 0);
+            readabletime = readabletime.AddSeconds(updated);
+
+            builder.WithFooter(footer => footer.Text = $"Update: {readabletime}");
             return builder;
         }
 
