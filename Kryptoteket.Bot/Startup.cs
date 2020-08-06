@@ -74,6 +74,7 @@ namespace Kryptoteket.Bot
             }));
 
             services.AddSingleton<IMiraiexService, MiraiexService>();
+            services.AddSingleton<ICovid19APIService, Covid19APIService>();
             services.AddSingleton<CommandHandlerService>();
             services.AddSingleton<StartupService>();
             services.AddSingleton<LoggingService>();
@@ -83,6 +84,7 @@ namespace Kryptoteket.Bot
 
             services.Configure<ExchangesConfiguration>(options => _configuration.GetSection("Exchanges").Bind(options));
             services.Configure<DiscordConfiguration>(options => _configuration.GetSection("Discord").Bind(options));
+            services.Configure<CovidAPIConfiguration>(options => _configuration.GetSection("CovidAPI").Bind(options));
 
             return services;
         }
