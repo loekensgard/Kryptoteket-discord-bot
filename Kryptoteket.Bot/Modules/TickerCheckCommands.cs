@@ -22,7 +22,7 @@ namespace Kryptoteket.Bot.Modules
         public async Task GetBTCTickerMiraiex()
         {
             var ticker = await _miraiexService.GetTicker("btcnok");
-            var builder = _embedService.EmbedTicker("btcnok", ticker);
+            var builder = _embedService.EmbedTicker("btcnok", ticker, "Miraiex");
 
             await ReplyAsync(null, false, builder.Build());
         }
@@ -33,7 +33,7 @@ namespace Kryptoteket.Bot.Modules
         public async Task GetETHTickerMiraiex()
         {
             var ticker = await _miraiexService.GetTicker("ethnok");
-            var builder = _embedService.EmbedTicker("ethnok", ticker);
+            var builder = _embedService.EmbedTicker("ethnok", ticker, "Miraiex");
 
             await ReplyAsync(null, false, builder.Build());
         }
@@ -43,7 +43,7 @@ namespace Kryptoteket.Bot.Modules
         public async Task GetLTCTickerMiraiex()
         {
             var ticker = await _miraiexService.GetTicker("ltcnok");
-            var builder = _embedService.EmbedTicker("ltcnok", ticker);
+            var builder = _embedService.EmbedTicker("ltcnok", ticker, "Miraiex");
 
             await ReplyAsync(null, false, builder.Build());
         }
@@ -54,7 +54,7 @@ namespace Kryptoteket.Bot.Modules
         public async Task GetXRPTickerMiraiex()
         {
             var ticker = await _miraiexService.GetTicker("xrpnok");
-            var builder = _embedService.EmbedTicker("xrpnok", ticker);
+            var builder = _embedService.EmbedTicker("xrpnok", ticker, "Miraiex");
 
             await ReplyAsync(null, false, builder.Build());
         }

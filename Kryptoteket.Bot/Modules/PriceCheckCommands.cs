@@ -22,7 +22,7 @@ namespace Kryptoteket.Bot.Modules
         public async Task GetBTCPriceMiraiex()
         {
             var price = await _miraiexService.GetPrice("btcnok");
-            var builder = _embedService.EmbedPrice("btcnok", price);
+            var builder = _embedService.EmbedPrice("btcnok", price, "Miraiex");
 
             await ReplyAsync(null, false, builder.Build());
         }
@@ -32,7 +32,7 @@ namespace Kryptoteket.Bot.Modules
         public async Task GetETHPriceMiraiex()
         {
             var price = await _miraiexService.GetPrice("ethnok");
-            var builder = _embedService.EmbedPrice("ethnok", price);
+            var builder = _embedService.EmbedPrice("ethnok", price, "Miraiex");
 
             await ReplyAsync(null, false, builder.Build());
         }
@@ -42,7 +42,7 @@ namespace Kryptoteket.Bot.Modules
         public async Task GetLTCPriceMiraiex()
         {
             var price = await _miraiexService.GetPrice("ltcnok");
-            var builder = _embedService.EmbedPrice("ltcnok", price);
+            var builder = _embedService.EmbedPrice("ltcnok", price, "Miraiex");
 
             await ReplyAsync(null, false, builder.Build());
         }
@@ -52,7 +52,7 @@ namespace Kryptoteket.Bot.Modules
         public async Task GetXRPPriceMiraiex()
         {
             var price = await _miraiexService.GetPrice("xrpnok");
-            var builder = _embedService.EmbedPrice("xrpnok", price);
+            var builder = _embedService.EmbedPrice("xrpnok", price, "Miraiex");
 
             await ReplyAsync(null, false, builder.Build());
         }
