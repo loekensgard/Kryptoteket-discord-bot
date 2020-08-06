@@ -10,21 +10,18 @@ Discord bot for retrieving crypto prices and tickers at [Kryptotekets discord](h
 ## Discord commands
 
 ```
-!ticker btcnok
-!ticker ethnok
-!ticker xrpnok
-!ticker ltcnok
-
-!price btcnok
-!price ethnok
-!price xrpnok
-!price ltcnok
+!ticker <pair>
+!price <pair>
+!covid <countrycode / countryName>
 
 !help 
 ```
 
 These can be found under the Modules folder.\
-All data is currently retrieved by public APIs at [MiraiEx](https://developers.miraiex.com/).
+
+## Data
+All crypto data is currently retrieved by public APIs at [MiraiEx](https://developers.miraiex.com/).
+Coronavirus Statistics is retrieved by public APIs at [Disease.sh](https://disease.sh/docs/)
 
 ## Contributing
 Pull requests are welcome, please discuss changes via Issues. 
