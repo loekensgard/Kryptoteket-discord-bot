@@ -51,7 +51,7 @@ namespace Kryptoteket.Bot.Services
             //Convert UNIX Epoch to readable string
             var readabletime = DateTimeOffset.FromUnixTimeMilliseconds(updated);
 
-            builder.WithFooter(footer => footer.Text = $"Update: {readabletime.ToString("dd.MM.yy HH:mm")}");
+            builder.WithFooter(footer => footer.Text = $"Updated: {readabletime.ToString("dd.MM.yy HH:mm")}");
             return builder;
         }
 
