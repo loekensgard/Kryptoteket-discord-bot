@@ -26,8 +26,10 @@ namespace Kryptoteket.Bot.Modules
         public async Task GetCovidInfoByCountry([Remainder]string countryCode)
         {
             var countryAllData = await _covid19APIService.GetCountryStats(countryCode);
-            var countryData = countryAllData.Countrydata.FirstOrDefault();
 
+            if(countryAllData.Countrydata == null) await ReplyAsync($"Could not find any data with CountryCode {countryCode}", false);
+
+            var countryData = countryAllData.Countrydata.FirstOrDefault();
             var builder = _embedService.EmbedCovidStats(
                 countryData.Info.Title,
                 countryData.Info.Source, 
