@@ -49,10 +49,9 @@ namespace Kryptoteket.Bot.Services
             builder.WithColor(Color.Red);
 
             //Convert UNIX Epoch to readable string
-            var readabletime = new DateTime(1970, 1, 1, 0, 0, 0, 0);
-            readabletime = readabletime.AddSeconds(updated);
+            var readabletime = DateTimeOffset.FromUnixTimeMilliseconds(updated);
 
-            builder.WithFooter(footer => footer.Text = $"Update: {readabletime}");
+            builder.WithFooter(footer => footer.Text = $"Update: {readabletime.ToString("dd.MM.yy hh:mm")}");
             return builder;
         }
 
