@@ -17,10 +17,10 @@ Discord bot for retrieving crypto prices and tickers at [Kryptotekets discord](h
 !help 
 ```
 
-These can be found under the Modules folder.\
+These can be found under the Modules folder.
 
 ## Data
-All crypto data is currently retrieved by public APIs at [MiraiEx](https://developers.miraiex.com/).
+All crypto data is currently retrieved by public APIs at [MiraiEx](https://developers.miraiex.com/).\
 Coronavirus Statistics is retrieved by public APIs at [Disease.sh](https://disease.sh/docs/)
 
 ## Contributing
