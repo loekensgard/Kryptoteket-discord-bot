@@ -24,7 +24,7 @@ namespace Kryptoteket.Bot.Modules
             var price = await _miraiexService.GetPrice(pair.Trim().ToLower());
             if (price == null) await ReplyAsync($"The market {pair} is not supported", false);
 
-            var builder = _embedService.EmbedPrice(pair.Trim().ToUpper(), price, "Miraiex");
+            var builder = _embedService.EmbedPrice(pair.Trim().ToUpper(), price, "MiraiEx");
             await ReplyAsync(null, false, builder.Build());
         }
     }
