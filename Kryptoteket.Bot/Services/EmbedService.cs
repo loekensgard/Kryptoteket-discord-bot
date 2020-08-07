@@ -72,15 +72,10 @@ namespace Kryptoteket.Bot.Services
         public EmbedBuilder Embedhelp()
         {
             EmbedBuilder builder = new EmbedBuilder();
-            StringBuilder sb = new StringBuilder();
-
-            sb.AppendLine("Search ticker: !ticker <pair>");
-            sb.AppendLine("Search price: !price <pair>");
-            sb.AppendLine("Covid stats: !covid <countryCode>");
-            sb.AppendLine("Support me: !support");
-
             builder.WithTitle($"Commands");
-            builder.WithDescription(sb.ToString());
+            builder.AddField("Crypto", $"!ticker <pair>{Environment.NewLine}!price <pair>");
+            builder.AddField("Covid", $"!covid <countryCode / countryName>");
+            builder.AddField("Support me", "!support");
             builder.WithColor(Color.DarkBlue);
             builder.WithFooter(footer => footer.Text = "Bot improvements can be featured to Thorshi#6851");
             return builder;
