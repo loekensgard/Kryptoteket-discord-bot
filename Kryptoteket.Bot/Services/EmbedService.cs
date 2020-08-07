@@ -40,7 +40,7 @@ namespace Kryptoteket.Bot.Services
             builder.WithDescription("Thank you for using my bot. If it gives you value, please consider helping me out with the cost by using any of the listed methods.");
             builder.WithColor(Color.DarkBlue);
             builder.AddField("Referral links", "[MiraiEx](https://miraiex.com/affiliate/?referral=thorshi)<br>[Bittrex](https://bittrex.com/Account/Register?referralCode=L2O-PNM-LLA)<br>[Binance](https://www.binance.com/en/register?ref=P7BWV9S0)<br>[Coinbase](https://www.coinbase.com/join/lkensg_g)");
-            builder.AddField("Donate", "");
+            builder.AddField("Donate", "*Coming soon*");
             builder.WithFooter(footer => footer.Text = "Best Regards<br>Thorshi#6851");
             return builder;
         }
