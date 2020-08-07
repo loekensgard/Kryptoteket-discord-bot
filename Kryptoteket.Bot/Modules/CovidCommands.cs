@@ -26,8 +26,11 @@ namespace Kryptoteket.Bot.Modules
         public async Task GetCovidInfoByCountry([Remainder]string countryCode)
         {
             var countryData = await _covid19APIService.GetCountryStats(countryCode.Trim());
-
             if(countryData == null) await ReplyAsync($"Could not find any data with parameter {countryCode}", false);
+
+            var yesterdayData = await _covid19APIService.GetCountryStatsYesterday(countryCode.Trim());
+            long? yesterdayNewCases = null;
+            if(yesterdayData != null) yesterdayNewCases = yesterdayData.TotalNewCasesToday;  
 
             var builder = _embedService.EmbedCovidStats(
                 countryData.Title,
@@ -36,7 +39,8 @@ namespace Kryptoteket.Bot.Modules
                 countryData.TotalDeaths,
                 countryData.TotalNewDeathsToday,
                 countryData.TotalRecovered,
-                countryData.Updated);
+                countryData.Updated,
+                yesterdayNewCases);
 
             await ReplyAsync(null, false, builder.Build());
         }

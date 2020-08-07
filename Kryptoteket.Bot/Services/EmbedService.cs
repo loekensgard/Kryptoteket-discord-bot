@@ -33,7 +33,7 @@ namespace Kryptoteket.Bot.Services
             return builder;
         }
 
-        public EmbedBuilder EmbedCovidStats(string title, long totalCases, long totalNewCasesToday, long totalDeaths, long totalNewDeathsToday, long totalRecovered, long updated)
+        public EmbedBuilder EmbedCovidStats(string title, long totalCases, long totalNewCasesToday, long totalDeaths, long totalNewDeathsToday, long totalRecovered, long updated, long? totaltCasesYesterday = null)
         {
             EmbedBuilder builder = new EmbedBuilder();
             StringBuilder sb = new StringBuilder();
@@ -43,6 +43,8 @@ namespace Kryptoteket.Bot.Services
             sb.AppendLine($"Confirmed Recoveries: {totalRecovered}");
             sb.AppendLine($"New Cases Today: {totalNewCasesToday}");
             sb.AppendLine($"New Deaths Today: {totalNewDeathsToday}");
+            if(totaltCasesYesterday.HasValue)
+            sb.AppendLine($"New Cases Yesterday: {totaltCasesYesterday.Value}");
 
             builder.WithTitle($"Current Coronavirus Statistics for {title}");
             builder.WithDescription(sb.ToString());

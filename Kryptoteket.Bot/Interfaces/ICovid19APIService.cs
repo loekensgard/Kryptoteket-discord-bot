@@ -9,5 +9,6 @@ namespace Kryptoteket.Bot.Interfaces
     public interface ICovid19APIService
     {
         Task<CovidCountryStats> GetCountryStats(string countryCode);
+        Task<CovidCountryStats> GetCountryStatsYesterday(string countryCode);
     }
 }
