@@ -39,9 +39,9 @@ namespace Kryptoteket.Bot.Services
             builder.WithTitle("Support my bot");
             builder.WithDescription("Thank you for using my bot. If it gives you value, please consider helping me out with the cost by using any of the listed methods.");
             builder.WithColor(Color.DarkBlue);
-            builder.AddField("Referral links", "[MiraiEx](https://miraiex.com/affiliate/?referral=thorshi)  [Bittrex](https://bittrex.com/Account/Register?referralCode=L2O-PNM-LLA)  [Binance](https://www.binance.com/en/register?ref=P7BWV9S0)  [Coinbase](https://www.coinbase.com/join/lkensg_g)");
+            builder.AddField("Referral links", $"[MiraiEx](https://miraiex.com/affiliate/?referral=thorshi){Environment.NewLine}[Bittrex](https://bittrex.com/Account/Register?referralCode=L2O-PNM-LLA){Environment.NewLine}[Binance](https://www.binance.com/en/register?ref=P7BWV9S0){Environment.NewLine}[Coinbase](https://www.coinbase.com/join/lkensg_g)");
             builder.AddField("Donate", "*Coming soon*");
-            builder.WithFooter(footer => footer.Text = "Best Regards  Thorshi#6851");
+            builder.WithFooter(footer => footer.Text = $"Best Regards{Environment.NewLine}Thorshi#6851");
             return builder;
         }
 
