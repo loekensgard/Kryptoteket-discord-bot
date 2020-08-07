@@ -33,7 +33,7 @@ namespace Kryptoteket.Bot.Services
             return builder;
         }
 
-        public EmbedBuilder EmbedRef()
+        public EmbedBuilder EmbedSupportMe()
         {
             EmbedBuilder builder = new EmbedBuilder();
             builder.WithTitle("Support my bot");
@@ -77,7 +77,8 @@ namespace Kryptoteket.Bot.Services
             sb.AppendLine("Search ticker: !ticker <pair>");
             sb.AppendLine("Search price: !price <pair>");
             sb.AppendLine("Covid stats: !covid <countryCode>");
-            
+            sb.AppendLine("Support me: !support");
+
             builder.WithTitle($"Commands");
             builder.WithDescription(sb.ToString());
             builder.WithColor(Color.DarkBlue);

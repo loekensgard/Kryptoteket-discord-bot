@@ -24,12 +24,11 @@ namespace Kryptoteket.Bot.Modules
             await ReplyAsync(null, false, _embedService.Embedhelp().Build());
         }
 
-        [Command("ref", RunMode = RunMode.Async)]
+        [Command("support", RunMode = RunMode.Async)]
         [Summary("Support the developer")]
         public async Task GetSupportText()
         {
-
-            await ReplyAsync(null, false, _embedService.EmbedRef().Build());
+            await ReplyAsync(null, false, _embedService.EmbedSupportMe().Build());
         }
 
 
