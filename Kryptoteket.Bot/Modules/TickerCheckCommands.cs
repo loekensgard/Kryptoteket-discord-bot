@@ -17,45 +17,14 @@ namespace Kryptoteket.Bot.Modules
             _embedService = embedService;
         }
 
-        [Command("ticker btcnok", RunMode = RunMode.Async)]
-        [Summary("Get btcnok ticker from Miraiex")]
-        public async Task GetBTCTickerMiraiex()
+        [Command("ticker", RunMode = RunMode.Async)]
+        [Summary("Get ticker for pair from Miraiex")]
+        public async Task GetTickerMiraiex([Remainder]string pair)
         {
-            var ticker = await _miraiexService.GetTicker("btcnok");
-            var builder = _embedService.EmbedTicker("btcnok", ticker, "Miraiex");
+            var ticker = await _miraiexService.GetTicker(pair.Trim().ToLower());
+            if(ticker == null) await ReplyAsync($"The market {pair} is not supported", false);
 
-            await ReplyAsync(null, false, builder.Build());
-        }
-
-
-        [Command("ticker ethnok", RunMode = RunMode.Async)]
-        [Summary("Get ethnok ticker from Miraiex")]
-        public async Task GetETHTickerMiraiex()
-        {
-            var ticker = await _miraiexService.GetTicker("ethnok");
-            var builder = _embedService.EmbedTicker("ethnok", ticker, "Miraiex");
-
-            await ReplyAsync(null, false, builder.Build());
-        }
-
-        [Command("ticker ltcnok", RunMode = RunMode.Async)]
-        [Summary("Get btcnok ticker from Miraiex")]
-        public async Task GetLTCTickerMiraiex()
-        {
-            var ticker = await _miraiexService.GetTicker("ltcnok");
-            var builder = _embedService.EmbedTicker("ltcnok", ticker, "Miraiex");
-
-            await ReplyAsync(null, false, builder.Build());
-        }
-
-
-        [Command("ticker xrpnok", RunMode = RunMode.Async)]
-        [Summary("Get xrpnok ticker from Miraiex")]
-        public async Task GetXRPTickerMiraiex()
-        {
-            var ticker = await _miraiexService.GetTicker("xrpnok");
-            var builder = _embedService.EmbedTicker("xrpnok", ticker, "Miraiex");
-
+            var builder = _embedService.EmbedTicker(pair.Trim().ToUpper(), ticker, "Miraiex");
             await ReplyAsync(null, false, builder.Build());
         }
     }

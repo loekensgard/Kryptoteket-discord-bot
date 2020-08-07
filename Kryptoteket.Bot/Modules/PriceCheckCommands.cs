@@ -17,43 +17,14 @@ namespace Kryptoteket.Bot.Modules
             _embedService = embedService;
         }
 
-        [Command("price btcnok", RunMode = RunMode.Async)]
-        [Summary("Get btcnok price from Miraiex")]
-        public async Task GetBTCPriceMiraiex()
+        [Command("price", RunMode = RunMode.Async)]
+        [Summary("Get price for pair from Miraiex")]
+        public async Task GetPriceMiraiex([Remainder]string pair)
         {
-            var price = await _miraiexService.GetPrice("btcnok");
-            var builder = _embedService.EmbedPrice("btcnok", price, "Miraiex");
+            var price = await _miraiexService.GetPrice(pair.Trim().ToLower());
+            if (price == null) await ReplyAsync($"The market {pair} is not supported", false);
 
-            await ReplyAsync(null, false, builder.Build());
-        }
-
-        [Command("price ethnok", RunMode = RunMode.Async)]
-        [Summary("Get ethnok price from Miraiex")]
-        public async Task GetETHPriceMiraiex()
-        {
-            var price = await _miraiexService.GetPrice("ethnok");
-            var builder = _embedService.EmbedPrice("ethnok", price, "Miraiex");
-
-            await ReplyAsync(null, false, builder.Build());
-        }
-
-        [Command("price ltcnok", RunMode = RunMode.Async)]
-        [Summary("Get ltcnok price from Miraiex")]
-        public async Task GetLTCPriceMiraiex()
-        {
-            var price = await _miraiexService.GetPrice("ltcnok");
-            var builder = _embedService.EmbedPrice("ltcnok", price, "Miraiex");
-
-            await ReplyAsync(null, false, builder.Build());
-        }
-
-        [Command("price xrpnok", RunMode = RunMode.Async)]
-        [Summary("Get xrpnok price from Miraiex")]
-        public async Task GetXRPPriceMiraiex()
-        {
-            var price = await _miraiexService.GetPrice("xrpnok");
-            var builder = _embedService.EmbedPrice("xrpnok", price, "Miraiex");
-
+            var builder = _embedService.EmbedPrice(pair.Trim().ToUpper(), price, "Miraiex");
             await ReplyAsync(null, false, builder.Build());
         }
     }

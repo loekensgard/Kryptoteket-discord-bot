@@ -32,6 +32,9 @@ namespace Kryptoteket.Bot.Services
                     if (response.IsSuccessStatusCode)
                         return await _httpResponseService.DeserializeJsonFromStream<Price>(response);
 
+                    if(response.StatusCode == System.Net.HttpStatusCode.NotFound || response.StatusCode == System.Net.HttpStatusCode.NotAcceptable)
+                        return null;
+
                     var content = await _httpResponseService.StreamToStringAsync(await response.Content.ReadAsStreamAsync());
 
                     throw new ApiException(message: content)
@@ -52,6 +55,9 @@ namespace Kryptoteket.Bot.Services
                 {
                     if (response.IsSuccessStatusCode)
                         return await _httpResponseService.DeserializeJsonFromStream<Ticker>(response);
+
+                    if (response.StatusCode == System.Net.HttpStatusCode.NotFound || response.StatusCode == System.Net.HttpStatusCode.NotAcceptable)
+                        return null;
 
                     var content = await _httpResponseService.StreamToStringAsync(await response.Content.ReadAsStreamAsync());
 
