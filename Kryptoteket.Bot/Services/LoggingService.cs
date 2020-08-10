@@ -30,7 +30,7 @@ namespace Kryptoteket.Bot.Services
             var level = msg.Exception == null ? LogEventLevel.Information : LogEventLevel.Error;
             Log.Write(level, _messageTemplate, DateTime.Now, msg.Severity, msg.Source , msg.Exception?.ToString() ?? msg.Message);
 
-            return Console.Out.WriteLineAsync($"{DateTime.UtcNow.ToString("hh:mm:ss")} [{msg.Severity}] {msg.Source}: {msg.Exception?.ToString() ?? msg.Message}"); 
+            return Console.Out.WriteLineAsync($"{DateTime.UtcNow.ToString("HH:mm:ss")} [{msg.Severity}] {msg.Source}: {msg.Exception?.ToString() ?? msg.Message}"); 
         }
 
     }
