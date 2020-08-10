@@ -52,10 +52,10 @@ namespace Kryptoteket.Bot.Services
             EmbedBuilder builder = new EmbedBuilder();
             StringBuilder sb = new StringBuilder();
 
-            builder.WithTitle($"Top gains of top {top} last {timePeriod}");
+            builder.WithTitle($"Top gains of top {top} coins last {timePeriod}");
             foreach (var gainer in topGainers.OrderByDescending(o => o.PriceChangeInPeriod).Take(20))
             {
-                sb.AppendLine($"**{gainer.Symbol.ToUpper()}:** {Math.Truncate((double)gainer.PriceChangeInPeriod * 1000) / 1000}%");
+                sb.AppendLine($"**{gainer.Symbol.ToUpper()}:** {Math.Truncate((double)gainer.PriceChangeInPeriod * 100) / 100}%");
             }
 
             builder.WithDescription(sb.ToString());
