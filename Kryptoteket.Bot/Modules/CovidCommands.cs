@@ -23,7 +23,7 @@ namespace Kryptoteket.Bot.Modules
 
         [Command("covid", RunMode = RunMode.Async)]
         [Summary("Get covid statistics")]
-        public async Task GetCovidInfoByCountry([Remainder]string countryCode)
+        public async Task GetCovidInfoByCountry(string countryCode)
         {
             var countryData = await _covid19APIService.GetCountryStats(countryCode.Trim());
             if(countryData == null) await ReplyAsync($"Could not find any data with parameter {countryCode}", false);

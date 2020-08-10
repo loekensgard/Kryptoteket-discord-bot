@@ -4,38 +4,35 @@ using Kryptoteket.Bot.Interfaces;
 using Kryptoteket.Bot.Models;
 using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace Kryptoteket.Bot.Services
+namespace Kryptoteket.Bot.Services.API
 {
-    public class Covid19APIService : ICovid19APIService
+    public class MiraiexAPIService : IMiraiexAPIService
     {
+        private readonly ExchangesConfiguration _exchnagesConfiguration;
         private readonly HttpResponseService _httpResponseService;
-        private readonly CovidAPIConfiguration _covidOptions;
 
-        public Covid19APIService(HttpResponseService httpResponseService, IOptions<CovidAPIConfiguration> covidOptions)
+        public MiraiexAPIService(IOptions<ExchangesConfiguration> exchnagesConfiguration, HttpResponseService httpResponseService)
         {
+            _exchnagesConfiguration = exchnagesConfiguration.Value;
             _httpResponseService = httpResponseService;
-            _covidOptions = covidOptions.Value;
 
-            if (string.IsNullOrEmpty(_covidOptions.Uri)) throw new ArgumentNullException(nameof(_covidOptions.Uri));
+            if (string.IsNullOrEmpty(_exchnagesConfiguration.MiraiexAPIUri)) throw new ArgumentNullException(nameof(_exchnagesConfiguration.MiraiexAPIUri));
         }
 
-        public async Task<CovidCountryStats> GetCountryStats(string countryCode)
+        public async Task<Price> GetPrice(string pair)
         {
             using (var client = new HttpClient())
-            using (var requets = new HttpRequestMessage(HttpMethod.Get, $"{_covidOptions.Uri}countries/{countryCode.ToLower()}"))
+            using (var requets = new HttpRequestMessage(HttpMethod.Get, $"{_exchnagesConfiguration.MiraiexAPIUri}markets/{pair.ToUpper()}"))
             {
                 using (var response = await client.SendAsync(requets, HttpCompletionOption.ResponseHeadersRead))
                 {
-
                     if (response.IsSuccessStatusCode)
-                        return await _httpResponseService.DeserializeJsonFromStream<CovidCountryStats>(response);
+                        return await _httpResponseService.DeserializeJsonFromStream<Price>(response);
 
-                    if(response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    if (response.StatusCode == System.Net.HttpStatusCode.NotFound || response.StatusCode == System.Net.HttpStatusCode.NotAcceptable)
                         return null;
 
                     var content = await _httpResponseService.StreamToStringAsync(await response.Content.ReadAsStreamAsync());
@@ -49,18 +46,17 @@ namespace Kryptoteket.Bot.Services
             }
         }
 
-        public async Task<CovidCountryStats> GetCountryStatsYesterday(string countryCode)
+        public async Task<Ticker> GetTicker(string pair)
         {
             using (var client = new HttpClient())
-            using (var requets = new HttpRequestMessage(HttpMethod.Get, $"{_covidOptions.Uri}countries/{countryCode.ToLower()}?yesterday=true"))
+            using (var requets = new HttpRequestMessage(HttpMethod.Get, $"{_exchnagesConfiguration.MiraiexAPIUri}markets/{pair.ToUpper()}/ticker"))
             {
                 using (var response = await client.SendAsync(requets, HttpCompletionOption.ResponseHeadersRead))
                 {
-
                     if (response.IsSuccessStatusCode)
-                        return await _httpResponseService.DeserializeJsonFromStream<CovidCountryStats>(response);
+                        return await _httpResponseService.DeserializeJsonFromStream<Ticker>(response);
 
-                    if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    if (response.StatusCode == System.Net.HttpStatusCode.NotFound || response.StatusCode == System.Net.HttpStatusCode.NotAcceptable)
                         return null;
 
                     var content = await _httpResponseService.StreamToStringAsync(await response.Content.ReadAsStreamAsync());

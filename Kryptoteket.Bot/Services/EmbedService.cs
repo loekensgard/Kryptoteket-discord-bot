@@ -1,7 +1,9 @@
 ﻿using Discord;
 using Kryptoteket.Bot.Models;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 
 namespace Kryptoteket.Bot.Services
@@ -45,6 +47,24 @@ namespace Kryptoteket.Bot.Services
             return builder;
         }
 
+        public EmbedBuilder EmbedTopGainers(List<Gainers> topGainers, int top, string timePeriod)
+        {
+            EmbedBuilder builder = new EmbedBuilder();
+            StringBuilder sb = new StringBuilder();
+
+            builder.WithTitle($"Top gains of top {top} last {timePeriod}");
+            foreach (var gainer in topGainers.OrderByDescending(o => o.PriceChangeInPeriod))
+            {
+                sb.AppendLine($"**{gainer.Symbol.ToUpper()}:** {Math.Truncate((double)gainer.PriceChangeInPeriod * 1000) / 1000}%");
+            }
+
+            builder.WithDescription(sb.ToString());
+            builder.WithColor(Color.DarkBlue);
+            builder.WithFooter(footer => footer.Text = $"Updated: {topGainers.First().LastUpdated.ToString("dd.MM.yy HH:mm")}");
+
+            return builder;
+        }
+
         public EmbedBuilder EmbedCovidStats(string title, long totalCases, long totalNewCasesToday, long totalDeaths, long totalNewDeathsToday, long totalRecovered, long updated, long? totaltCasesYesterday = null)
         {
             EmbedBuilder builder = new EmbedBuilder();
@@ -55,8 +75,8 @@ namespace Kryptoteket.Bot.Services
             sb.AppendLine($"Confirmed Recoveries: {totalRecovered}");
             sb.AppendLine($"New Cases Today: {totalNewCasesToday}");
             sb.AppendLine($"New Deaths Today: {totalNewDeathsToday}");
-            if(totaltCasesYesterday.HasValue)
-            sb.AppendLine($"New Cases Yesterday: {totaltCasesYesterday.Value}");
+            if (totaltCasesYesterday.HasValue)
+                sb.AppendLine($"New Cases Yesterday: {totaltCasesYesterday.Value}");
 
             builder.WithTitle($"Current Coronavirus Statistics for {title}");
             builder.WithDescription(sb.ToString());

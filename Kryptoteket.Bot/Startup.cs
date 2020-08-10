@@ -3,6 +3,7 @@ using Discord.WebSocket;
 using Kryptoteket.Bot.Configurations;
 using Kryptoteket.Bot.Interfaces;
 using Kryptoteket.Bot.Services;
+using Kryptoteket.Bot.Services.API;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
@@ -73,18 +74,22 @@ namespace Kryptoteket.Bot
                 ThrowOnError = false
             }));
 
-            services.AddSingleton<IMiraiexService, MiraiexService>();
+            services.AddSingleton<IMiraiexAPIService, MiraiexAPIService>();
             services.AddSingleton<ICovid19APIService, Covid19APIService>();
+            services.AddSingleton<ICoinGeckoAPIService, CoinGeckoAPIService>();
+
             services.AddSingleton<CommandHandlerService>();
             services.AddSingleton<StartupService>();
             services.AddSingleton<LoggingService>();
+            services.AddSingleton(_configuration);
+
             services.AddTransient<HttpResponseService>();
             services.AddTransient<EmbedService>();
-            services.AddSingleton(_configuration);
 
             services.Configure<ExchangesConfiguration>(options => _configuration.GetSection("Exchanges").Bind(options));
             services.Configure<DiscordConfiguration>(options => _configuration.GetSection("Discord").Bind(options));
             services.Configure<CovidAPIConfiguration>(options => _configuration.GetSection("CovidAPI").Bind(options));
+            services.Configure<CoinGeckoConfiguration>(options => _configuration.GetSection("CoinGecko").Bind(options));
 
             return services;
         }

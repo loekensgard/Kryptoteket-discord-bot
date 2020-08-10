@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Kryptoteket.Bot.Interfaces
 {
-    public interface IMiraiexService
+    public interface IMiraiexAPIService
     {
         Task<Ticker> GetTicker(string pair);
         Task<Price> GetPrice(string pair);

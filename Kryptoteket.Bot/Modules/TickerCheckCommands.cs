@@ -8,10 +8,10 @@ namespace Kryptoteket.Bot.Modules
     [Name("TickerCheckCommands")]
     public class TickerCheckCommands : ModuleBase<SocketCommandContext>
     {
-        private readonly IMiraiexService _miraiexService;
+        private readonly IMiraiexAPIService _miraiexService;
         private readonly EmbedService _embedService;
 
-        public TickerCheckCommands(IMiraiexService miraiexService, EmbedService embedService)
+        public TickerCheckCommands(IMiraiexAPIService miraiexService, EmbedService embedService)
         {
             _miraiexService = miraiexService;
             _embedService = embedService;
@@ -19,7 +19,7 @@ namespace Kryptoteket.Bot.Modules
 
         [Command("ticker", RunMode = RunMode.Async)]
         [Summary("Get ticker for pair from Miraiex")]
-        public async Task GetTickerMiraiex([Remainder]string pair)
+        public async Task GetTickerMiraiex(string pair)
         {
             var ticker = await _miraiexService.GetTicker(pair.Trim().ToLower());
             if(ticker == null) await ReplyAsync($"The market {pair} is not supported", false);
