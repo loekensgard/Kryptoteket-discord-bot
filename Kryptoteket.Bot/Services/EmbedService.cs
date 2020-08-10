@@ -47,51 +47,13 @@ namespace Kryptoteket.Bot.Services
             return builder;
         }
 
-        public EmbedBuilder EmbedTop100Gainers(List<Gainers> topGainers, string timePeriod)
-        {
-            EmbedBuilder builder = new EmbedBuilder();
-            StringBuilder sb = new StringBuilder();
-
-            builder.WithTitle($"Top gains of top 100 last {timePeriod}");
-
-            foreach (var gainer in topGainers.OrderByDescending(o => o.PriceChangeInPeriod).Take(20))
-            {
-                sb.AppendLine($"**{gainer.Symbol.ToUpper()}:** {Math.Truncate((double)gainer.PriceChangeInPeriod * 1000) / 1000}%");
-            }
-
-            builder.WithDescription(sb.ToString());
-            builder.WithColor(Color.DarkBlue);
-            builder.WithFooter(footer => footer.Text = $"Updated: {topGainers.First().LastUpdated.ToString("dd.MM.yy HH:mm")}");
-
-            return builder;
-        }
-
-        public EmbedBuilder EmbedTopShitcoins(List<Gainers> topGainers, string timePeriod)
-        {
-            EmbedBuilder builder = new EmbedBuilder();
-            StringBuilder sb = new StringBuilder();
-
-            builder.WithTitle($"Top gains of top 1000 last {timePeriod}");
-
-            foreach (var gainer in topGainers.OrderByDescending(o => o.PriceChangeInPeriod).Take(20))
-            {
-                sb.AppendLine($"**{gainer.Symbol.ToUpper()}:** {Math.Truncate((double)gainer.PriceChangeInPeriod * 1000) / 1000}%");
-            }
-
-            builder.WithDescription(sb.ToString());
-            builder.WithColor(Color.DarkBlue);
-            builder.WithFooter(footer => footer.Text = $"Updated: {topGainers.First().LastUpdated.ToString("dd.MM.yy HH:mm")}");
-
-            return builder;
-        }
-
         public EmbedBuilder EmbedTopGainers(List<Gainers> topGainers, int top, string timePeriod)
         {
             EmbedBuilder builder = new EmbedBuilder();
             StringBuilder sb = new StringBuilder();
 
             builder.WithTitle($"Top gains of top {top} last {timePeriod}");
-            foreach (var gainer in topGainers.OrderByDescending(o => o.PriceChangeInPeriod))
+            foreach (var gainer in topGainers.OrderByDescending(o => o.PriceChangeInPeriod).Take(20))
             {
                 sb.AppendLine($"**{gainer.Symbol.ToUpper()}:** {Math.Truncate((double)gainer.PriceChangeInPeriod * 1000) / 1000}%");
             }

@@ -9,6 +9,5 @@ namespace Kryptoteket.Bot.Interfaces
     public interface ICoinGeckoAPIService
     {
         Task<List<Gainers>> GetTopGainers(int top, string timePeriod);
-        Task<List<Gainers>> GetTopShitcoins(string timePeriod);
     }
 }

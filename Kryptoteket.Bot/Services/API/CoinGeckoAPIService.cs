@@ -24,36 +24,16 @@ namespace Kryptoteket.Bot.Services.API
 
         public async Task<List<Gainers>> GetTopGainers(int top, string timePeriod)
         {
-            using (var client = new HttpClient())
-            using (var requets = new HttpRequestMessage(HttpMethod.Get, $"{_coinGeckoOptions.APIUri}coins/markets?vs_currency=nok&order=market_cap_desc&per_page={top}&page=1&sparkline=false&price_change_percentage={timePeriod}"))
-            {
-                using (var response = await client.SendAsync(requets, HttpCompletionOption.ResponseHeadersRead))
-                {
-                    if (response.IsSuccessStatusCode)
-                        return await _httpResponseService.DeserializeJsonFromStream<List<Gainers>>(response);
-
-                    if (response.StatusCode == System.Net.HttpStatusCode.NotFound || response.StatusCode == System.Net.HttpStatusCode.NotAcceptable)
-                        return null;
-
-                    var content = await _httpResponseService.StreamToStringAsync(await response.Content.ReadAsStreamAsync());
-
-                    throw new ApiException(message: content)
-                    {
-                        StatusCode = (int)response.StatusCode,
-                        Content = content
-                    };
-                }
-            }
-        }
-
-        public async Task<List<Gainers>> GetTopShitcoins(string timePeriod)
-        {
             var resultList = new List<Gainers>();
+            int page = ((top - 1) / 250);
+            int per_page = top > 250 ? 250 : top;
+            int last_page =  top - (page * 250);
 
-            for (int i = 1; i < 5; i++)
+            int j = page + 1;
+            for(int i = 1; i <= j; i++)
             {
                 using (var client = new HttpClient())
-                using (var requets = new HttpRequestMessage(HttpMethod.Get, $"{_coinGeckoOptions.APIUri}coins/markets?vs_currency=nok&order=market_cap_desc&per_page=250&page={i}&sparkline=false&price_change_percentage={timePeriod}"))
+                using (var requets = new HttpRequestMessage(HttpMethod.Get, $"{_coinGeckoOptions.APIUri}coins/markets?vs_currency=nok&order=market_cap_desc&per_page={((i == j) ? last_page : per_page)}&page={i}&sparkline=false&price_change_percentage={timePeriod}"))
                 {
                     using (var response = await client.SendAsync(requets, HttpCompletionOption.ResponseHeadersRead))
                     {
@@ -65,6 +45,5 @@ namespace Kryptoteket.Bot.Services.API
 
             return resultList;
         }
-
     }
 }
