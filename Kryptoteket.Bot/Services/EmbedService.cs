@@ -93,7 +93,7 @@ namespace Kryptoteket.Bot.Services
         {
             EmbedBuilder builder = new EmbedBuilder();
             builder.WithTitle($"Commands");
-            builder.AddField("Crypto", $"!ticker <pair>{Environment.NewLine}!price <pair>");
+            builder.AddField("Crypto", $"!ticker <pair>{Environment.NewLine}!price <pair>{Environment.NewLine}!gainers <top> <1h / 24h / 7d / 14d / 30d / 200d / 1y>");
             builder.AddField("Covid", $"!covid <countryCode / countryName>");
             builder.AddField("Support me", "!support");
             builder.WithColor(Color.DarkBlue);
