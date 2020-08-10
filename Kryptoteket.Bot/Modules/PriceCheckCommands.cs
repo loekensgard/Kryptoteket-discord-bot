@@ -25,7 +25,7 @@ namespace Kryptoteket.Bot.Modules
         public async Task GetPriceMiraiex(string pair)
         {
             var price = await _miraiexService.GetPrice(pair.Trim().ToLower());
-            if (price == null) await ReplyAsync($"The market {pair} is not supported", false);
+            if (price == null){ await ReplyAsync($"The market {pair} is not supported", false); return; }
 
             var builder = _embedService.EmbedPrice(pair.Trim().ToUpper(), price, "MiraiEx");
             await ReplyAsync(null, false, builder.Build());
@@ -35,6 +35,7 @@ namespace Kryptoteket.Bot.Modules
         [Summary("Get top gainsers")]
         public async Task GetGainers(int top, string timePeriod = "24h")
         {
+            if (top > 50){ await ReplyAsync("Top 50 is max"); return; }
             var topGainers = await _coinGeckoAPI.GetTopGainers(top, timePeriod.Trim().ToLower());
             
             var builder = _embedService.EmbedTopGainers(topGainers, top, timePeriod.Trim().ToLower());

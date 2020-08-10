@@ -22,7 +22,7 @@ namespace Kryptoteket.Bot.Modules
         public async Task GetTickerMiraiex(string pair)
         {
             var ticker = await _miraiexService.GetTicker(pair.Trim().ToLower());
-            if(ticker == null) await ReplyAsync($"The market {pair} is not supported", false);
+            if (ticker == null) { await ReplyAsync($"The market {pair} is not supported", false); return; }
 
             var builder = _embedService.EmbedTicker(pair.Trim().ToUpper(), ticker, "MiraiEx");
             await ReplyAsync(null, false, builder.Build());
