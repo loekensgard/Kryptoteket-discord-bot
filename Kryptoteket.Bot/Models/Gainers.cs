@@ -5,23 +5,14 @@ namespace Kryptoteket.Bot.Models
 {
     public class Gainers
     {
-        public Gainers()
-        {
-            //if (PriceChangePercentage1HInCurrency.HasValue) PriceChangeInPeriod = PriceChangePercentage1HInCurrency.Value;
-            //if (PriceChangePercentage24HInCurrency.HasValue) PriceChangeInPeriod = PriceChangePercentage24HInCurrency.Value;
-            //if (PriceChangePercentage14DInCurrency.HasValue) PriceChangeInPeriod = PriceChangePercentage14DInCurrency.Value;
-            //if (PriceChangePercentage1YInCurrency.HasValue) PriceChangeInPeriod = PriceChangePercentage1YInCurrency.Value;
-            //if (PriceChangePercentage200DInCurrency.HasValue) PriceChangeInPeriod = PriceChangePercentage200DInCurrency.Value;
-            //if (PriceChangePercentage30DInCurrency.HasValue) PriceChangeInPeriod = PriceChangePercentage30DInCurrency.Value;
-            //if (PriceChangePercentage7DInCurrency.HasValue) PriceChangeInPeriod = PriceChangePercentage7DInCurrency.Value;
-        }
-
         [JsonPropertyName("id")]
         public string Id { get; set; }
         [JsonPropertyName("name")]
         public string Name { get; set; }
         [JsonPropertyName("symbol")]
         public string Symbol { get; set; }
+        //[JsonPropertyName("total_volume")]
+        //public int? TotalVolume { get; set; }
         public double? PriceChangeInPeriod { get; set; }
         [JsonPropertyName("last_updated")]
         public DateTime LastUpdated { get; set; }

@@ -45,5 +45,26 @@ namespace Kryptoteket.Bot.Services.API
                 }
             }
         }
+
+        public async Task<List<Gainers>> GetTopShitcoins(string timePeriod)
+        {
+            var resultList = new List<Gainers>();
+
+            for (int i = 1; i < 5; i++)
+            {
+                using (var client = new HttpClient())
+                using (var requets = new HttpRequestMessage(HttpMethod.Get, $"{_coinGeckoOptions.APIUri}coins/markets?vs_currency=nok&order=market_cap_desc&per_page=250&page={i}&sparkline=false&price_change_percentage={timePeriod}"))
+                {
+                    using (var response = await client.SendAsync(requets, HttpCompletionOption.ResponseHeadersRead))
+                    {
+                        if (response.IsSuccessStatusCode)
+                            resultList.AddRange(await _httpResponseService.DeserializeJsonFromStream<List<Gainers>>(response));
+                    }
+                }
+            }
+
+            return resultList;
+        }
+
     }
 }
