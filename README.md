@@ -10,9 +10,9 @@ Discord bot for retrieving crypto prices and tickers at [Kryptotekets discord](h
 ## Discord commands
 
 ```
-!ticker <pair>\
-!price <pair>\
-!gainers <top> <1h / 24h / 7d / 14d / 30d / 200d / 1y>\
+!ticker <pair>
+!price <pair>
+!gainers <top> <1h / 24h / 7d / 14d / 30d / 200d / 1y>
 !covid <countrycode / countryName>
 
 !help 
@@ -21,7 +21,7 @@ Discord bot for retrieving crypto prices and tickers at [Kryptotekets discord](h
 These can be found under the Modules folder.
 
 ## Data
-All crypto data is currently retrieved by public APIs at [MiraiEx](https://developers.miraiex.com/).\
+All crypto data is retrieved by public APIs at [MiraiEx](https://developers.miraiex.com/) and [CoinGecko](https://www.coingecko.com/)\
 Coronavirus Statistics is retrieved by public APIs at [Disease.sh](https://disease.sh/docs/)
 
 ## Contributing
