@@ -28,8 +28,9 @@ namespace Kryptoteket.Bot.Services
 
             builder.WithTitle($"{pair.ToUpper()} Price - {exchangeName}");
             builder.AddField("Last", price.Last);
-            if(price.High != null) builder.AddField("High", price.High);
-            if(price.Low != null) builder.AddField("Low", price.Low);
+            builder.AddField("High", price.High);
+            builder.AddField("Low", price.Low);
+            if(price.ATH != null) builder.AddField("ATH", price.ATH);
             builder.AddField("Change last 24h", $"{Math.Truncate((double)Convert.ToDouble(price.Change,CultureInfo.InvariantCulture) * 100) / 100}%");
             builder.WithColor(Color.DarkBlue);
             return builder;

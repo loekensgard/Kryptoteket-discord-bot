@@ -12,5 +12,7 @@ namespace Kryptoteket.Bot.Models
         public string Change { get; set; }
         [JsonPropertyName("low")]
         public string Low { get; set; }
+        [JsonPropertyName("ath")]
+        public string ATH { get; set; }
     }
 }
