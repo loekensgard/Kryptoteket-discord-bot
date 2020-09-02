@@ -5,8 +5,10 @@ using Kryptoteket.Bot.Models;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Kryptoteket.Bot.Services.API
@@ -14,13 +16,100 @@ namespace Kryptoteket.Bot.Services.API
     public class CoinGeckoAPIService : ICoinGeckoAPIService
     {
         private readonly HttpResponseService _httpResponseService;
+        private readonly ICoinGeckoRepository _coinGeckoRepository;
         private readonly CoinGeckoConfiguration _coinGeckoOptions;
 
-        public CoinGeckoAPIService(HttpResponseService httpResponseService, IOptions<CoinGeckoConfiguration> options)
+        public CoinGeckoAPIService(HttpResponseService httpResponseService, IOptions<CoinGeckoConfiguration> options, ICoinGeckoRepository coinGeckoRepository)
         {
             _httpResponseService = httpResponseService;
+            _coinGeckoRepository = coinGeckoRepository;
             _coinGeckoOptions = options.Value;
         }
+
+        public async Task<List<CoinGeckoCurrency>> GetCoinsList()
+        {
+            using (var client = new HttpClient())
+            using (var requets = new HttpRequestMessage(HttpMethod.Get, $"{_coinGeckoOptions.APIUri}coins/list"))
+            {
+                using (var response = await client.SendAsync(requets, HttpCompletionOption.ResponseHeadersRead))
+                {
+                    if (response.IsSuccessStatusCode)
+                        return await _httpResponseService.DeserializeJsonFromStream<List<CoinGeckoCurrency>>(response);
+
+                    var content = await _httpResponseService.StreamToStringAsync(await response.Content.ReadAsStreamAsync());
+
+                    throw new ApiException(message: content)
+                    {
+                        StatusCode = (int)response.StatusCode,
+                        Content = content
+                    };
+                }
+            }
+        }
+
+        public async Task<List<string>> GetSupportedVsCurrenciesList()
+        {
+            using (var client = new HttpClient())
+            using (var requets = new HttpRequestMessage(HttpMethod.Get, $"{_coinGeckoOptions.APIUri}simple/supported_vs_currencies"))
+            {
+                using (var response = await client.SendAsync(requets, HttpCompletionOption.ResponseHeadersRead))
+                {
+                    if (response.IsSuccessStatusCode)
+                        return await _httpResponseService.DeserializeJsonFromStream<List<string>>(response);
+
+                    var content = await _httpResponseService.StreamToStringAsync(await response.Content.ReadAsStreamAsync());
+
+                    throw new ApiException(message: content)
+                    {
+                        StatusCode = (int)response.StatusCode,
+                        Content = content
+                    };
+
+                }
+            }
+        }
+
+        public async Task<Price> GetPrice(string pair)
+        {
+            var supportedCur = await GetSupportedVsCurrenciesList();
+            var last3 = pair.Substring(pair.Length - 3);
+            var last4 = pair.Substring(pair.Length - 4);
+            
+            var last = supportedCur.FirstOrDefault(s => s == last3.ToLower());
+            if (last == null) last = supportedCur.FirstOrDefault(s => s == last4.ToLower());
+            if (last == null) return null;
+
+            var first = pair.Substring(0, pair.Length - last.Length);
+            var currency = await _coinGeckoRepository.GetCurrency(first);
+
+            if(currency == null) return null;
+
+            var oPrice = "";
+            using (var client = new HttpClient())
+            using (var requets = new HttpRequestMessage(HttpMethod.Get, $"{_coinGeckoOptions.APIUri}simple/price?ids={currency.Id}&vs_currencies={last}&include_24hr_change=true"))
+            {
+                using (var response = await client.SendAsync(requets, HttpCompletionOption.ResponseHeadersRead))
+                {
+                    if (response.IsSuccessStatusCode)
+                         oPrice = await _httpResponseService.StreamToStringAsync(await response.Content.ReadAsStreamAsync());
+                }
+            }
+
+            var price = new Price();
+
+            if (!string.IsNullOrEmpty(oPrice))
+            {
+                var regex = new Regex(@"(?:)-?\d+.\d+");
+                var matches = regex.Matches(oPrice);
+
+                var list = matches.Cast<Match>().Select(p => p.Value).ToList();
+                price.Change = list.ElementAtOrDefault(1);
+                price.Last = list.ElementAtOrDefault(0);
+            }
+
+            return price;
+        }
+
 
         public async Task<List<Gainers>> GetTopGainers(int top, string timePeriod)
         {

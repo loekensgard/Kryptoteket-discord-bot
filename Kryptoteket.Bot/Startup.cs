@@ -1,6 +1,7 @@
 ﻿using Discord.Commands;
 using Discord.WebSocket;
 using Kryptoteket.Bot.Configurations;
+using Kryptoteket.Bot.InMemoryDB;
 using Kryptoteket.Bot.Interfaces;
 using Kryptoteket.Bot.Services;
 using Kryptoteket.Bot.Services.API;
@@ -51,6 +52,9 @@ namespace Kryptoteket.Bot
             var serviceProvider = services.BuildServiceProvider();
             serviceProvider.GetRequiredService<CommandHandlerService>();
 
+            Log.Information("Initiating memoryDB");
+            await serviceProvider.GetRequiredService<InitMemoryDB>().InitDB();
+
             Log.Information("Kryptoteket.Bot started");
             await serviceProvider.GetRequiredService<StartupService>().StartAsync();
             await Task.Delay(-1);
@@ -77,7 +81,9 @@ namespace Kryptoteket.Bot
             services.AddSingleton<IMiraiexAPIService, MiraiexAPIService>();
             services.AddSingleton<ICovid19APIService, Covid19APIService>();
             services.AddSingleton<ICoinGeckoAPIService, CoinGeckoAPIService>();
+            services.AddSingleton<ICoinGeckoRepository, CoinGeckoRepository>();
 
+            services.AddSingleton<InitMemoryDB>();
             services.AddSingleton<CommandHandlerService>();
             services.AddSingleton<StartupService>();
             services.AddSingleton<LoggingService>();
