@@ -5,6 +5,7 @@ using Kryptoteket.Bot.Models;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -72,6 +73,7 @@ namespace Kryptoteket.Bot.Services.API
         public async Task<Price> GetPrice(string pair)
         {
             var supportedCur = await GetSupprtedCurrency(pair);
+            if (string.IsNullOrEmpty(supportedCur)) return null;
 
             var first = pair.Substring(0, pair.Length - supportedCur.Length);
             var currency = await _coinGeckoRepository.GetCurrency(first);
