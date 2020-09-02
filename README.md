@@ -11,8 +11,9 @@ Discord bot for retrieving crypto prices and tickers at [Kryptotekets discord](h
 
 ```
 !ticker <pair>
-!price <pair>
+!price <pair> <mx / nbx>
 !gainers <top> <1h / 24h / 7d / 14d / 30d / 200d / 1y>
+!losers <top> <1h / 24h / 7d / 14d / 30d / 200d / 1y>>
 !covid <countrycode / countryName>
 
 !help 
