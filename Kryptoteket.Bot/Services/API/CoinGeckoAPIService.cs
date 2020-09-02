@@ -71,22 +71,16 @@ namespace Kryptoteket.Bot.Services.API
 
         public async Task<Price> GetPrice(string pair)
         {
-            var supportedCur = await GetSupportedVsCurrenciesList();
-            var last3 = pair.Substring(pair.Length - 3);
-            var last4 = pair.Substring(pair.Length - 4);
+            var supportedCur = await GetSupprtedCurrency(pair);
 
-            var last = supportedCur.FirstOrDefault(s => s == last3.ToLower());
-            if (last == null) last = supportedCur.FirstOrDefault(s => s == last4.ToLower());
-            if (last == null) return null;
-
-            var first = pair.Substring(0, pair.Length - last.Length);
+            var first = pair.Substring(0, pair.Length - supportedCur.Length);
             var currency = await _coinGeckoRepository.GetCurrency(first);
 
             if (currency == null) return null;
 
             var oPrice = new List<CoinGeckoMarketCurrency>();
             using (var client = new HttpClient())
-            using (var requets = new HttpRequestMessage(HttpMethod.Get, $"{_coinGeckoOptions.APIUri}coins/markets?ids={currency.Id}&vs_currency={last}"))
+            using (var requets = new HttpRequestMessage(HttpMethod.Get, $"{_coinGeckoOptions.APIUri}coins/markets?ids={currency.Id}&vs_currency={supportedCur}"))
             {
                 using (var response = await client.SendAsync(requets, HttpCompletionOption.ResponseHeadersRead))
                 {
@@ -117,6 +111,18 @@ namespace Kryptoteket.Bot.Services.API
             return price;
         }
 
+        private async Task<string> GetSupprtedCurrency(string pair)
+        {
+            var supportedCur = await GetSupportedVsCurrenciesList();
+            var last3 = pair.Substring(pair.Length - 3);
+            var last4 = pair.Substring(pair.Length - 4);
+
+            var last = supportedCur.FirstOrDefault(s => s == last3.ToLower());
+            if (last == null) last = supportedCur.FirstOrDefault(s => s == last4.ToLower());
+            if (last == null) return null;
+
+            return last;
+        }
 
         public async Task<List<Gainers>> GetTopGainers(int top, string timePeriod)
         {
