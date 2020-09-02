@@ -30,7 +30,7 @@ namespace Kryptoteket.Bot.Services
             builder.AddField("Last", price.Last);
             if(price.High != null) builder.AddField("High", price.High);
             if(price.Low != null) builder.AddField("Low", price.Low);
-            builder.AddField("Change", $"{price.Change}%");
+            builder.AddField("Change last 24h", $"{Math.Truncate((double)Convert.ToDouble(price.Change,CultureInfo.InvariantCulture) * 100) / 100}%");
             builder.WithColor(Color.DarkBlue);
             return builder;
         }
@@ -53,9 +53,27 @@ namespace Kryptoteket.Bot.Services
             StringBuilder sb = new StringBuilder();
 
             builder.WithTitle($"Top gains of top {top} coins last {timePeriod}");
-            foreach (var gainer in topGainers.OrderByDescending(o => o.PriceChangeInPeriod).Take(20))
+            foreach (var gainer in topGainers.OrderByDescending(o => o.PriceChangeInPeriod).Take(20).Where(o => o.PriceChangeInPeriod.HasValue))
             {
                 sb.AppendLine($"**{gainer.Symbol.ToUpper()}:** {Math.Truncate((double)gainer.PriceChangeInPeriod * 100) / 100}%");
+            }
+
+            builder.WithDescription(sb.ToString());
+            builder.WithColor(Color.DarkBlue);
+            builder.WithFooter(footer => footer.Text = $"Updated: {topGainers.First().LastUpdated.ToString("dd.MM.yy HH:mm")}");
+
+            return builder;
+        }
+
+        public EmbedBuilder EmbedTopLosers(List<Gainers> topGainers, int top, string timePeriod)
+        {
+            EmbedBuilder builder = new EmbedBuilder();
+            StringBuilder sb = new StringBuilder();
+
+            builder.WithTitle($"Top losers of top {top} coins last {timePeriod}");
+            foreach (var gainer in topGainers.OrderBy(o => o.PriceChangeInPeriod).Take(20).Where(o => o.PriceChangeInPeriod.HasValue))
+            {
+                sb.AppendLine($"**{gainer.Symbol.ToUpper()}:** {Math.Truncate((double)gainer.PriceChangeInPeriod.Value * 100) / 100}%");
             }
 
             builder.WithDescription(sb.ToString());

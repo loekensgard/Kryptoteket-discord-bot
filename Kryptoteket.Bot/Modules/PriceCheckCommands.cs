@@ -60,5 +60,16 @@ namespace Kryptoteket.Bot.Modules
             await ReplyAsync(null, false, builder.Build());
         }
 
+        [Command("losers", RunMode = RunMode.Async)]
+        [Summary("Get losers of top coins")]
+        public async Task GetTopCoinLosers(int top, string timePeriod = "24h")
+        {
+            if (top > 2000) { await ReplyAsync("Top 2000 is max"); return; }
+            var topGainers = await _coinGeckoAPI.GetTopGainers(top, timePeriod.Trim().ToLower());
+
+            var builder = _embedService.EmbedTopLosers(topGainers, top, timePeriod.Trim().ToLower());
+            await ReplyAsync(null, false, builder.Build());
+        }
+
     }
 }
