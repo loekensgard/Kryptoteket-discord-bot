@@ -159,7 +159,7 @@ namespace Kryptoteket.Bot.Services.API
 
             var sparklines = new List<CoingGeckoSparkline>();
             using (var client = new HttpClient())
-            using (var requets = new HttpRequestMessage(HttpMethod.Get, $"{_coinGeckoOptions.APIUri}coins/markets?vs_currency=nok&ids={coin.Id}&order=market_cap_desc&per_page=100&page=1&sparkline=true&price_change_percentage=7d"))
+            using (var requets = new HttpRequestMessage(HttpMethod.Get, $"{_coinGeckoOptions.APIUri}coins/markets?vs_currency=usd&ids={coin.Id}&order=market_cap_desc&per_page=100&page=1&sparkline=true&price_change_percentage=7d"))
             {
                 using (var response = await client.SendAsync(requets, HttpCompletionOption.ResponseHeadersRead))
                 {
@@ -196,6 +196,10 @@ namespace Kryptoteket.Bot.Services.API
 
         private Chart GetChartData(CoinGeckoCurrency coin, CoingGeckoSparkline sparkline)
         {
+            var prices = sparkline.SparklineIn7D.Price;
+            var max = prices.Max() * 1.01;
+            var min = prices.Min() * 0.95; 
+
             var data = new List<long>();
             foreach (var point in sparkline.SparklineIn7D.Price)
             {
@@ -210,6 +214,24 @@ namespace Kryptoteket.Bot.Services.API
                 Data = data
             };
 
+            var options = new Models.Options
+            {
+                Scales = new Scales
+                {
+                    YAxes = new List<YAx>
+                    {
+                        new YAx
+                        {
+                            Ticks = new Ticks
+                            {
+                                SuggestedMax = Convert.ToInt64(max),
+                                SuggestedMin = Convert.ToInt64(min)
+                            }
+                        }
+                    }
+                }
+            };
+
             var chart = new Chart
             {
                 Type = "sparkline",
@@ -219,7 +241,8 @@ namespace Kryptoteket.Bot.Services.API
                     {
                         dataset
                     }
-                }
+                },
+                Options = options
             };
 
             return chart;
