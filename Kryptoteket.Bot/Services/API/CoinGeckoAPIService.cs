@@ -199,6 +199,7 @@ namespace Kryptoteket.Bot.Services.API
         private Chart GetChartData(CoinGeckoCurrency coin, CoingGeckoSparkline sparkline)
         {
             var prices = sparkline.SparklineIn7D.Price;
+
             var max = prices.Max() * 1.01;
             var min = prices.Min() * 0.95; 
 
@@ -209,11 +210,15 @@ namespace Kryptoteket.Bot.Services.API
             {
                 if (price > 0 && price < 1)
                 {
-                    data.Add(Math.Truncate(price * 100 ) / 100);
+                    max = Math.Truncate(max * 1000) / 1000;
+                    max = Math.Truncate(min * 1000) / 1000;
+                    data.Add(Math.Truncate(price * 1000 ) / 1000);
                 }
                 else
                 {
-                    data.Add(Math.Truncate(price));
+                    max = Math.Truncate(max);
+                    max = Math.Truncate(min);
+                    data.Add(Math.Truncate(price * 100 ) / 100);
                 }
             }
 
