@@ -2,14 +2,14 @@
 using Kryptoteket.Bot.Exceptions;
 using Kryptoteket.Bot.Interfaces;
 using Kryptoteket.Bot.Models;
+using Kryptoteket.Bot.Modules;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
-using System.Data.Common;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
-using System.Text;
-using System.Text.RegularExpressions;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Kryptoteket.Bot.Services.API
@@ -87,7 +87,9 @@ namespace Kryptoteket.Bot.Services.API
                 using (var response = await client.SendAsync(requets, HttpCompletionOption.ResponseHeadersRead))
                 {
                     if (response.IsSuccessStatusCode)
+                    {
                         oPrice = await _httpResponseService.DeserializeJsonFromStream<List<CoinGeckoMarketCurrency>>(response);
+                    }
                     else
                     {
                         var content = await _httpResponseService.StreamToStringAsync(await response.Content.ReadAsStreamAsync());
@@ -148,6 +150,79 @@ namespace Kryptoteket.Bot.Services.API
             }
 
             return resultList;
+        }
+
+        public async Task<ChartResult> Get7dChart(string currency)
+        {
+            var coin = await _coinGeckoRepository.GetCurrency(currency);
+            if (coin == null) return null;
+
+            var sparklines = new List<CoingGeckoSparkline>();
+            using (var client = new HttpClient())
+            using (var requets = new HttpRequestMessage(HttpMethod.Get, $"{_coinGeckoOptions.APIUri}coins/markets?vs_currency=nok&ids={coin.Id}&order=market_cap_desc&per_page=100&page=1&sparkline=true&price_change_percentage=7d"))
+            {
+                using (var response = await client.SendAsync(requets, HttpCompletionOption.ResponseHeadersRead))
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        sparklines = await _httpResponseService.DeserializeJsonFromStream<List<CoingGeckoSparkline>>(response);
+                    }
+                    else
+                    {
+                        var content = await _httpResponseService.StreamToStringAsync(await response.Content.ReadAsStreamAsync());
+
+                        throw new ApiException(message: content)
+                        {
+                            StatusCode = (int)response.StatusCode,
+                            Content = content
+                        };
+                    }
+                }
+            }
+
+            var sparkline = sparklines.FirstOrDefault();
+            if (sparkline == null) return null;
+
+            var chart = GetChartData(coin, sparkline);
+            var uri = new UriBuilder("https://quickchart.io")
+            {
+                Port = -1,
+                Path = "chart",
+                Query = $"?c={WebUtility.UrlEncode(JsonSerializer.Serialize(chart))}"
+            };
+
+            return new ChartResult { Name = coin.Name, Uri = uri.ToString() };
+        }
+
+        private Chart GetChartData(CoinGeckoCurrency coin, CoingGeckoSparkline sparkline)
+        {
+            var data = new List<long>();
+            foreach (var point in sparkline.SparklineIn7D.Price)
+            {
+                data.Add(Convert.ToInt64(point));
+            }
+
+            var dataset = new Dataset
+            {
+                BorderColor = sparkline.PriceChangePercentage7d > 0 ? "green" : "red",
+                Fill = false,
+                Label = coin.Name,
+                Data = data
+            };
+
+            var chart = new Chart
+            {
+                Type = "sparkline",
+                Data = new Data
+                {
+                    Datasets = new List<Dataset>
+                    {
+                        dataset
+                    }
+                }
+            };
+
+            return chart;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Kryptoteket.Bot.Models;
+using Kryptoteket.Bot.Modules;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,5 +13,6 @@ namespace Kryptoteket.Bot.Interfaces
         Task<Price> GetPrice(string pair);
         Task<List<string>> GetSupportedVsCurrenciesList();
         Task<List<Gainers>> GetTopGainers(int top, string timePeriod);
+        Task<ChartResult> Get7dChart(string currency);
     }
 }

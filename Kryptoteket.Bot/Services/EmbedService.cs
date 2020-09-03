@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Kryptoteket.Bot.Models;
+using Kryptoteket.Bot.Modules;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -33,6 +34,15 @@ namespace Kryptoteket.Bot.Services
             if(price.ATH != null) builder.AddField("ATH", price.ATH);
             builder.AddField("Change last 24h", $"{Math.Truncate((double)Convert.ToDouble(price.Change,CultureInfo.InvariantCulture) * 100) / 100}%");
             builder.WithColor(Color.DarkBlue);
+            return builder;
+        }
+
+        public EmbedBuilder EmbedSparkline(ChartResult result)
+        {
+            EmbedBuilder builder = new EmbedBuilder();
+            builder.WithTitle($"7 day graph for {result.Name}");
+            builder.WithImageUrl(result.Uri);
+
             return builder;
         }
 
@@ -112,7 +122,7 @@ namespace Kryptoteket.Bot.Services
         {
             EmbedBuilder builder = new EmbedBuilder();
             builder.WithTitle($"Commands");
-            builder.AddField("Crypto", $"!ticker <pair>{Environment.NewLine}!price <pair> <mx / nbx>{Environment.NewLine}!gainers <top> <1h / 24h / 7d / 14d / 30d / 200d / 1y>");
+            builder.AddField("Crypto", $"!ticker <pair>{Environment.NewLine}!price <pair> <mx / nbx>{Environment.NewLine}!gainers <top> <1h / 24h / 7d / 14d / 30d / 200d / 1y>{Environment.NewLine}!losers <top> <1h / 24h / 7d / 14d / 30d / 200d / 1y>{Environment.NewLine}!graph <currency>");
             builder.AddField("Covid", $"!covid <countryCode / countryName>");
             builder.AddField("Support me", "!support");
             builder.WithColor(Color.DarkBlue);
