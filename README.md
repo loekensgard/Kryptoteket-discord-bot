@@ -17,14 +17,16 @@ Discord bot for retrieving crypto prices and tickers at [Kryptotekets discord](h
 !graph <currency>
 !covid <countrycode / countryName>
 
-!help 
+!help
+!support
 ```
 
 These can be found under the Modules folder.
 
 ## Data
 All crypto data is retrieved by public APIs at [MiraiEx](https://developers.miraiex.com/) and [CoinGecko](https://www.coingecko.com/)\
-Coronavirus Statistics is retrieved by public APIs at [Disease.sh](https://disease.sh/docs/)
+Coronavirus Statistics is retrieved by public APIs at [Disease.sh](https://disease.sh/docs/)\
+Graphs are made by sparklines from [CoinGecko](https://www.coingecko.com/) and plottend into [QuickChart](https://quickchart.io/)
 
 ## Contributing
 Pull requests are welcome, please discuss changes via Issues. 
