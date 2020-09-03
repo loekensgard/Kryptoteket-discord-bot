@@ -22,7 +22,7 @@ namespace Kryptoteket.Bot.Modules
         [Summary("Get graph")]
         public async Task GetHelpText(string currency)
         {
-            var uri = await _coinGeckoAPIService.Get7dChart(currency);
+            var uri = await _coinGeckoAPIService.Get7dChart(currency.Trim().ToLower());
             if(uri == null) { await ReplyAsync($"Could not find {currency}"); return; }
 
             await ReplyAsync(null, false, _embedService.EmbedSparkline(uri).Build());

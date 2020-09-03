@@ -214,6 +214,12 @@ namespace Kryptoteket.Bot.Services.API
                     max = Math.Truncate(min * 1000) / 1000;
                     data.Add(Math.Truncate(price * 1000 ) / 1000);
                 }
+                else if(price > 10000 && price < 100000)
+                {
+                    max = Math.Truncate(max);
+                    max = Math.Truncate(min);
+                    data.Add(Math.Truncate(price));
+                }
                 else
                 {
                     max = Math.Truncate(max);
