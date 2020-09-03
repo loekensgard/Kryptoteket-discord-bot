@@ -1,6 +1,7 @@
 ﻿using Discord.Commands;
 using Kryptoteket.Bot.Interfaces;
 using Kryptoteket.Bot.Services;
+using System;
 using System.Threading.Tasks;
 
 namespace Kryptoteket.Bot.Modules

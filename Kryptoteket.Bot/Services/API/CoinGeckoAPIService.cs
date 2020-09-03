@@ -184,6 +184,8 @@ namespace Kryptoteket.Bot.Services.API
             if (sparkline == null) return null;
 
             var chart = GetChartData(coin, sparkline);
+            if(chart == null) return null;
+
             var uri = new UriBuilder("https://quickchart.io")
             {
                 Port = -1,
@@ -200,10 +202,19 @@ namespace Kryptoteket.Bot.Services.API
             var max = prices.Max() * 1.01;
             var min = prices.Min() * 0.95; 
 
-            var data = new List<long>();
-            foreach (var point in sparkline.SparklineIn7D.Price)
+            if(!sparkline.SparklineIn7D.Price.Any()) return null;
+
+            var data = new List<double>();
+            foreach(var price in sparkline.SparklineIn7D.Price)
             {
-                data.Add(Convert.ToInt64(point));
+                if (price > 0 && price < 1)
+                {
+                    data.Add(Math.Truncate(price * 100 ) / 100);
+                }
+                else
+                {
+                    data.Add(Math.Truncate(price));
+                }
             }
 
             var dataset = new Dataset
@@ -224,8 +235,8 @@ namespace Kryptoteket.Bot.Services.API
                         {
                             Ticks = new Ticks
                             {
-                                SuggestedMax = Convert.ToInt64(max),
-                                SuggestedMin = Convert.ToInt64(min)
+                                SuggestedMax = max,
+                                SuggestedMin = min
                             }
                         }
                     }

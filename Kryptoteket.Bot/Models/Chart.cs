@@ -28,7 +28,7 @@ namespace Kryptoteket.Bot.Models
         public string Label { get; set; }
 
         [JsonPropertyName("data")]
-        public List<long> Data { get; set; }
+        public List<double> Data { get; set; }
 
         [JsonPropertyName("fill")]
         public bool Fill { get; set; }
@@ -57,10 +57,10 @@ namespace Kryptoteket.Bot.Models
     public partial class Ticks
     {
         [JsonPropertyName("suggestedMin")]
-        public long SuggestedMin { get; set; }
+        public double SuggestedMin { get; set; }
 
         [JsonPropertyName("suggestedMax")]
-        public long SuggestedMax { get; set; }
+        public double SuggestedMax { get; set; }
     }
 
 }
