@@ -5,7 +5,13 @@ using System.Text.Json.Serialization;
 
 namespace Kryptoteket.Bot.Models
 {
-    public class Chart
+    public class ChartBuilder
+    {
+        [JsonPropertyName("chart")]
+        public Chart Chart { get; set; }
+    }
+
+    public partial class Chart
     {
         [JsonPropertyName("type")]
         public string Type { get; set; }

@@ -18,12 +18,18 @@ namespace Kryptoteket.Bot.Services.API
     {
         private readonly HttpResponseService _httpResponseService;
         private readonly ICoinGeckoRepository _coinGeckoRepository;
+        private readonly IQuickchartAPIService _quickchartAPIService;
         private readonly CoinGeckoConfiguration _coinGeckoOptions;
 
-        public CoinGeckoAPIService(HttpResponseService httpResponseService, IOptions<CoinGeckoConfiguration> options, ICoinGeckoRepository coinGeckoRepository)
+        public CoinGeckoAPIService(
+            HttpResponseService httpResponseService,
+            IOptions<CoinGeckoConfiguration> options,
+            ICoinGeckoRepository coinGeckoRepository,
+            IQuickchartAPIService quickchartAPIService)
         {
             _httpResponseService = httpResponseService;
             _coinGeckoRepository = coinGeckoRepository;
+            _quickchartAPIService = quickchartAPIService;
             _coinGeckoOptions = options.Value;
         }
 
@@ -183,91 +189,10 @@ namespace Kryptoteket.Bot.Services.API
             var sparkline = sparklines.FirstOrDefault();
             if (sparkline == null) return null;
 
-            var chart = GetChartData(coin, sparkline);
-            if(chart == null) return null;
+            var chartUri = await _quickchartAPIService.GetQuickchartURI(coin, sparkline);
+            if (chartUri == null) return null;
 
-            var uri = new UriBuilder("https://quickchart.io")
-            {
-                Port = -1,
-                Path = "chart",
-                Query = $"?c={WebUtility.UrlEncode(JsonSerializer.Serialize(chart))}"
-            };
-
-            return new ChartResult { Name = coin.Name, Uri = uri.ToString() };
-        }
-
-        private Chart GetChartData(CoinGeckoCurrency coin, CoingGeckoSparkline sparkline)
-        {
-            var prices = sparkline.SparklineIn7D.Price;
-
-            var max = prices.Max() * 1.01;
-            var min = prices.Min() * 0.95; 
-
-            if(!sparkline.SparklineIn7D.Price.Any()) return null;
-
-            var data = new List<double>();
-            foreach(var price in sparkline.SparklineIn7D.Price)
-            {
-                if (price > 0 && price < 1)
-                {
-                    max = Math.Truncate(max * 1000) / 1000;
-                    max = Math.Truncate(min * 1000) / 1000;
-                    data.Add(Math.Truncate(price * 1000 ) / 1000);
-                }
-                else if(price > 10000 && price < 100000)
-                {
-                    max = Math.Truncate(max);
-                    max = Math.Truncate(min);
-                    data.Add(Math.Truncate(price));
-                }
-                else
-                {
-                    max = Math.Truncate(max);
-                    max = Math.Truncate(min);
-                    data.Add(Math.Truncate(price * 100 ) / 100);
-                }
-            }
-
-            var dataset = new Dataset
-            {
-                BorderColor = sparkline.PriceChangePercentage7d > 0 ? "green" : "red",
-                Fill = false,
-                Label = coin.Name,
-                Data = data
-            };
-
-            var options = new Models.Options
-            {
-                Scales = new Scales
-                {
-                    YAxes = new List<YAx>
-                    {
-                        new YAx
-                        {
-                            Ticks = new Ticks
-                            {
-                                SuggestedMax = max,
-                                SuggestedMin = min
-                            }
-                        }
-                    }
-                }
-            };
-
-            var chart = new Chart
-            {
-                Type = "sparkline",
-                Data = new Data
-                {
-                    Datasets = new List<Dataset>
-                    {
-                        dataset
-                    }
-                },
-                Options = options
-            };
-
-            return chart;
+            return new ChartResult { Name = coin.Name, Uri = chartUri };
         }
     }
 }

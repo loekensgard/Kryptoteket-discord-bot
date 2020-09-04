@@ -80,6 +80,7 @@ namespace Kryptoteket.Bot
             services.AddSingleton<ICovid19APIService, Covid19APIService>();
             services.AddSingleton<ICoinGeckoAPIService, CoinGeckoAPIService>();
             services.AddSingleton<ICoinGeckoRepository, CoinGeckoRepository>();
+            services.AddSingleton<IQuickchartAPIService, QuickchartAPIService>();
 
             services.AddSingleton<InitMemoryDB>();
             services.AddSingleton<CommandHandlerService>();
@@ -94,6 +95,7 @@ namespace Kryptoteket.Bot
             services.Configure<DiscordConfiguration>(options => _configuration.GetSection("Discord").Bind(options));
             services.Configure<CovidAPIConfiguration>(options => _configuration.GetSection("CovidAPI").Bind(options));
             services.Configure<CoinGeckoConfiguration>(options => _configuration.GetSection("CoinGecko").Bind(options));
+            services.Configure<QuickchartConfiguration>(options => _configuration.GetSection("Quickchart").Bind(options));
 
             return services;
         }
