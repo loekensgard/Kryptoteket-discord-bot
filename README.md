@@ -11,21 +11,21 @@ Discord bot for retrieving crypto prices and tickers at [Kryptotekets discord](h
 
 ### Crypto
 
-!ticker <pair>
-[Ticker](https://imgur.com/pizNUcY)
+!ticker <pair>\
+![Ticker](https://imgur.com/pizNUcY)\
 !price <pair> <mx / nbx>
-[Price](https://imgur.com/2IJk6QH)
-!gainers <top> <1h / 24h / 7d / 14d / 30d / 200d / 1y>
-[Gainers](https://imgur.com/8rT0LnB)
-!losers <top> <1h / 24h / 7d / 14d / 30d / 200d / 1y>
-[Losers](https://imgur.com/z8Cz5Oz)
-!graph <currency>
-[Graph](https://imgur.com/8ZFIQuq)
+![Price](https://imgur.com/2IJk6QH)
+!gainers <top> <1h / 24h / 7d / 14d / 30d / 200d / 1y>\
+![Gainers](https://imgur.com/8rT0LnB)\
+!losers <top> <1h / 24h / 7d / 14d / 30d / 200d / 1y>\
+![Losers](https://imgur.com/z8Cz5Oz)\
+!graph <currency>\
+![Graph](https://imgur.com/8ZFIQuq)
 
 ### Covid-19
 
-!covid <countrycode / countryName>
-[Covid](https://imgur.com/l9yNUIK)
+!covid <countrycode / countryName>\
+![Covid](https://imgur.com/l9yNUIK)
 
 ### Misc
 ```
