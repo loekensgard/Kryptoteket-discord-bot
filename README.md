@@ -33,7 +33,7 @@ Discord bot for retrieving crypto prices and tickers at [Kryptotekets discord](h
 ![Graph](https://i.imgur.com/8ZFIQuq.png)
 
 ### Covid-19
-
+```
 !covid <countrycode / countryName>
 ```
 ![Covid](https://i.imgur.com/l9yNUIK.png)
