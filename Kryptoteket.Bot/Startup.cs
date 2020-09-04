@@ -37,8 +37,6 @@ namespace Kryptoteket.Bot
                 .WriteTo.Console()
                 .CreateLogger();
 
-            AppDomain.CurrentDomain.UnhandledException += HandleUnhandledExceptions;
-
             Log.Information("Kryptoteket.Bot starting up...");
 
             var startup = new Startup();
@@ -98,24 +96,6 @@ namespace Kryptoteket.Bot
             services.Configure<CoinGeckoConfiguration>(options => _configuration.GetSection("CoinGecko").Bind(options));
 
             return services;
-        }
-
-        private static void HandleUnhandledExceptions(object sender, UnhandledExceptionEventArgs e)
-        {
-            if (Log.Logger != null && e.ExceptionObject is Exception exception)
-            {
-                UnhandledExceptions(exception);
-
-                if (e.IsTerminating)
-                {
-                    Log.CloseAndFlush();
-                }
-            }
-        }
-
-        private static void UnhandledExceptions(Exception e)
-        {
-            Log.Logger?.Error(e, "kryptoteket bot crashed");
         }
 
     }
