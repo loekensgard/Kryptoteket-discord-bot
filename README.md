@@ -9,7 +9,8 @@ Discord bot for retrieving crypto prices and tickers at [Kryptotekets discord](h
 
 ## Discord commands
 
-```
+### Crypto
+
 !ticker <pair>
 [Ticker](https://imgur.com/pizNUcY)
 !price <pair> <mx / nbx>
@@ -20,9 +21,14 @@ Discord bot for retrieving crypto prices and tickers at [Kryptotekets discord](h
 [Losers](https://imgur.com/z8Cz5Oz)
 !graph <currency>
 [Graph](https://imgur.com/8ZFIQuq)
+
+### Covid-19
+
 !covid <countrycode / countryName>
 [Covid](https://imgur.com/l9yNUIK)
 
+### Misc
+```
 !help
 !support
 ```
