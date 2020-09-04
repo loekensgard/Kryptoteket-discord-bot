@@ -115,7 +115,7 @@ namespace Kryptoteket.Bot
 
         private static void UnhandledExceptions(Exception e)
         {
-            Log.Logger?.Error(e, ".kryptoteket bot crashed");
+            Log.Logger?.Error(e, "kryptoteket bot crashed");
         }
 
     }

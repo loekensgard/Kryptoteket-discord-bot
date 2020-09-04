@@ -1,5 +1,6 @@
 ﻿using Kryptoteket.Bot.Interfaces;
 using Kryptoteket.Bot.Models;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,15 +16,16 @@ namespace Kryptoteket.Bot.InMemoryDB
         {
             foreach(var coin in coinGeckoCoins)
             {
-                currencies.TryAdd(coin.Symbol, coin);
+                currencies.TryAdd(coin.Symbol.ToLower(), coin);
             }
+            Log.Information("Added {count} currencies", currencies.Keys.Count);
 
             await Task.CompletedTask;
         }
 
         public async Task<CoinGeckoCurrency> GetCurrency(string symbol)
         {
-            currencies.TryGetValue(symbol, out var currency);
+            currencies.TryGetValue(symbol.ToLower(), out var currency);
             return await Task.FromResult(currency);
         }
     }
