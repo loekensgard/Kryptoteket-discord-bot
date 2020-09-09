@@ -29,6 +29,7 @@ Discord bot for retrieving crypto prices and tickers at [Kryptotekets discord](h
 
 ```
 !help
+!reflink
 !support
 ```
 
