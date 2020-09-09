@@ -38,8 +38,7 @@ namespace Kryptoteket.Bot.Modules
             var index = random.Next(reflinks.Count);
 
             var luckyLink = reflinks[index];
-
-            await ReplyAsync(luckyLink);
+            await ReplyAsync($"<{luckyLink}>");
         }
 
         [Command("support", RunMode = RunMode.Async)]
