@@ -81,6 +81,7 @@ namespace Kryptoteket.Bot
             services.AddSingleton<ICoinGeckoAPIService, CoinGeckoAPIService>();
             services.AddSingleton<ICoinGeckoRepository, CoinGeckoRepository>();
             services.AddSingleton<IQuickchartAPIService, QuickchartAPIService>();
+            services.AddSingleton<IReflinkRepository, ReflinkRepository>();
 
             services.AddSingleton<InitMemoryDB>();
             services.AddSingleton<CommandHandlerService>();
