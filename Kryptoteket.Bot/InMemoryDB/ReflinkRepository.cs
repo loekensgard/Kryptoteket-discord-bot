@@ -13,7 +13,7 @@ namespace Kryptoteket.Bot.InMemoryDB
         {
             "https://miraiex.com/affiliate/?referral=thorshi",
             "https://miraiex.com/affiliate/?referral=killertaco",
-            "https://miraiex.com/affiliate/?referral=ecd17de8", //erikkr
+            "https://miraiex.com/affiliate/?referral=erikkr", //erikkr
             "https://miraiex.com/affiliate/?referral=a7c960fb" //Bredesen
         };
 
