@@ -11,7 +11,9 @@ namespace Kryptoteket.Bot.InMemoryDB
     {
         public List<string> links = new List<string>
         {
-            "https://miraiex.com/affiliate/?referral=thorshi"
+            "https://miraiex.com/affiliate/?referral=thorshi",
+            "https://miraiex.com/affiliate/?referral=killertaco",
+            "https://miraiex.com/affiliate/?referral=ecd17de8" //erikkr
         };
 
         public async Task AddReflink(string reflink)
