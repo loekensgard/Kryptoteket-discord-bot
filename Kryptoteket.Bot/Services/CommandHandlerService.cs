@@ -24,6 +24,13 @@ namespace Kryptoteket.Bot.Services
             _discordOptions = discordOptions.Value;
 
             _discordSocketClient.MessageReceived += OnMessageReceivedAsync;
+            _discordSocketClient.Ready += ReadyAsync;
+        }
+
+        private Task ReadyAsync()
+        {
+            Log.Information("{user} is connected!", _discordSocketClient.CurrentUser);
+            return Task.CompletedTask;
         }
 
         private async Task OnMessageReceivedAsync(SocketMessage parameterMessage)
