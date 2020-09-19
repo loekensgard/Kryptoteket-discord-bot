@@ -10,6 +10,8 @@
 *.userosscache
 *.sln.docstates
 
+**/profile.arm.json
+**/Settings.job
 **/appsettings.development.json
 **/appsettings.staging.json
 **/appsettings.production.json
