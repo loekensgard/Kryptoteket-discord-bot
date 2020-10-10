@@ -46,19 +46,21 @@ namespace Kryptoteket.Bot.Modules
         [Summary("Add reflinks to the DB")]
         public async Task AddReflink(string name, string reflink)
         {
-            var user = Context.User as SocketGuildUser;
-            var allowed = user.Roles.Any(x => x.Id == 344896780657491968 || x.Id == 344896529707958272);
+            if (reflink.Contains("https://miraiex.com/affiliate/?referral=")) {
+                var user = Context.User as SocketGuildUser;
+                var allowed = user.Roles.Any(x => x.Id == 344896780657491968 || x.Id == 344896529707958272);
 
-            if (allowed)
-            {
+                if (allowed)
+                {
+                    if (await _reflinkRepository.AddReflink(name.Trim(), reflink.Trim())) await ReplyAsync($"Reflink was added");
+                    else await ReplyAsync($"Reflink was a duplicate");
+                }
+                else
+                {
+                    await ReplyAsync($"You don't have permissions to add reflinks");
+                }
+            }
 
-                if(await _reflinkRepository.AddReflink(name.Trim(), reflink.Trim())) await ReplyAsync($"Reflink was added");
-                else await ReplyAsync($"Reflink was a duplicate");
-            }
-            else
-            {
-                await ReplyAsync($"You don't have permissions to add reflinks");
-            }
         }
 
         [Command("support", RunMode = RunMode.Async)]
