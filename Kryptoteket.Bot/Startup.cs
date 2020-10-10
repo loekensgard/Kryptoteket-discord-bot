@@ -93,7 +93,7 @@ namespace Kryptoteket.Bot
             services.AddTransient<EmbedService>();
 
             services.Configure<ExchangesConfiguration>(options => _configuration.GetSection("Exchanges").Bind(options));
-            services.Configure<DiscordConfiguration>(options => _configuration.GetSection("Discord").Bind(options));
+            services.Configure<DiscordConfiguration>(options => _configuration.GetSection("Discord-Kryptoteket").Bind(options));
             services.Configure<CovidAPIConfiguration>(options => _configuration.GetSection("CovidAPI").Bind(options));
             services.Configure<CoinGeckoConfiguration>(options => _configuration.GetSection("CoinGecko").Bind(options));
             services.Configure<QuickchartConfiguration>(options => _configuration.GetSection("Quickchart").Bind(options));
