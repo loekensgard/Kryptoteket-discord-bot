@@ -7,7 +7,7 @@ namespace Kryptoteket.Bot.Interfaces
 {
     public interface IReflinkRepository
     {
-        Task AddReflink(string reflink);
+        Task<bool> AddReflink(string name, string reflink);
         Task<List<string>> GetReflinks();
     }
 }

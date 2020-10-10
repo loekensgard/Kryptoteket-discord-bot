@@ -97,6 +97,7 @@ namespace Kryptoteket.Bot
             services.Configure<CovidAPIConfiguration>(options => _configuration.GetSection("CovidAPI").Bind(options));
             services.Configure<CoinGeckoConfiguration>(options => _configuration.GetSection("CoinGecko").Bind(options));
             services.Configure<QuickchartConfiguration>(options => _configuration.GetSection("Quickchart").Bind(options));
+            services.Configure<CosmosDBConfiguration>(options => _configuration.GetSection("Cosmos-Kryptoteket").Bind(options));
 
             return services;
         }

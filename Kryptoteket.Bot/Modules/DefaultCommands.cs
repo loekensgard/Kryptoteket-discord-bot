@@ -1,10 +1,11 @@
-﻿using Discord.Commands;
+﻿using Discord;
+using Discord.Commands;
+using Discord.WebSocket;
 using Kryptoteket.Bot.Interfaces;
 using Kryptoteket.Bot.Services;
 using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-using System.Text;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace Kryptoteket.Bot.Modules
@@ -39,6 +40,25 @@ namespace Kryptoteket.Bot.Modules
 
             var luckyLink = reflinks[index];
             await ReplyAsync($"<{luckyLink}>");
+        }
+
+        [Command("addref", RunMode = RunMode.Async)]
+        [Summary("Add reflinks to the DB")]
+        public async Task AddReflink(string name, string reflink)
+        {
+            var user = Context.User as SocketGuildUser;
+            var allowed = user.Roles.Any(x => x.Id == 344896780657491968 || x.Id == 344896529707958272);
+
+            if (allowed)
+            {
+
+                if(await _reflinkRepository.AddReflink(name.Trim(), reflink.Trim())) await ReplyAsync($"Reflink was added");
+                else await ReplyAsync($"Reflink was a duplicate");
+            }
+            else
+            {
+                await ReplyAsync($"You don't have permissions to add reflinks");
+            }
         }
 
         [Command("support", RunMode = RunMode.Async)]
