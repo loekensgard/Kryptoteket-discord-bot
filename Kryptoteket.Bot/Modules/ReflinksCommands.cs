@@ -38,7 +38,7 @@ namespace Kryptoteket.Bot.Modules
         {
             var user = Context.User as SocketGuildUser;
 
-            if (!reflink.Contains("https://miraiex.com/affiliate/?referral=")){ await ReplyAsync($"Reflink is of wrong format");return;}
+            if (!reflink.Contains("https://miraiex.com/affiliate/?referral=")){ await ReplyAsync($"Reflink is wrong format");return;}
             if (await _reflinkRepository.Exists(user.Id)) { await ReplyAsync($"Reflink is already in list"); return;}
 
             await _reflinkRepository.AddReflink(user.Id, user.Username, reflink.Trim());
