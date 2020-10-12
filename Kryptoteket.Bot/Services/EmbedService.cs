@@ -1,6 +1,5 @@
 ﻿using Discord;
 using Kryptoteket.Bot.Models;
-using Kryptoteket.Bot.Modules;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -31,8 +30,8 @@ namespace Kryptoteket.Bot.Services
             builder.AddField("Last", price.Last);
             builder.AddField("High", price.High);
             builder.AddField("Low", price.Low);
-            if(price.ATH != null) builder.AddField("ATH", price.ATH);
-            builder.AddField("Change last 24h", $"{Math.Truncate((double)Convert.ToDouble(price.Change,CultureInfo.InvariantCulture) * 100) / 100}%");
+            if (price.ATH != null) builder.AddField("ATH", price.ATH);
+            builder.AddField("Change last 24h", $"{Math.Truncate((double)Convert.ToDouble(price.Change, CultureInfo.InvariantCulture) * 100) / 100}%");
             builder.WithColor(Color.DarkBlue);
             return builder;
         }
@@ -137,6 +136,21 @@ namespace Kryptoteket.Bot.Services
             var check = decimal.TryParse(number, NumberStyles.Any, CultureInfo.InvariantCulture, out var result);
 
             return !check ? "Error parsing" : result.ToString("G29");
+        }
+
+        public EmbedBuilder EmbedAllReflinks(List<Reflink> reflinks)
+        {
+            var content = "";
+            foreach (var link in reflinks)
+            {
+                content += $"**{link.Name}**: {link.Link}{Environment.NewLine}";
+            }
+
+            EmbedBuilder builder = new EmbedBuilder();
+            builder.AddField("Reflinks", $"{content}");
+            builder.WithFooter(footer => footer.Text = "Add your link with !addref <link>");
+
+            return builder;
         }
     }
 }
