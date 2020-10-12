@@ -1,17 +1,22 @@
 ﻿using Discord.Commands;
 using Discord.WebSocket;
 using Kryptoteket.Bot.Configurations;
+using Kryptoteket.Bot.CosmosDB.Repositories;
 using Kryptoteket.Bot.InMemoryDB;
 using Kryptoteket.Bot.Interfaces;
 using Kryptoteket.Bot.Services;
 using Kryptoteket.Bot.Services.API;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore.Cosmos;
+using Microsoft.Azure.Cosmos;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Exceptions;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Kryptoteket.Bot.CosmosDB;
 
 namespace Kryptoteket.Bot
 {
@@ -81,7 +86,6 @@ namespace Kryptoteket.Bot
             services.AddSingleton<ICoinGeckoAPIService, CoinGeckoAPIService>();
             services.AddSingleton<ICoinGeckoRepository, CoinGeckoRepository>();
             services.AddSingleton<IQuickchartAPIService, QuickchartAPIService>();
-            services.AddSingleton<IReflinkRepository, ReflinkRepository>();
 
             services.AddSingleton<InitMemoryDB>();
             services.AddSingleton<CommandHandlerService>();
@@ -91,6 +95,12 @@ namespace Kryptoteket.Bot
 
             services.AddTransient<HttpResponseService>();
             services.AddTransient<EmbedService>();
+
+            services.AddScoped<IReflinkRepository, ReflinkRepository>();
+            services.AddDbContext<RegistryContext>(options => options.UseCosmos(
+                _configuration.GetSection("Cosmos-Kryptoteket")["EndpointUri"],
+                _configuration.GetSection("Cosmos-Kryptoteket")["PrimaryKey"],
+                _configuration.GetSection("Cosmos-Kryptoteket")["DatabaseName"]));
 
             services.Configure<ExchangesConfiguration>(options => _configuration.GetSection("Exchanges").Bind(options));
             services.Configure<DiscordConfiguration>(options => _configuration.GetSection("Discord-Kryptoteket").Bind(options));
