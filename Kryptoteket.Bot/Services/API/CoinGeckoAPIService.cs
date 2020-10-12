@@ -2,14 +2,10 @@
 using Kryptoteket.Bot.Exceptions;
 using Kryptoteket.Bot.Interfaces;
 using Kryptoteket.Bot.Models;
-using Kryptoteket.Bot.Modules;
 using Microsoft.Extensions.Options;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Kryptoteket.Bot.Services.API

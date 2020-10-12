@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Kryptoteket.Bot.Modules
+﻿namespace Kryptoteket.Bot.Models
 {
     public class ChartResult
     {
