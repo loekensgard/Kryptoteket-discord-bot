@@ -1,8 +1,8 @@
 ﻿using Kryptoteket.Bot.Interfaces;
 using Kryptoteket.Bot.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Kryptoteket.Bot.CosmosDB.Repositories
@@ -19,32 +19,32 @@ namespace Kryptoteket.Bot.CosmosDB.Repositories
 
         }
 
-        public async Task AddReflink(ulong id, string name, string reflink)
+        public async Task AddReflink(ulong id, string name, string reflink, ulong guildId)
         {
-            _set.Add(new Reflink { id = id.ToString(), Name = name, Link = reflink, Approved = false });
+            _set.Add(new Reflink { id = id.ToString(), Name = name, Link = reflink, Approved = false, GuildId = guildId.ToString() });
 
             await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> Exists(ulong id)
+        public async Task<bool> Exists(ulong id, ulong guildId)
         {
-            var entity = await _set.FindAsync(id.ToString());
+            var entity = await _set.AsQueryable().FirstOrDefaultAsync(r => r.id == id.ToString() && r.GuildId == guildId.ToString());
             return entity != null;
         }
 
-        public async Task<List<Reflink>> GetReflinks()
+        public async Task<List<Reflink>> GetReflinks(ulong guildId)
         {
-            return await _set.ToListAsync();
+            return await _set.AsAsyncEnumerable().Where(r => r.GuildId == guildId.ToString()).ToListAsync();
         }
 
-        public async Task<Reflink> GetReflink(ulong id)
+        public async Task<Reflink> GetReflink(ulong id, ulong guildId)
         {
-            return await _set.FindAsync(id.ToString());
+            return await _set.AsQueryable().FirstOrDefaultAsync(r => r.id == id.ToString() && r.GuildId == guildId.ToString());
         }
 
-        public async Task UpdateReflink(ulong id, string reflink)
+        public async Task UpdateReflink(ulong id, string reflink, ulong guildId)
         {
-            var entity = await _set.FindAsync(id.ToString());
+            var entity = await _set.AsQueryable().FirstOrDefaultAsync(r => r.id == id.ToString() && r.GuildId == guildId.ToString());
             if (entity != null)
             {
                 if (entity.Link.ToLower() != reflink.ToLower()) entity.Link = reflink;
@@ -53,9 +53,9 @@ namespace Kryptoteket.Bot.CosmosDB.Repositories
             }
         }
 
-        public async Task DeleteReflink(ulong id)
+        public async Task DeleteReflink(ulong id, ulong guildId)
         {
-            var entity = await _set.FindAsync(id.ToString());
+            var entity = await _set.AsQueryable().FirstOrDefaultAsync(r => r.id == id.ToString() && r.GuildId == guildId.ToString());
             if (entity != null)
             {
                 _set.Remove(entity);

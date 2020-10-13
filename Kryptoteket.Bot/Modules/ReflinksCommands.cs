@@ -1,12 +1,8 @@
 ﻿using Discord.Commands;
 using Discord.WebSocket;
 using Kryptoteket.Bot.Interfaces;
-using Kryptoteket.Bot.Models;
 using Kryptoteket.Bot.Services;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Kryptoteket.Bot.Modules
@@ -27,7 +23,9 @@ namespace Kryptoteket.Bot.Modules
         [Summary("Get random reflink")]
         public async Task GetReflink()
         {
-            var reflinks = await _reflinkRepository.GetReflinks();
+            var guild = Context.Guild as SocketGuild;
+
+            var reflinks = await _reflinkRepository.GetReflinks(guild.Id);
 
             var random = new Random();
             var index = random.Next(reflinks.Count);
@@ -41,11 +39,12 @@ namespace Kryptoteket.Bot.Modules
         public async Task RequestReflink(string reflink)
         {
             var user = Context.User as SocketGuildUser;
+            var guild = Context.Guild as SocketGuild;
 
-            if (!reflink.Contains("https://miraiex.com/affiliate/?referral=")){ await ReplyAsync($"Reflink is wrong format");return;}
-            if (await _reflinkRepository.Exists(user.Id)) { await ReplyAsync($"Reflink is already in list"); return;}
+            if (!reflink.Contains("https://miraiex.com/affiliate/?referral=")) { await ReplyAsync($"Reflink is wrong format"); return; }
+            if (await _reflinkRepository.Exists(user.Id, guild.Id)) { await ReplyAsync($"Reflink is already in list"); return; }
 
-            await _reflinkRepository.AddReflink(user.Id, user.Username, reflink.Trim());
+            await _reflinkRepository.AddReflink(user.Id, user.Username, reflink.Trim(), guild.Id);
             await ReplyAsync($"Reflink was submitted for approval");
         }
 
@@ -57,9 +56,10 @@ namespace Kryptoteket.Bot.Modules
             //var allowed = user.Roles.Any(x => x.Id == 344896780657491968 || x.Id == 344896529707958272);
 
             //if(!allowed) { await ReplyAsync($"Insufficient permissions"); return; }
+            var guild = Context.Guild as SocketGuild;
 
-            var reflinks = await _reflinkRepository.GetReflinks();
-            await ReplyAsync(null,false, _embedService.EmbedAllReflinks(reflinks).Build());
+            var reflinks = await _reflinkRepository.GetReflinks(guild.Id);
+            await ReplyAsync(null, false, _embedService.EmbedAllReflinks(reflinks).Build());
         }
 
         [Command("getref", RunMode = RunMode.Async)]
@@ -67,9 +67,10 @@ namespace Kryptoteket.Bot.Modules
         public async Task GetYourReflink()
         {
             var user = Context.User as SocketGuildUser;
+            var guild = Context.Guild as SocketGuild;
 
-            var reflink = await _reflinkRepository.GetReflink(user.Id);
-            if(reflink != null)
+            var reflink = await _reflinkRepository.GetReflink(user.Id, guild.Id);
+            if (reflink != null)
             {
                 await ReplyAsync($"**{reflink.Name}**: <{reflink.Link}>");
             }
@@ -84,9 +85,11 @@ namespace Kryptoteket.Bot.Modules
         public async Task UpdateYourReflink(string reflink)
         {
             var user = Context.User as SocketGuildUser;
+            var guild = Context.Guild as SocketGuild;
+
             if (!reflink.Contains("https://miraiex.com/affiliate/?referral=")) { await ReplyAsync($"Reflink is wrong format"); return; }
 
-            await _reflinkRepository.UpdateReflink(user.Id, reflink);
+            await _reflinkRepository.UpdateReflink(user.Id, reflink, guild.Id);
 
             await ReplyAsync($"Reflink was updated");
         }
@@ -96,12 +99,11 @@ namespace Kryptoteket.Bot.Modules
         public async Task DeleteYourReflink()
         {
             var user = Context.User as SocketGuildUser;
+            var guild = Context.Guild as SocketGuild;
 
-            await _reflinkRepository.DeleteReflink(user.Id);
+            await _reflinkRepository.DeleteReflink(user.Id, guild.Id);
 
             await ReplyAsync($"Reflink was deleted");
         }
-
-
     }
 }
