@@ -28,15 +28,15 @@ Discord bot for retrieving crypto prices and tickers at [Kryptotekets discord](h
 ### Reflink roulette
 
 ```
-!reflink | random reflink from pool
-!getref <@user> | get reflink for user
-!getrefs | get all reflinks
-!addref <reflink> | add reflink to pool
+!reflink             | get random reflink from pool
+!getref <@user>      | get reflink for user
+!getrefs             | get all reflinks
+!addref <reflink>    | add reflink to pool
 !updateref <reflink> | update reflink
-!deleteref | delete reflink
+!deleteref           | delete reflink
 
-!approve <@user> | Approve reflink for user
-!reject <@user> | Reject reflink for user
+!approve <@user>      | Approve reflink for user
+!reject <@user>       | Reject reflink for user
 ```
 
 ### Misc
