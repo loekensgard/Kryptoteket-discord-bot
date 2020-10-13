@@ -158,7 +158,9 @@ namespace Kryptoteket.Bot.Services
             var content = "";
             foreach (var link in reflinks.OrderByDescending(r => r.Approved))
             {
-                content += $"**{link.Name}**: {link.Link} : **{link.Approved.ToString()}**{Environment.NewLine}";
+                var approved = "Not Approved";
+                if (link.Approved) approved = "Approved";
+                content += $"**{link.Name}**: {link.Link} : **{approved}**{Environment.NewLine}";
             }
 
             EmbedBuilder builder = new EmbedBuilder();
