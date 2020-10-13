@@ -157,9 +157,9 @@ namespace Kryptoteket.Bot.Services
         public EmbedBuilder EmbedAllReflinks(List<Reflink> reflinks)
         {
             var content = "";
-            foreach (var link in reflinks)
+            foreach (var link in reflinks.OrderByDescending(r => r.Approved))
             {
-                content += $"**{link.Name}**: {link.Link}{Environment.NewLine}";
+                content += $"**{link.Name}**: {link.Link} : **{link.Approved.ToString()}**{Environment.NewLine}";
             }
 
             EmbedBuilder builder = new EmbedBuilder();
