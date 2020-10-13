@@ -28,7 +28,7 @@ namespace Kryptoteket.Bot.Modules
 
             var reflinks = await _reflinkRepository.GetReflinks(guild.Id, true);
 
-            if(reflinks.Count == 0) { await ReplyAsync($"Could not find any reflinks"); return; }
+            if (reflinks.Count == 0) { await ReplyAsync($"Could not find any reflinks"); return; }
 
             var random = new Random();
             var index = random.Next(reflinks.Count);
@@ -65,7 +65,7 @@ namespace Kryptoteket.Bot.Modules
         [Summary("Request your reflink")]
         public async Task GetYourReflink(SocketGuildUser user = null)
         {
-            if(user == null) user = Context.User as SocketGuildUser;
+            if (user == null) user = Context.User as SocketGuildUser;
             var guild = Context.Guild as SocketGuild;
 
             var reflink = await _reflinkRepository.GetReflink(user.Id, guild.Id);
@@ -138,6 +138,5 @@ namespace Kryptoteket.Bot.Modules
                 await _reflinkRepository.Update(user.Id, reflink, guild.Id);
             }
         }
-
     }
 }

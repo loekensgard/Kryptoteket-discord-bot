@@ -1,10 +1,6 @@
 ﻿using Discord.Commands;
 using Kryptoteket.Bot.Interfaces;
 using Kryptoteket.Bot.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Kryptoteket.Bot.Modules
@@ -26,15 +22,15 @@ namespace Kryptoteket.Bot.Modules
         public async Task GetCovidInfoByCountry(string countryCode)
         {
             var countryData = await _covid19APIService.GetCountryStats(countryCode.Trim());
-            if(countryData == null) await ReplyAsync($"Could not find any data with parameter {countryCode}", false);
+            if (countryData == null) await ReplyAsync($"Could not find any data with parameter {countryCode}", false);
 
             var yesterdayData = await _covid19APIService.GetCountryStatsYesterday(countryCode.Trim());
             long? yesterdayNewCases = null;
-            if(yesterdayData != null) yesterdayNewCases = yesterdayData.TotalNewCasesToday;  
+            if (yesterdayData != null) yesterdayNewCases = yesterdayData.TotalNewCasesToday;
 
             var builder = _embedService.EmbedCovidStats(
                 countryData.Title,
-                countryData.TotalCases, 
+                countryData.TotalCases,
                 countryData.TotalNewCasesToday,
                 countryData.TotalDeaths,
                 countryData.TotalNewDeathsToday,

@@ -22,14 +22,14 @@ namespace Kryptoteket.Bot.Models
         [JsonPropertyName("price_change_percentage_24h_in_currency")]
         public double? PriceChangePercentage24HInCurrency { set { PriceChangeInPeriod = value; } }
         [JsonPropertyName("price_change_percentage_14d_in_currency")]
-        public double? PriceChangePercentage14DInCurrency {  set { PriceChangeInPeriod = value; } }
+        public double? PriceChangePercentage14DInCurrency { set { PriceChangeInPeriod = value; } }
         [JsonPropertyName("price_change_percentage_1y_in_currency")]
-        public double? PriceChangePercentage1YInCurrency {  set { PriceChangeInPeriod = value; } }
+        public double? PriceChangePercentage1YInCurrency { set { PriceChangeInPeriod = value; } }
         [JsonPropertyName("price_change_percentage_200d_in_currency")]
-        public double? PriceChangePercentage200DInCurrency {  set { PriceChangeInPeriod = value; } }
+        public double? PriceChangePercentage200DInCurrency { set { PriceChangeInPeriod = value; } }
         [JsonPropertyName("price_change_percentage_30d_in_currency")]
-        public double? PriceChangePercentage30DInCurrency {  set { PriceChangeInPeriod = value; } }
+        public double? PriceChangePercentage30DInCurrency { set { PriceChangeInPeriod = value; } }
         [JsonPropertyName("price_change_percentage_7d_in_currency")]
-        public double? PriceChangePercentage7DInCurrency {  set { PriceChangeInPeriod = value; } }
+        public double? PriceChangePercentage7DInCurrency { set { PriceChangeInPeriod = value; } }
     }
 }

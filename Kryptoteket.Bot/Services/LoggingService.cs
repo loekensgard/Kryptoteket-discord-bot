@@ -4,8 +4,6 @@ using Discord.WebSocket;
 using Serilog;
 using Serilog.Events;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Kryptoteket.Bot.Services
@@ -28,9 +26,9 @@ namespace Kryptoteket.Bot.Services
         private Task LogAsync(LogMessage msg)
         {
             var level = msg.Exception == null ? LogEventLevel.Information : LogEventLevel.Error;
-            Log.Write(level, _messageTemplate, DateTime.Now, msg.Severity, msg.Source , msg.Exception?.ToString() ?? msg.Message);
+            Log.Write(level, _messageTemplate, DateTime.Now, msg.Severity, msg.Source, msg.Exception?.ToString() ?? msg.Message);
 
-            return Console.Out.WriteLineAsync($"{DateTime.UtcNow.ToString("HH:mm:ss")} [{msg.Severity}] {msg.Source}: {msg.Exception?.ToString() ?? msg.Message}"); 
+            return Console.Out.WriteLineAsync($"{DateTime.UtcNow.ToString("HH:mm:ss")} [{msg.Severity}] {msg.Source}: {msg.Exception?.ToString() ?? msg.Message}");
         }
 
     }

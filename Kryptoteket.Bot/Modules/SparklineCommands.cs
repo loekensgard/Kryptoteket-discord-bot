@@ -1,7 +1,6 @@
 ﻿using Discord.Commands;
 using Kryptoteket.Bot.Interfaces;
 using Kryptoteket.Bot.Services;
-using System;
 using System.Threading.Tasks;
 
 namespace Kryptoteket.Bot.Modules
@@ -23,7 +22,7 @@ namespace Kryptoteket.Bot.Modules
         public async Task GetHelpText(string currency)
         {
             var uri = await _coinGeckoAPIService.Get7dChart(currency.Trim().ToLower());
-            if(uri == null) { await ReplyAsync($"Could not find {currency}"); return; }
+            if (uri == null) { await ReplyAsync($"Could not find {currency}"); return; }
 
             await ReplyAsync(null, false, _embedService.EmbedSparkline(uri).Build());
         }

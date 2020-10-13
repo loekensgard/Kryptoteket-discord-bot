@@ -2,7 +2,6 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using Kryptoteket.Bot.Configurations;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using System;
 using System.Reflection;
@@ -27,7 +26,7 @@ namespace Kryptoteket.Bot.Services
 
         public async Task StartAsync()
         {
-            var discordToken = !string.IsNullOrEmpty(_discordOptions.Token) ? _discordOptions.Token :  throw new Exception("Missing Discord Bot token");
+            var discordToken = !string.IsNullOrEmpty(_discordOptions.Token) ? _discordOptions.Token : throw new Exception("Missing Discord Bot token");
 
             await _discordSocketClient.LoginAsync(TokenType.Bot, discordToken);
             await _discordSocketClient.StartAsync();

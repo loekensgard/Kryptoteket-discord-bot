@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace Kryptoteket.Bot.Models
+﻿namespace Kryptoteket.Bot.Models
 {
     public class Reflink
     {

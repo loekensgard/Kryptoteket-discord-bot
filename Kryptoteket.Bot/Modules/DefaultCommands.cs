@@ -1,11 +1,5 @@
-﻿using Discord;
-using Discord.Commands;
-using Discord.WebSocket;
-using Kryptoteket.Bot.Interfaces;
+﻿using Discord.Commands;
 using Kryptoteket.Bot.Services;
-using System;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace Kryptoteket.Bot.Modules

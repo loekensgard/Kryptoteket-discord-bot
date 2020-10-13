@@ -1,9 +1,7 @@
 ﻿using Kryptoteket.Bot.Interfaces;
 using Kryptoteket.Bot.Models;
 using Serilog;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Kryptoteket.Bot.InMemoryDB
@@ -14,7 +12,7 @@ namespace Kryptoteket.Bot.InMemoryDB
 
         public async Task AddCurrency(List<CoinGeckoCurrency> coinGeckoCoins)
         {
-            foreach(var coin in coinGeckoCoins)
+            foreach (var coin in coinGeckoCoins)
             {
                 currencies.TryAdd(coin.Symbol.ToLower(), coin);
             }

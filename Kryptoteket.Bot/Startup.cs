@@ -1,22 +1,19 @@
 ﻿using Discord.Commands;
 using Discord.WebSocket;
 using Kryptoteket.Bot.Configurations;
+using Kryptoteket.Bot.CosmosDB;
 using Kryptoteket.Bot.CosmosDB.Repositories;
 using Kryptoteket.Bot.InMemoryDB;
 using Kryptoteket.Bot.Interfaces;
 using Kryptoteket.Bot.Services;
 using Kryptoteket.Bot.Services.API;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore.Cosmos;
-using Microsoft.Azure.Cosmos;
-using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Exceptions;
-using System;
 using System.IO;
 using System.Threading.Tasks;
-using Kryptoteket.Bot.CosmosDB;
 
 namespace Kryptoteket.Bot
 {

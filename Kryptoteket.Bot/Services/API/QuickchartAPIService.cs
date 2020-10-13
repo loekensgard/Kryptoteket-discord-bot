@@ -106,7 +106,8 @@ namespace Kryptoteket.Bot.Services.API
                 Options = options
             };
 
-            return new ChartBuilder {
+            return new ChartBuilder
+            {
                 Chart = chart
             };
         }
