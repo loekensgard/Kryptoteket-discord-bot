@@ -1,4 +1,5 @@
-﻿using Discord.Commands;
+﻿using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
 using Kryptoteket.Bot.Interfaces;
 using Kryptoteket.Bot.Services;
@@ -25,7 +26,9 @@ namespace Kryptoteket.Bot.Modules
         {
             var guild = Context.Guild as SocketGuild;
 
-            var reflinks = await _reflinkRepository.GetReflinks(guild.Id);
+            var reflinks = await _reflinkRepository.GetReflinks(guild.Id, true);
+
+            if(reflinks.Count == 0) { await ReplyAsync($"Could not find any reflinks"); return; }
 
             var random = new Random();
             var index = random.Next(reflinks.Count);
@@ -52,10 +55,6 @@ namespace Kryptoteket.Bot.Modules
         [Summary("Request all reflinks")]
         public async Task GetReflinks()
         {
-            //var user = Context.User as SocketGuildUser;
-            //var allowed = user.Roles.Any(x => x.Id == 344896780657491968 || x.Id == 344896529707958272);
-
-            //if(!allowed) { await ReplyAsync($"Insufficient permissions"); return; }
             var guild = Context.Guild as SocketGuild;
 
             var reflinks = await _reflinkRepository.GetReflinks(guild.Id);
@@ -64,15 +63,15 @@ namespace Kryptoteket.Bot.Modules
 
         [Command("getref", RunMode = RunMode.Async)]
         [Summary("Request your reflink")]
-        public async Task GetYourReflink()
+        public async Task GetYourReflink(SocketGuildUser user = null)
         {
-            var user = Context.User as SocketGuildUser;
+            if(user == null) user = Context.User as SocketGuildUser;
             var guild = Context.Guild as SocketGuild;
 
             var reflink = await _reflinkRepository.GetReflink(user.Id, guild.Id);
             if (reflink != null)
             {
-                await ReplyAsync($"**{reflink.Name}**: <{reflink.Link}>");
+                await ReplyAsync(null, false, _embedService.EmbedOwnRef(reflink).Build());
             }
             else
             {
@@ -105,5 +104,40 @@ namespace Kryptoteket.Bot.Modules
 
             await ReplyAsync($"Reflink was deleted");
         }
+
+        [Command("approve", RunMode = RunMode.Async)]
+        [RequireUserPermission(GuildPermission.KickMembers)]
+        [Summary("Approve reflink")]
+        public async Task ApproveRef(SocketGuildUser user)
+        {
+            if (user == null) { await ReplyAsync($"Found no user"); return; }
+            var guild = Context.Guild as SocketGuild;
+
+            var reflink = await _reflinkRepository.GetReflink(user.Id, guild.Id);
+
+            if (!reflink.Approved)
+            {
+                reflink.Approved = true;
+                await _reflinkRepository.Update(user.Id, reflink, guild.Id);
+            }
+        }
+
+        [Command("reject", RunMode = RunMode.Async)]
+        [RequireUserPermission(GuildPermission.KickMembers)]
+        [Summary("Reject reflink")]
+        public async Task RejectRef(SocketGuildUser user)
+        {
+            if (user == null) { await ReplyAsync($"Found no user"); return; }
+            var guild = Context.Guild as SocketGuild;
+
+            var reflink = await _reflinkRepository.GetReflink(user.Id, guild.Id);
+
+            if (reflink.Approved)
+            {
+                reflink.Approved = false;
+                await _reflinkRepository.Update(user.Id, reflink, guild.Id);
+            }
+        }
+
     }
 }

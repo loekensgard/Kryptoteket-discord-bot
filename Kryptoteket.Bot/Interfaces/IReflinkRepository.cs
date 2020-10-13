@@ -8,9 +8,10 @@ namespace Kryptoteket.Bot.Interfaces
     {
         Task AddReflink(ulong id, string name, string reflink, ulong guildId);
         Task<bool> Exists(ulong id, ulong guildId);
-        Task<List<Reflink>> GetReflinks(ulong guildId);
+        Task<List<Reflink>> GetReflinks(ulong guildId, bool approved = false);
         Task<Reflink> GetReflink(ulong id, ulong guildId);
         Task UpdateReflink(ulong id, string reflink, ulong guildId);
         Task DeleteReflink(ulong id, ulong guildId);
+        Task Update(ulong id, Reflink reflink, ulong guildId);
     }
 }

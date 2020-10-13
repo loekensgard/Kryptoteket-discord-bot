@@ -75,6 +75,22 @@ namespace Kryptoteket.Bot.Services
             return builder;
         }
 
+        public EmbedBuilder EmbedOwnRef(Reflink reflink)
+        {
+            EmbedBuilder builder = new EmbedBuilder();
+            builder.WithTitle(reflink.Name);
+            builder.AddField("Id", reflink.id, true);
+            builder.AddField("Approved", reflink.Approved.ToString(), true);
+            builder.AddField("Link", reflink.Link);
+
+            if (!reflink.Approved)
+            {
+                builder.WithFooter(footer => footer.Text = "Mods and admins can approve");
+            }
+
+            return builder;
+        }
+
         public EmbedBuilder EmbedTopLosers(List<Gainers> topGainers, int top, string timePeriod)
         {
             EmbedBuilder builder = new EmbedBuilder();

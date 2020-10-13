@@ -32,9 +32,13 @@ namespace Kryptoteket.Bot.CosmosDB.Repositories
             return entity != null;
         }
 
-        public async Task<List<Reflink>> GetReflinks(ulong guildId)
+        public async Task<List<Reflink>> GetReflinks(ulong guildId, bool approved = false)
         {
-            return await _set.AsAsyncEnumerable().Where(r => r.GuildId == guildId.ToString()).ToListAsync();
+            var list = _set.AsAsyncEnumerable().Where(r => r.GuildId == guildId.ToString());
+
+            if (approved) list = list.Where(r => r.Approved);
+
+            return await list.ToListAsync();
         }
 
         public async Task<Reflink> GetReflink(ulong id, ulong guildId)
@@ -59,6 +63,16 @@ namespace Kryptoteket.Bot.CosmosDB.Repositories
             if (entity != null)
             {
                 _set.Remove(entity);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task Update(ulong id, Reflink reflink, ulong guildId)
+        {
+            var entity = await _set.AsQueryable().FirstOrDefaultAsync(r => r.id == id.ToString() && r.GuildId == guildId.ToString());
+            if (entity != null)
+            {
+                _context.Entry(entity).CurrentValues.SetValues(reflink);
                 await _context.SaveChangesAsync();
             }
         }
