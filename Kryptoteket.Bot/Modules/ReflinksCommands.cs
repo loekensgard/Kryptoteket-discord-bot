@@ -109,7 +109,7 @@ namespace Kryptoteket.Bot.Modules
         public async Task ApproveRef(SocketGuildUser user)
         {
             var approver = Context.User as SocketGuildUser;
-            if (!approver.GuildPermissions.KickMembers || approver.Id != 396311377247207434) { await ReplyAsync($"You don't have permissions to do that"); return; }
+            if (!approver.GuildPermissions.KickMembers && approver.Id != 396311377247207434) { await ReplyAsync($"You don't have permissions to do that"); return; }
 
             if (user == null) { await ReplyAsync($"Found no user"); return; }
             var guild = Context.Guild as SocketGuild;
@@ -124,7 +124,7 @@ namespace Kryptoteket.Bot.Modules
             }
             else
             {
-                await ReplyAsync($"{user.Username} is already approved"); 
+                await ReplyAsync($"{user.Username} is already approved");
             }
         }
 
