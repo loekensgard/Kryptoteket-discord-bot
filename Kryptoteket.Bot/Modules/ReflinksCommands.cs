@@ -89,7 +89,6 @@ namespace Kryptoteket.Bot.Modules
             if (!reflink.Contains("https://miraiex.com/affiliate/?referral=")) { await ReplyAsync($"Reflink is wrong format"); return; }
 
             await _reflinkRepository.UpdateReflink(user.Id, reflink, guild.Id);
-
             await ReplyAsync($"Reflink was updated");
         }
 
@@ -106,10 +105,12 @@ namespace Kryptoteket.Bot.Modules
         }
 
         [Command("approve", RunMode = RunMode.Async)]
-        [RequireUserPermission(GuildPermission.KickMembers)]
         [Summary("Approve reflink")]
         public async Task ApproveRef(SocketGuildUser user)
         {
+            var approver = Context.User as SocketGuildUser;
+            if (!approver.GuildPermissions.KickMembers || approver.Id != 396311377247207434) { await ReplyAsync($"You don't have permissions to do that"); return; }
+
             if (user == null) { await ReplyAsync($"Found no user"); return; }
             var guild = Context.Guild as SocketGuild;
 
@@ -119,6 +120,11 @@ namespace Kryptoteket.Bot.Modules
             {
                 reflink.Approved = true;
                 await _reflinkRepository.Update(user.Id, reflink, guild.Id);
+                await ReplyAsync($"{user.Username} is approved");
+            }
+            else
+            {
+                await ReplyAsync($"{user.Username} is already approved"); 
             }
         }
 
