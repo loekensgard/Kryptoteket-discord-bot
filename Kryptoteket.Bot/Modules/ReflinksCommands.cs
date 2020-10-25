@@ -94,13 +94,20 @@ namespace Kryptoteket.Bot.Modules
 
         [Command("deleteref", RunMode = RunMode.Async)]
         [Summary("Delete your reflink")]
-        public async Task DeleteYourReflink()
+        public async Task DeleteYourReflink(SocketGuildUser guildUser = null)
         {
             var user = Context.User as SocketGuildUser;
+
+            if (guildUser != null)
+            {
+                var approver = Context.User as SocketGuildUser;
+                if (!approver.GuildPermissions.KickMembers && approver.Id != 396311377247207434) { await ReplyAsync($"You don't have permissions to do that"); return; }
+
+                user = guildUser;
+            }
             var guild = Context.Guild as SocketGuild;
 
             await _reflinkRepository.DeleteReflink(user.Id, guild.Id);
-
             await ReplyAsync($"Reflink was deleted");
         }
 
@@ -129,10 +136,12 @@ namespace Kryptoteket.Bot.Modules
         }
 
         [Command("reject", RunMode = RunMode.Async)]
-        [RequireUserPermission(GuildPermission.KickMembers)]
         [Summary("Reject reflink")]
         public async Task RejectRef(SocketGuildUser user)
         {
+            var approver = Context.User as SocketGuildUser;
+            if (!approver.GuildPermissions.KickMembers && approver.Id != 396311377247207434) { await ReplyAsync($"You don't have permissions to do that"); return; }
+
             if (user == null) { await ReplyAsync($"Found no user"); return; }
             var guild = Context.Guild as SocketGuild;
 
@@ -142,6 +151,11 @@ namespace Kryptoteket.Bot.Modules
             {
                 reflink.Approved = false;
                 await _reflinkRepository.Update(user.Id, reflink, guild.Id);
+                await ReplyAsync($"{user.Username} is removed from the approved list");
+            }
+            else
+            {
+                await ReplyAsync($"{user.Username} is already removed from the approved list");
             }
         }
     }
