@@ -83,7 +83,8 @@ namespace Kryptoteket.Bot.Modules
                 Price = price.Trim(),
                 id = bet.id + user.Id.ToString(),
                 Name = user.Username,
-                BetId = bet.id
+                BetId = bet.id,
+                BetPlaced = DateTimeOffset.Now
             };
 
             try
