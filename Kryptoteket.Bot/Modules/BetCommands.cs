@@ -33,7 +33,7 @@ namespace Kryptoteket.Bot.Modules
             if (!approver.GuildPermissions.KickMembers && approver.Id != 396311377247207434) { await ReplyAsync($"You don't have permissions to do that"); return; }
 
             DateTimeOffset dateDTO;
-            if (!DateTimeOffset.TryParse(date, CultureInfo.GetCultureInfo("nb-No"), DateTimeStyles.None, out dateDTO)) { await ReplyAsync($"Dateformat is incorrect"); return; }
+            if (!DateTimeOffset.TryParse(date, CultureInfo.GetCultureInfo("nb-NO"), DateTimeStyles.None, out dateDTO)) { await ReplyAsync($"Dateformat is incorrect"); return; }
 
             var bet = new Bet
             {
@@ -98,7 +98,7 @@ namespace Kryptoteket.Bot.Modules
                 await ReplyAsync($"Bet already exists");
                 return;
             }
-            await ReplyAsync($"**{userBet.Name}** | Price: ${price} at {bet.Date.ToString("dd/M/yyyy", CultureInfo.GetCultureInfo("nb-No"))}");
+            await ReplyAsync($"**{userBet.Name}** | Price: ${price} at {bet.Date.ToString("dd/M/yyyy", CultureInfo.GetCultureInfo("nb-NO"))}");
         }
 
         [Command("getbet", RunMode = RunMode.Async)]

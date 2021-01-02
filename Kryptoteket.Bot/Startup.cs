@@ -7,11 +7,14 @@ using Kryptoteket.Bot.InMemoryDB;
 using Kryptoteket.Bot.Interfaces;
 using Kryptoteket.Bot.Services;
 using Kryptoteket.Bot.Services.API;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Serilog.Exceptions;
+using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -77,6 +80,11 @@ namespace Kryptoteket.Bot
                 CaseSensitiveCommands = false,
                 ThrowOnError = false
             }));
+
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                options.DefaultRequestCulture = new RequestCulture("nb-NO");
+            });
 
             services.AddSingleton<IMiraiexAPIService, MiraiexAPIService>();
             services.AddSingleton<ICovid19APIService, Covid19APIService>();

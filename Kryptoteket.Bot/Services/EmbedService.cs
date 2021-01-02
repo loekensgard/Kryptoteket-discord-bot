@@ -80,7 +80,7 @@ namespace Kryptoteket.Bot.Services
             EmbedBuilder builder = new EmbedBuilder();
             StringBuilder sb = new StringBuilder();
 
-            builder.WithTitle($"{bet.Date.ToString("dd/M/yyyy", CultureInfo.GetCultureInfo("nb-No"))}");
+            builder.WithTitle($"{bet.Date.ToString("dd/M/yyyy", CultureInfo.GetCultureInfo("nb-NO"))}");
             foreach (var userBet in bet.Users)
             {
                 sb.AppendLine($"**{userBet.Name}:** ${userBet.Price}");
