@@ -3,6 +3,7 @@ using Discord.WebSocket;
 using Kryptoteket.Bot.Interfaces;
 using Kryptoteket.Bot.Models;
 using Kryptoteket.Bot.Services;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -49,7 +50,7 @@ namespace Kryptoteket.Bot.Modules
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                Log.Error(e, e.Message);
                 await ReplyAsync($"Bet already exists");
                 return;
             }
@@ -93,7 +94,7 @@ namespace Kryptoteket.Bot.Modules
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                Log.Error(e, e.Message);
                 await ReplyAsync($"Bet already exists");
                 return;
             }
