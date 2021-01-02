@@ -37,7 +37,7 @@ namespace Kryptoteket.Bot.Modules
 
             var bet = new Bet
             {
-                id = shortName,
+                id = shortName.ToLower().Trim(),
                 Date = dateDTO,
                 ShortName = shortName,
                 AddedBy = approver.Username,
@@ -63,7 +63,7 @@ namespace Kryptoteket.Bot.Modules
             var approver = Context.User as SocketGuildUser;
             if (!approver.GuildPermissions.KickMembers && approver.Id != 396311377247207434) { await ReplyAsync($"You don't have permissions to do that"); return; }
 
-            await _betRepository.DeleteBet(shortName);
+            await _betRepository.DeleteBet(shortName.ToLower().Trim());
 
             await ReplyAsync($"{shortName} deleted");
         }
@@ -73,14 +73,14 @@ namespace Kryptoteket.Bot.Modules
         public async Task Bet(string shortName, string price)
         {
             var user = Context.User as SocketGuildUser;
-            var bet = await _betRepository.Getbet(shortName);
+            var bet = await _betRepository.Getbet(shortName.ToLower().Trim());
             if (bet == null) { await ReplyAsync($"Bet Doesn't exist"); return; }
 
-            if (!int.TryParse(price, out int priceDTO)) { await ReplyAsync($"Price is incorrect"); return; }
+            if (!int.TryParse(price.Trim(), out int priceDTO)) { await ReplyAsync($"Price is incorrect"); return; }
 
             var userBet = new UserBet
             {
-                Price = price,
+                Price = price.Trim(),
                 id = bet.id + user.Id.ToString(),
                 Name = user.Username,
                 BetId = bet.id
@@ -102,7 +102,7 @@ namespace Kryptoteket.Bot.Modules
         [Summary("Get a bet")]
         public async Task GetBet(string shortName)
         {
-            var bet = await _betRepository.Getbet(shortName);
+            var bet = await _betRepository.Getbet(shortName.Trim().ToLower());
             if (bet == null) { await ReplyAsync($"Bet doesn't exist"); return; }
             var userbets = await _userBetRepository.GetUserBets(bet.id);
 
