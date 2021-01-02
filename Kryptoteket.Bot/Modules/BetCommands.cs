@@ -6,7 +6,6 @@ using Kryptoteket.Bot.Services;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Kryptoteket.Bot.Modules
@@ -48,8 +47,9 @@ namespace Kryptoteket.Bot.Modules
             {
                 await _betRepository.CreateBet(bet);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Console.WriteLine(e.Message);
                 await ReplyAsync($"Bet already exists");
                 return;
             }
@@ -91,8 +91,9 @@ namespace Kryptoteket.Bot.Modules
             {
                 await _userBetRepository.AddUserBet(userBet);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Console.WriteLine(e.Message);
                 await ReplyAsync($"Bet already exists");
                 return;
             }
