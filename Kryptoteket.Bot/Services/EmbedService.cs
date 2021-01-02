@@ -75,6 +75,23 @@ namespace Kryptoteket.Bot.Services
             return builder;
         }
 
+        public EmbedBuilder EmbedBets(Bet bet)
+        {
+            EmbedBuilder builder = new EmbedBuilder();
+            StringBuilder sb = new StringBuilder();
+
+            builder.WithTitle($"{bet.Date.ToString("dd/M/yyyy", CultureInfo.GetCultureInfo("nb-No"))}");
+            foreach (var userBet in bet.Users)
+            {
+                sb.AppendLine($"**{userBet.Name}:** ${userBet.Price}");
+            }
+
+            builder.WithDescription(sb.ToString());
+            builder.WithColor(Color.DarkBlue);
+
+            return builder;
+        }
+
         public EmbedBuilder EmbedOwnRef(Reflink reflink)
         {
             EmbedBuilder builder = new EmbedBuilder();
@@ -137,6 +154,7 @@ namespace Kryptoteket.Bot.Services
             EmbedBuilder builder = new EmbedBuilder();
             builder.WithTitle($"Commands");
             builder.AddField("Crypto", $"!ticker <pair>{Environment.NewLine}!price <pair> <mx / nbx>{Environment.NewLine}!gainers <top> <1h / 24h / 7d / 14d / 30d / 200d / 1y>{Environment.NewLine}!losers <top> <1h / 24h / 7d / 14d / 30d / 200d / 1y>{Environment.NewLine}!graph <currency>");
+            builder.AddField("Bet", $"!addbet <name> <date>{Environment.NewLine}!deletebet <name>{Environment.NewLine}!bet <name> <price>{Environment.NewLine}!getbet <name>");
             builder.AddField("Covid", $"!covid <countryCode / countryName>");
             builder.AddField("Support me", "!support");
             builder.WithColor(Color.DarkBlue);

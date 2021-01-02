@@ -94,6 +94,9 @@ namespace Kryptoteket.Bot
             services.AddTransient<EmbedService>();
 
             services.AddScoped<IReflinkRepository, ReflinkRepository>();
+            services.AddScoped<IBetRepository, BetRepository>();
+            services.AddScoped<IUserBetRepository, UserBetRepository>();
+
             services.AddDbContext<RegistryContext>(options => options.UseCosmos(
                 _configuration.GetSection("Cosmos-Kryptoteket")["EndpointUri"],
                 _configuration.GetSection("Cosmos-Kryptoteket")["PrimaryKey"],
