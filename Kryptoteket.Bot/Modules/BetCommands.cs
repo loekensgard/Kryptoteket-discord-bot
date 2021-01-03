@@ -98,7 +98,7 @@ namespace Kryptoteket.Bot.Modules
                 await ReplyAsync($"Bet already exists");
                 return;
             }
-            await ReplyAsync($"**{userBet.Name}** | Price: ${price} at {bet.Date.ToString("dd/M/yyyy", CultureInfo.GetCultureInfo("nb-NO"))}");
+            await ReplyAsync($"**{userBet.Name}** | Price: ${priceDTO:#,##0} at {bet.Date.ToString("dd/M/yyyy", CultureInfo.GetCultureInfo("nb-NO"))}");
         }
 
         [Command("getbet", RunMode = RunMode.Async)]
