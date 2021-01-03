@@ -81,7 +81,7 @@ namespace Kryptoteket.Bot.Services
             StringBuilder sb = new StringBuilder();
 
             builder.WithTitle($"{bet.Date.ToString("dd/M/yyyy", CultureInfo.GetCultureInfo("nb-NO"))}");
-            foreach (var userBet in bet.Users)
+            foreach (var userBet in bet.Users.OrderByDescending(p => int.Parse(p.Price)))
             {
                 int price;
                 if(int.TryParse(userBet.Price, out price))
