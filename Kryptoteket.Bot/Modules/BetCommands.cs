@@ -1,5 +1,6 @@
 ﻿using Discord.Commands;
 using Discord.WebSocket;
+using Kryptoteket.Bot.Exceptions;
 using Kryptoteket.Bot.Interfaces;
 using Kryptoteket.Bot.Models;
 using Kryptoteket.Bot.Services;
@@ -92,10 +93,16 @@ namespace Kryptoteket.Bot.Modules
             {
                 await _userBetRepository.AddUserBet(userBet);
             }
-            catch (Exception e)
+            catch (BetExistsException e)
             {
                 Log.Error(e, e.Message);
                 await ReplyAsync($"Bet already exists");
+                return;
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, e.Message);
+                await ReplyAsync($"Error: {e.Message}");
                 return;
             }
             await ReplyAsync($"**{userBet.Name}** | Price: ${priceDTO:#,##0} at {bet.Date.ToString("dd/M/yyyy", CultureInfo.GetCultureInfo("nb-NO"))}");

@@ -1,5 +1,7 @@
-﻿using Kryptoteket.Bot.Interfaces;
+﻿using Kryptoteket.Bot.Exceptions;
+using Kryptoteket.Bot.Interfaces;
 using Kryptoteket.Bot.Models;
+using Microsoft.Azure.Cosmos;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
@@ -22,6 +24,12 @@ namespace Kryptoteket.Bot.CosmosDB.Repositories
             {
                 _set.Add(bet);
                 await _context.SaveChangesAsync();
+            }
+            catch(CosmosException ex)
+            {
+                if (ex.StatusCode == System.Net.HttpStatusCode.Conflict)
+                    throw new BetExistsException();
+
             }
             catch(Exception)
             {
