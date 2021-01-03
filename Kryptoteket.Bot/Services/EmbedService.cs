@@ -83,7 +83,9 @@ namespace Kryptoteket.Bot.Services
             builder.WithTitle($"{bet.Date.ToString("dd/M/yyyy", CultureInfo.GetCultureInfo("nb-NO"))}");
             foreach (var userBet in bet.Users)
             {
-                sb.AppendLine($"**{userBet.Name}:** ${userBet.Price}");
+                int price;
+                if(int.TryParse(userBet.Price, out price))
+                    sb.AppendLine($"**{userBet.Name}:** ${price:#,##0}");
             }
 
             builder.WithDescription(sb.ToString());
