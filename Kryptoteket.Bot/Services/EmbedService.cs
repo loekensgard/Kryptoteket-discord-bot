@@ -235,13 +235,13 @@ namespace Kryptoteket.Bot.Services
                 sb.Append("**None**");
             else
             {
+                sb.Append("**");
                 foreach (var role in roles)
                 {
                     var ro = role.Name.Replace("@", String.Empty);
-                    sb.Append("**");
-                    sb.Append($"{StringExtensions.FirstCharToUpper(ro)} ");
-                    sb.Append("**");
+                    sb.Append($"{StringExtensions.FirstCharToUpper(ro)},");
                 }
+                sb.Append("**");
             }
 
             sb.AppendLine();
