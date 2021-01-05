@@ -72,7 +72,7 @@ namespace Kryptoteket.Bot.Services
 
             builder.WithDescription(sb.ToString());
             builder.WithColor(Color.DarkBlue);
-            builder.WithFooter(footer => footer.Text = $"Updated: {topGainers.First().LastUpdated.ToString("dd.MM.yy HH:mm")}");
+            builder.WithFooter(footer => footer.Text = $"Updated: {topGainers.First().LastUpdated:dd.MM.yy HH:mm}");
 
             return builder;
         }
@@ -124,7 +124,7 @@ namespace Kryptoteket.Bot.Services
 
             builder.WithDescription(sb.ToString());
             builder.WithColor(Color.DarkBlue);
-            builder.WithFooter(footer => footer.Text = $"Updated: {topGainers.First().LastUpdated.ToString("dd.MM.yy HH:mm")}");
+            builder.WithFooter(footer => footer.Text = $"Updated: {topGainers.First().LastUpdated:dd.MM.yy HH:mm}");
 
             return builder;
         }
@@ -149,7 +149,7 @@ namespace Kryptoteket.Bot.Services
             //Convert UNIX Epoch to readable string
             var readabletime = DateTimeOffset.FromUnixTimeMilliseconds(updated);
 
-            builder.WithFooter(footer => footer.Text = $"Updated: {readabletime.ToString("dd.MM.yy HH:mm")}");
+            builder.WithFooter(footer => footer.Text = $"Updated: {readabletime:dd.MM.yy HH:mm}");
             return builder;
         }
 

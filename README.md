@@ -39,6 +39,22 @@ Discord bot for retrieving crypto prices and tickers at [Kryptotekets discord](h
 !reject <@user>      | Reject reflink for user
 ```
 
+### Bets
+
+```
+!getbet <name>
+!addbet <name> <date>
+!deletebet <name>
+!bet <name> <price>
+```
+
+### Info/Stats
+
+```
+!serverinfo
+!userinfo
+```
+
 ### Misc
 
 ```
