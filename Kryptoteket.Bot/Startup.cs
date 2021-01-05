@@ -70,7 +70,8 @@ namespace Kryptoteket.Bot
             services.AddSingleton(new DiscordSocketClient(new DiscordSocketConfig
             {
                 LogLevel = Discord.LogSeverity.Verbose,
-                MessageCacheSize = 1000
+                MessageCacheSize = 1000,
+                AlwaysDownloadUsers = true
             }));
 
             services.AddSingleton(new CommandService(new CommandServiceConfig
