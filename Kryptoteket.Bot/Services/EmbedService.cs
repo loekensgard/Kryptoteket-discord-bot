@@ -241,7 +241,7 @@ namespace Kryptoteket.Bot.Services
                 foreach (var role in roles)
                 {
                     var ro = role.Name.Replace("@", String.Empty);
-                    sb.Append($"{StringExtensions.FirstCharToUpper(ro)},");
+                    sb.Append($"{StringExtensions.FirstCharToUpper(ro)} ");
                 }
                 sb.Append("**");
             }
