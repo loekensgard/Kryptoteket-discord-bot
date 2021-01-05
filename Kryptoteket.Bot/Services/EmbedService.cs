@@ -193,7 +193,7 @@ namespace Kryptoteket.Bot.Services
 
         public EmbedBuilder EmbedServerInfo(SocketGuild guild)
         {
-            var online = guild.Users.Where(x => x.Status != UserStatus.Offline);
+            var online = guild.Users.Where(x => x.Status == UserStatus.Online);
             var bots = guild.Users.Where(x => x.IsBot);
             var textCh = guild.TextChannels.Count();
 
@@ -206,10 +206,10 @@ namespace Kryptoteket.Bot.Services
             builder.AddField("Channel Categories", guild.CategoryChannels.Count(), true);
             builder.AddField("Text Channels", guild.TextChannels.Count(), true);
             builder.AddField("Voice Channels", guild.VoiceChannels.Count(), true);
-            builder.AddField("Bots", bots.Count(), true);
-            builder.AddField("Members", guild.MemberCount, true);
             builder.AddField("Roles", guild.Roles.Count, true);
+            builder.AddField("Members", guild.MemberCount, true);
             builder.AddField("Online", online.Count(), true);
+            builder.AddField("Bots", bots.Count(), true);
             builder.AddField("Created", guild.CreatedAt.ToString("dd.MM.yy"));
             builder.WithCurrentTimestamp();
 

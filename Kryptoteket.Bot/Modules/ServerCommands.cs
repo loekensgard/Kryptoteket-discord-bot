@@ -24,9 +24,9 @@ namespace Kryptoteket.Bot.Modules
         public async Task GetServerInfo()
         {
             var guild = Context.Guild;
+            await guild.DownloadUsersAsync();
 
             await ReplyAsync(null, false, _embedService.EmbedServerInfo(guild).Build());
         }
-
     }
 }
