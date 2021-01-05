@@ -232,7 +232,7 @@ namespace Kryptoteket.Bot.Services
             sb.Append($"Roles: ");
 
             if (!roles.Any())
-                sb.AppendLine("**None**");
+                sb.Append("**None**");
             else
             {
                 foreach (var role in roles)
