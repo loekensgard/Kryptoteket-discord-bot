@@ -255,9 +255,9 @@ namespace Kryptoteket.Bot.Services
             {
                 sb.AppendLine();
                 sb.AppendLine("**Bets**");
-                sb.Append("Bets Won: ");
+                sb.Append("Bets top 3: ");
                 foreach (var bet in points.BetsWon.ToList())
-                    sb.Append(bet + " ");
+                    sb.Append($"**{bet}** ");
                 sb.AppendLine();
                 sb.AppendLine($"Stonks: **{points.Points}**");
             }
