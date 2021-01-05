@@ -1,4 +1,5 @@
 ﻿using Discord;
+using Discord.WebSocket;
 using Kryptoteket.Bot.Models;
 using System;
 using System.Collections.Generic;
@@ -186,6 +187,31 @@ namespace Kryptoteket.Bot.Services
             EmbedBuilder builder = new EmbedBuilder();
             builder.AddField("Reflinks", $"{content}");
             builder.WithFooter(footer => footer.Text = "Add your link with !addref <link>");
+
+            return builder;
+        }
+
+        public EmbedBuilder EmbedServerInfo(SocketGuild guild)
+        {
+            var online = guild.Users.Where(x => x.Status != UserStatus.Offline);
+            var bots = guild.Users.Where(x => x.IsBot);
+            var textCh = guild.TextChannels.Count();
+
+            EmbedBuilder builder = new EmbedBuilder();
+            builder.WithColor(Color.Gold);
+            builder.WithTitle("Server Info");
+            //builder.WithDescription($"{guild.Name}'s information");
+            builder.AddField("Owner", guild.GetUser(guild.OwnerId)?.Username ?? "Casper!", true);
+            builder.AddField("Region", guild.VoiceRegionId, true);
+            builder.AddField("Channel Categories", guild.CategoryChannels.Count(), true);
+            builder.AddField("Text Channels", guild.TextChannels.Count(), true);
+            builder.AddField("Voice Channels", guild.VoiceChannels.Count(), true);
+            builder.AddField("Bots", bots.Count(), true);
+            builder.AddField("Members", guild.MemberCount, true);
+            builder.AddField("Roles", guild.Roles.Count, true);
+            builder.AddField("Online", online.Count(), true);
+            builder.AddField("Created", guild.CreatedAt.ToString("dd.MM.yy"));
+            builder.WithCurrentTimestamp();
 
             return builder;
         }
