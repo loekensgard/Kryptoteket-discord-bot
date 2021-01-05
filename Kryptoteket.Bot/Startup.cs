@@ -105,6 +105,7 @@ namespace Kryptoteket.Bot
             services.AddScoped<IReflinkRepository, ReflinkRepository>();
             services.AddScoped<IBetRepository, BetRepository>();
             services.AddScoped<IUserBetRepository, UserBetRepository>();
+            services.AddScoped<IBetWinnersRepository, BetWinnersRepository>();
 
             services.AddDbContext<RegistryContext>(options => options.UseCosmos(
                 _configuration.GetSection("Cosmos-Kryptoteket")["EndpointUri"],

@@ -221,7 +221,7 @@ namespace Kryptoteket.Bot.Services
             return builder;
         }
 
-        public EmbedBuilder EmbedMyInfo(SocketGuild guild, SocketGuildUser user)
+        public EmbedBuilder EmbedMyInfo(SocketGuild guild, SocketGuildUser user, BetWinner points)
         {
             var sortedJoinedMembers = guild.Users.OrderBy(x => x.JoinedAt).ToList();
             int index = sortedJoinedMembers.FindIndex(x => x.Id == user.Id);
@@ -251,6 +251,9 @@ namespace Kryptoteket.Bot.Services
             sb.AppendLine($"Account Created: **{user.CreatedAt:dd.MM.yy}**");
             sb.Append($"Server Joined: **{user.JoinedAt?.ToString("dd.MM.yy")}** **`(#{index + 1})`**");
             sb.AppendLine();
+            if (points != null)
+                sb.AppendLine($"Bet points: **{points.Points}**");
+
             if (user.Username.ToLower() == "bredesen")
                 sb.AppendLine("Big PP: **Yes**");
 

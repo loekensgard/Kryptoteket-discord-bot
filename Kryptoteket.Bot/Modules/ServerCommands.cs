@@ -1,5 +1,6 @@
 ﻿using Discord.Commands;
 using Discord.WebSocket;
+using Kryptoteket.Bot.Interfaces;
 using Kryptoteket.Bot.Services;
 using System;
 using System.Collections.Generic;
@@ -13,10 +14,12 @@ namespace Kryptoteket.Bot.Modules
     public class ServerCommands : ModuleBase<SocketCommandContext>
     {
         private readonly EmbedService _embedService;
+        private readonly IBetWinnersRepository _betWinnersRepository;
 
-        public ServerCommands(EmbedService embedService)
+        public ServerCommands(EmbedService embedService, IBetWinnersRepository betWinnersRepository)
         {
             _embedService = embedService;
+            _betWinnersRepository = betWinnersRepository;
         }
 
         [Command("serverinfo", RunMode = RunMode.Async)]
@@ -35,7 +38,9 @@ namespace Kryptoteket.Bot.Modules
             var guild = Context.Guild;
             var user = Context.User as SocketGuildUser;
 
-            await ReplyAsync(null, false, _embedService.EmbedMyInfo(guild, user).Build());
+            var points = await _betWinnersRepository.GetBetWinner(user.Id.ToString() + "bet");
+
+            await ReplyAsync(null, false, _embedService.EmbedMyInfo(guild, user, points).Build());
         }
 
     }

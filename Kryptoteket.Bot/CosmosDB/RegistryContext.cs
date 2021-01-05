@@ -1,5 +1,6 @@
 ﻿using Kryptoteket.Bot.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace Kryptoteket.Bot.CosmosDB
 {
@@ -8,6 +9,7 @@ namespace Kryptoteket.Bot.CosmosDB
         public DbSet<Reflink> Reflinks { get; set; }
         public DbSet<Bet> Bets { get; set; }
         public DbSet<UserBet> UserBets { get; set; }
+        public DbSet<BetWinner> BetWinners { get; set; }
 
         public RegistryContext(DbContextOptions options)
         : base(options)
@@ -29,6 +31,15 @@ namespace Kryptoteket.Bot.CosmosDB
 
             modelBuilder.Entity<UserBet>()
                 .HasKey(u => u.id);
+
+            modelBuilder.Entity<BetWinner>()
+                .HasKey(r => r.id);
+
+            modelBuilder.Entity<BetWinner>()
+                .Property(b => b.BetsWon)
+                .HasConversion(
+                v => string.Join(',', v),
+                v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
         }
     }
 }
