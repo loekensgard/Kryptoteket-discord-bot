@@ -37,6 +37,7 @@ namespace Kryptoteket.Bot.Services
             return builder;
         }
 
+
         public EmbedBuilder EmbedSparkline(ChartResult result)
         {
             EmbedBuilder builder = new EmbedBuilder();
@@ -85,7 +86,7 @@ namespace Kryptoteket.Bot.Services
             foreach (var userBet in bet.Users.OrderByDescending(p => int.Parse(p.Price)))
             {
                 int price;
-                if(int.TryParse(userBet.Price, out price))
+                if (int.TryParse(userBet.Price, out price))
                     sb.AppendLine($"**{userBet.Name}:** ${price:#,##0}");
             }
 
@@ -200,6 +201,7 @@ namespace Kryptoteket.Bot.Services
             EmbedBuilder builder = new EmbedBuilder();
             builder.WithColor(Color.Gold);
             builder.WithTitle("Server Info");
+            //builder.WithImageUrl(guild.IconUrl);
             //builder.WithDescription($"{guild.Name}'s information");
             builder.AddField("Owner", guild.GetUser(guild.OwnerId)?.Username ?? "Casper!", true);
             builder.AddField("Region", guild.VoiceRegionId, true);
@@ -211,7 +213,47 @@ namespace Kryptoteket.Bot.Services
             builder.AddField("Online", online.Count(), true);
             builder.AddField("Bots", bots.Count(), true);
             builder.AddField("Created", guild.CreatedAt.ToString("dd.MM.yy"));
+            builder.WithThumbnailUrl(guild.IconUrl);
             builder.WithCurrentTimestamp();
+
+            return builder;
+        }
+
+        public EmbedBuilder EmbedMyInfo(SocketGuild guild, SocketGuildUser user)
+        {
+            var sortedJoinedMembers = guild.Users.OrderBy(x => x.JoinedAt).ToList();
+            int index = sortedJoinedMembers.FindIndex(x => x.Id == user.Id);
+            var roles = user.Roles;
+
+            EmbedBuilder builder = new EmbedBuilder();
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine($"Name: **{user.Username}#{user.Discriminator}**");
+            sb.Append($"Roles: ");
+
+            if (roles.Count == 0)
+                sb.AppendLine("**None**");
+            else
+            {
+                foreach (var role in roles)
+                {
+                    if (!role.IsEveryone)
+                        sb.Append($"**{StringExtensions.FirstCharToUpper(role.Name.Remove(0, 1))} **");
+                }
+            }
+
+            sb.AppendLine();
+            sb.AppendLine($"Nickname: **{user.Nickname ?? "None"}**");
+            sb.AppendLine($"Account Created: **{user.CreatedAt:dd.MM.yy}**");
+            sb.Append($"Server Joined: **{user.JoinedAt?.ToString("dd.MM.yy")}** **`(#{index + 1})`**");
+            sb.AppendLine();
+            if (user.Username.ToLower() == "bredesen")
+                sb.AppendLine("Big PP: **Yes**");
+
+            builder.WithTitle($"Userinfo about {user.Username}");
+            builder.WithDescription(sb.ToString());
+            builder.WithThumbnailUrl(user.GetAvatarUrl());
+            builder.WithColor(Color.Gold);
 
             return builder;
         }
