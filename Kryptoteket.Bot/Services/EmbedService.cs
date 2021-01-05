@@ -252,7 +252,15 @@ namespace Kryptoteket.Bot.Services
             sb.Append($"Server Joined: **{user.JoinedAt?.ToString("dd.MM.yy")}** **`(#{index + 1})`**");
             sb.AppendLine();
             if (points != null)
-                sb.AppendLine($"Bet points: **{points.Points}**");
+            {
+                sb.AppendLine();
+                sb.AppendLine("**Bets**");
+                sb.Append("Bets Won: ");
+                foreach (var bet in points.BetsWon.ToList())
+                    sb.Append(bet + " ");
+                sb.AppendLine();
+                sb.AppendLine($"Stonks: **{points.Points}**");
+            }
 
             if (user.Username.ToLower() == "bredesen")
                 sb.AppendLine("Big PP: **Yes**");

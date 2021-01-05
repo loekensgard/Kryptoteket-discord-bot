@@ -27,6 +27,7 @@ namespace Kryptoteket.Bot.Modules
         public async Task GetServerInfo()
         {
             var guild = Context.Guild;
+            await guild.DownloadUsersAsync();
 
             await ReplyAsync(null, false, _embedService.EmbedServerInfo(guild).Build());
         }
@@ -37,6 +38,7 @@ namespace Kryptoteket.Bot.Modules
         {
             var guild = Context.Guild;
             var user = Context.User as SocketGuildUser;
+            await guild.DownloadUsersAsync();
 
             var points = await _betWinnersRepository.GetBetWinner(user.Id.ToString() + "bet");
 
