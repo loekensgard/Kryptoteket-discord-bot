@@ -223,7 +223,7 @@ namespace Kryptoteket.Bot.Services
         {
             var sortedJoinedMembers = guild.Users.OrderBy(x => x.JoinedAt).ToList();
             int index = sortedJoinedMembers.FindIndex(x => x.Id == user.Id);
-            var roles = user.Roles;
+            var roles = user.Roles.Where(x => !x.IsEveryone);
 
             EmbedBuilder builder = new EmbedBuilder();
             StringBuilder sb = new StringBuilder();
@@ -231,14 +231,16 @@ namespace Kryptoteket.Bot.Services
             sb.AppendLine($"Name: **{user.Username}#{user.Discriminator}**");
             sb.Append($"Roles: ");
 
-            if (roles.Count == 0)
+            if (!roles.Any())
                 sb.AppendLine("**None**");
             else
             {
                 foreach (var role in roles)
                 {
-                    if (!role.IsEveryone)
-                        sb.Append($"**{StringExtensions.FirstCharToUpper(role.Name.Remove(0, 1))} **");
+                    var ro = role.Name.Replace("@", String.Empty);
+                    sb.Append("**");
+                    sb.Append($"{StringExtensions.FirstCharToUpper(ro)} ");
+                    sb.Append("**");
                 }
             }
 
