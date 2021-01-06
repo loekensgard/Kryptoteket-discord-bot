@@ -221,7 +221,7 @@ namespace Kryptoteket.Bot.Services
             return builder;
         }
 
-        public EmbedBuilder EmbedMyInfo(SocketGuild guild, SocketGuildUser user, BetWinner points)
+        public EmbedBuilder EmbedMyInfo(SocketGuild guild, SocketGuildUser user, BetWinner points = null)
         {
             var sortedJoinedMembers = guild.Users.OrderBy(x => x.JoinedAt).ToList();
             int index = sortedJoinedMembers.FindIndex(x => x.Id == user.Id);
