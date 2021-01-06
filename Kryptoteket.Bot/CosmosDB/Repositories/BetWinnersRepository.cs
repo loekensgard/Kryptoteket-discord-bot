@@ -1,6 +1,7 @@
 ﻿using Kryptoteket.Bot.Interfaces;
 using Kryptoteket.Bot.Models;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +28,14 @@ namespace Kryptoteket.Bot.CosmosDB.Repositories
 
         public async Task<BetWinner> GetBetWinner(string id)
         {
-            return await _set.FindAsync(id);
+            try
+            {
+                return await _set.FindAsync(id);
+            }catch(Exception e)
+            {
+                Log.Error(e, e.Message);
+                return null;
+            }
         }
     }
 }
