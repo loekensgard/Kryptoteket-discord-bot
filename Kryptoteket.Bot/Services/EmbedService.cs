@@ -23,7 +23,7 @@ namespace Kryptoteket.Bot.Services
             return builder;
         }
 
-        public EmbedBuilder EmbedPrice(string pair, Price price, string exchangeName)
+        public EmbedBuilder EmbedPrice(string pair, Price price, string exchangeName, string thumbnail)
         {
             EmbedBuilder builder = new EmbedBuilder();
 
@@ -33,6 +33,7 @@ namespace Kryptoteket.Bot.Services
             builder.AddField("Low", price.Low);
             if (price.ATH != null) builder.AddField("ATH", price.ATH);
             builder.AddField("Change last 24h", $"{Math.Truncate((double)Convert.ToDouble(price.Change, CultureInfo.InvariantCulture) * 100) / 100}%");
+            builder.WithThumbnailUrl(thumbnail);
             builder.WithColor(Color.DarkBlue);
             return builder;
         }

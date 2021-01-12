@@ -32,6 +32,7 @@ namespace Kryptoteket.Bot.Modules
 
             var price = new Price();
             var source = "CoinGecko";
+            var thumbnail = "";
 
             try
             {
@@ -40,17 +41,20 @@ namespace Kryptoteket.Bot.Modules
                 if (!string.IsNullOrEmpty(exchange) && exchange.Trim().ToLower() == "mx")
                 {
                     source = "MiraiEx";
+                    thumbnail = "https://res.cloudinary.com/climb/image/upload/v1582299567/ahaehiqfj7nqhhpu9cfz.png";
                     price = await _miraiexService.GetPrice(pair.Trim().ToLower());
                     if (price == null) { await ReplyAsync($"The market {pair} is not supported at {source}", false); return; }
                 }
                 else if (!string.IsNullOrEmpty(exchange) && exchange.Trim().ToLower() == "nbx")
                 {
                     source = "NBX";
+                    thumbnail = "https://pbs.twimg.com/profile_images/1090176246573600768/0fWX-0T3.jpg";
                     price = await _nBXAPIService.GetPrice(pair.Trim().ToLower());
                     if (price == null) { await ReplyAsync($"The market {pair} is not supported at {source}", false); return; }
                 }
                 else
                 {
+                    thumbnail = "https://static.coingecko.com/s/thumbnail-007177f3eca19695592f0b8b0eabbdae282b54154e1be912285c9034ea6cbaf2.png";
                     price = await _coinGeckoAPI.GetPrice(pair.Trim().ToLower());
                     if (price == null) { await ReplyAsync($"The market {pair} is not supported at {source}", false); return; }
                 }
@@ -68,7 +72,7 @@ namespace Kryptoteket.Bot.Modules
                 await ReplyAsync($"LOL: {e.Message}", false); return;
             }
 
-            var builder = _embedService.EmbedPrice(pair.Trim().ToUpper(), price, source);
+            var builder = _embedService.EmbedPrice(pair.Trim().ToUpper(), price, source, thumbnail);
             await ReplyAsync(null, false, builder.Build());
         }
 
