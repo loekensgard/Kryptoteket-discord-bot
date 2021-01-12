@@ -1,9 +1,11 @@
 ﻿using Discord.Commands;
 using Kryptoteket.Bot.Configurations;
+using Kryptoteket.Bot.Exceptions;
 using Kryptoteket.Bot.Interfaces;
 using Kryptoteket.Bot.Models;
 using Kryptoteket.Bot.Services;
 using Microsoft.Extensions.Options;
+using System;
 using System.Threading.Tasks;
 
 namespace Kryptoteket.Bot.Modules
@@ -32,25 +34,36 @@ namespace Kryptoteket.Bot.Modules
             if (string.IsNullOrEmpty(exchange)) { await ReplyAsync($"Exchange cannot be empty", false); return; }
 
             var ticker = new Ticker();
-            string source;
-            string thumbnail;
+            string source = "";
+            string thumbnail = "";
 
-            if(exchange.Trim().ToLower() == "mx")
+            try
             {
-                source = "MiraiEx";
-                thumbnail = _options.MiraiexIMG;
-                ticker = await _miraiexService.GetTicker(pair.Trim().ToLower());
+                if (exchange.Trim().ToLower() == "mx")
+                {
+                    source = "MiraiEx";
+                    thumbnail = _options.MiraiexIMG;
+                    ticker = await _miraiexService.GetTicker(pair.Trim().ToLower());
+                }
+                else if (exchange.Trim().ToLower() == "nbx")
+                {
+                    source = "NBX";
+                    thumbnail = _options.NBXIMG;
+                    ticker = await _nBXAPIService.GetTicker(pair.Trim().ToLower());
+                }
+                else
+                {
+                    await ReplyAsync($"WTF is {exchange}?", false);
+                    return;
+                }
             }
-            else if (exchange.Trim().ToLower() == "nbx")
+            catch (ApiException e)
             {
-                source = "NBX";
-                thumbnail = _options.NBXIMG;
-                ticker = await _nBXAPIService.GetTicker(pair.Trim().ToLower());
+                await ReplyAsync($"API failed with statuscode: {e.StatusCode}", false); return;
             }
-            else
+            catch (Exception e)
             {
-                await ReplyAsync($"WTF is {exchange}?", false); 
-                return; 
+                await ReplyAsync($"LOL: {e.Message}", false); return;
             }
 
             if (ticker == null) { await ReplyAsync($"The market {pair} is not supported", false); return; }
