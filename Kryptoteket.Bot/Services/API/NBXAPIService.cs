@@ -68,7 +68,7 @@ namespace Kryptoteket.Bot.Services.API
 
                 var first = trades.OrderBy(x => x.CreatedAt).First();
                 var last = trades.OrderByDescending(x => x.CreatedAt).First();
-                var change24 = ((double.Parse(first.Price) - double.Parse(last.Price)) / double.Parse(last.Price)) * 100;
+                var change24 = ((double.Parse(last.Price) - double.Parse(first.Price)) / double.Parse(first.Price)) * 100;
 
                 return new Price
                 {
