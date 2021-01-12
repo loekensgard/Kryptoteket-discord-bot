@@ -10,5 +10,6 @@ namespace Kryptoteket.Bot.Interfaces
     public interface INBXAPIService
     {
         Task<Price> GetPrice(string pair);
+        Task<Ticker> GetTicker(string pair);
     }
 }

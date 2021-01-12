@@ -24,6 +24,49 @@ namespace Kryptoteket.Bot.Services.API
             _httpResponseService = httpResponseService;
         }
 
+        public async Task<Ticker> GetTicker(string pair)
+        {
+            var orders = new List<NBXOrders>();
+            using (var client = new HttpClient())
+            using (var requets = new HttpRequestMessage(HttpMethod.Get, $"{_exchnagesConfiguration.NBXAPIUri}markets/{pair.Insert(3, "-")}/orders"))
+            {
+                using (var response = await client.SendAsync(requets, HttpCompletionOption.ResponseHeadersRead))
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        orders = await _httpResponseService.DeserializeJsonFromStream<List<NBXOrders>>(response);
+                    }
+
+                    if (response.StatusCode == System.Net.HttpStatusCode.NotFound || response.StatusCode == System.Net.HttpStatusCode.NotAcceptable)
+                        return null;
+
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        var content = await _httpResponseService.StreamToStringAsync(await response.Content.ReadAsStreamAsync());
+
+                        throw new ApiException(message: content)
+                        {
+                            StatusCode = (int)response.StatusCode,
+                            Content = content
+                        };
+                    }
+                }
+            }
+
+            var ask = orders.Find(x => x.Side.ToLower() == "buy");
+            var bid = orders.Find(x => x.Side.ToLower() == "sell");
+            var spread = double.Parse(bid.Price) - double.Parse(ask.Price);
+
+            var ticker = new Ticker
+            {
+                Ask = bid.Price,
+                Bid = ask.Price,
+                Spread = spread.ToString("#.##")
+            };
+
+            return ticker;
+        }
+
         public async Task<Price> GetPrice(string pair)
         {
 
@@ -41,14 +84,14 @@ namespace Kryptoteket.Bot.Services.API
                     (output, header) = await CallAPI(pair, header);
                     trades.AddRange(output);
                 }
-                if(header != null)
+                if (header != null)
                 {
                     (output, header) = await CallAPI(pair, header);
                     trades.AddRange(output);
                 }
                 //END
             }
-            catch(Exception)
+            catch (Exception)
             {
                 throw;
             }
@@ -78,7 +121,7 @@ namespace Kryptoteket.Bot.Services.API
                     Change = change24.ToString()
                 };
             }
-            catch(Exception)
+            catch (Exception)
             {
                 throw;
             }
@@ -111,11 +154,6 @@ namespace Kryptoteket.Bot.Services.API
                     };
                 }
             }
-        }
-
-        private static string DoubleToPercentageString(double d)
-        {
-            return "%" + (Math.Round(d, 2) * 100).ToString();
         }
     }
 }

@@ -1,8 +1,10 @@
 ﻿using Discord.Commands;
+using Kryptoteket.Bot.Configurations;
 using Kryptoteket.Bot.Exceptions;
 using Kryptoteket.Bot.Interfaces;
 using Kryptoteket.Bot.Models;
 using Kryptoteket.Bot.Services;
+using Microsoft.Extensions.Options;
 using System;
 using System.Threading.Tasks;
 
@@ -15,13 +17,15 @@ namespace Kryptoteket.Bot.Modules
         private readonly EmbedService _embedService;
         private readonly ICoinGeckoAPIService _coinGeckoAPI;
         private readonly INBXAPIService _nBXAPIService;
+        private readonly ExchangesConfiguration _options;
 
-        public PriceCheckCommands(IMiraiexAPIService miraiexService, EmbedService embedService, ICoinGeckoAPIService coinGeckoAPI, INBXAPIService nBXAPIService)
+        public PriceCheckCommands(IMiraiexAPIService miraiexService, EmbedService embedService, ICoinGeckoAPIService coinGeckoAPI, INBXAPIService nBXAPIService, IOptions<ExchangesConfiguration> options)
         {
             _miraiexService = miraiexService;
             _embedService = embedService;
             _coinGeckoAPI = coinGeckoAPI;
             _nBXAPIService = nBXAPIService;
+            _options = options.Value;
         }
 
         [Command("price", RunMode = RunMode.Async)]
@@ -32,23 +36,21 @@ namespace Kryptoteket.Bot.Modules
 
             var price = new Price();
             var source = "CoinGecko";
-            var thumbnail = "";
+            string thumbnail; ;
 
             try
             {
-
-
                 if (!string.IsNullOrEmpty(exchange) && exchange.Trim().ToLower() == "mx")
                 {
                     source = "MiraiEx";
-                    thumbnail = "https://res.cloudinary.com/climb/image/upload/v1582299567/ahaehiqfj7nqhhpu9cfz.png";
+                    thumbnail = _options.MiraiexIMG;
                     price = await _miraiexService.GetPrice(pair.Trim().ToLower());
                     if (price == null) { await ReplyAsync($"The market {pair} is not supported at {source}", false); return; }
                 }
                 else if (!string.IsNullOrEmpty(exchange) && exchange.Trim().ToLower() == "nbx")
                 {
                     source = "NBX";
-                    thumbnail = "https://pbs.twimg.com/profile_images/1090176246573600768/0fWX-0T3.jpg";
+                    thumbnail = _options.NBXIMG;
                     price = await _nBXAPIService.GetPrice(pair.Trim().ToLower());
                     if (price == null) { await ReplyAsync($"The market {pair} is not supported at {source}", false); return; }
                 }

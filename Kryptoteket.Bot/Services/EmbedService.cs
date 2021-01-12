@@ -11,7 +11,7 @@ namespace Kryptoteket.Bot.Services
 {
     public class EmbedService
     {
-        public EmbedBuilder EmbedTicker(string pair, Ticker ticker, string exchangeName)
+        public EmbedBuilder EmbedTicker(string pair, Ticker ticker, string exchangeName, string thumbnail)
         {
             EmbedBuilder builder = new EmbedBuilder();
 
@@ -19,6 +19,7 @@ namespace Kryptoteket.Bot.Services
             builder.AddField("Ask", RemoveDecimals(ticker.Ask));
             builder.AddField("Bid", RemoveDecimals(ticker.Bid));
             builder.AddField("Spread", RemoveDecimals(ticker.Spread));
+            builder.WithThumbnailUrl(thumbnail);
             builder.WithColor(Color.DarkBlue);
             return builder;
         }
