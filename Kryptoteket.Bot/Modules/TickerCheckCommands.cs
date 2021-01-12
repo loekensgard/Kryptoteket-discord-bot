@@ -57,7 +57,7 @@ namespace Kryptoteket.Bot.Modules
                 {
                     source = "Bitmynt";
                     thumbnail = _options.BitmyntIMG;
-                    ticker = await _bitmyntAPIService.GetTicker();
+                    ticker = await _bitmyntAPIService.GetTicker(pair);
                 }
                 else
                 {

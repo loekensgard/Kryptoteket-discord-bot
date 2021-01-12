@@ -23,10 +23,10 @@ namespace Kryptoteket.Bot.Services.API
             _httpResponseService = httpResponseService;
         }
 
-        //https://bitmynt.no/ticker-nok.pl
-
-        public async Task<Ticker> GetTicker()
+        public async Task<Ticker> GetTicker(string pair)
         {
+            if (pair.ToLower() != "btcnok") return null;
+
             var ticker = new BitmyntTicker();
             using (var client = new HttpClient())
             using (var requets = new HttpRequestMessage(HttpMethod.Get, $"{_exchnagesConfiguration.BitmyntAPIUri}ticker-nok.pl"))
@@ -51,7 +51,6 @@ namespace Kryptoteket.Bot.Services.API
                     }
                 }
             }
-
 
             var spread = double.Parse(ticker.Nok?.Sell) - double.Parse(ticker.Nok?.Buy);
             return new Ticker

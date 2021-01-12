@@ -9,6 +9,6 @@ namespace Kryptoteket.Bot.Interfaces
 {
     public interface IBitmyntAPIService
     {
-        Task<Ticker> GetTicker();
+        Task<Ticker> GetTicker(string pair);
     }
 }
