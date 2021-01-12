@@ -12,7 +12,7 @@ Discord bot for retrieving crypto prices and tickers at [Kryptotekets discord](h
 ### Crypto
 
 ```
-!ticker <pair>
+!ticker <pair> <mx / nbx / bitmynt>
 !price <pair> <mx / nbx>
 !gainers <top> <1h / 24h / 7d / 14d / 30d / 200d / 1y>
 !losers <top> <1h / 24h / 7d / 14d / 30d / 200d / 1y>
@@ -65,7 +65,7 @@ Discord bot for retrieving crypto prices and tickers at [Kryptotekets discord](h
 These can be found under the Modules folder.
 
 ## Data
-All crypto data is retrieved by public APIs at [MiraiEx](https://developers.miraiex.com/) and [CoinGecko](https://www.coingecko.com/)\
+All crypto data is retrieved by public APIs at [MiraiEx](https://developers.miraiex.com/), [CoinGecko](https://www.coingecko.com/), [NBX](https://nbx.com/) and [Bitmynt](https://bitmynt.no/)\
 Coronavirus Statistics is retrieved by public APIs at [Disease.sh](https://disease.sh/docs/)\
 Graphs are made by sparklines from [CoinGecko](https://www.coingecko.com/) and plottend into [QuickChart](https://quickchart.io/)
 
