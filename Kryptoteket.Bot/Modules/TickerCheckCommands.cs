@@ -16,13 +16,15 @@ namespace Kryptoteket.Bot.Modules
         private readonly IMiraiexAPIService _miraiexService;
         private readonly EmbedService _embedService;
         private readonly INBXAPIService _nBXAPIService;
+        private readonly IBitmyntAPIService _bitmyntAPIService;
         private readonly ExchangesConfiguration _options;
 
-        public TickerCheckCommands(IMiraiexAPIService miraiexService, EmbedService embedService, INBXAPIService nBXAPIService, IOptions<ExchangesConfiguration> options)
+        public TickerCheckCommands(IMiraiexAPIService miraiexService, EmbedService embedService, INBXAPIService nBXAPIService, IBitmyntAPIService bitmyntAPIService, IOptions<ExchangesConfiguration> options)
         {
             _miraiexService = miraiexService;
             _embedService = embedService;
             _nBXAPIService = nBXAPIService;
+            _bitmyntAPIService = bitmyntAPIService;
             _options = options.Value;
         }
 
@@ -50,6 +52,12 @@ namespace Kryptoteket.Bot.Modules
                     source = "NBX";
                     thumbnail = _options.NBXIMG;
                     ticker = await _nBXAPIService.GetTicker(pair.Trim().ToLower());
+                }
+                else if(exchange.Trim().ToLower() == "bitmynt")
+                {
+                    source = "Bitmynt";
+                    thumbnail = _options.BitmyntIMG;
+                    ticker = await _bitmyntAPIService.GetTicker();
                 }
                 else
                 {
