@@ -1,7 +1,9 @@
 ﻿using Discord.Commands;
+using Kryptoteket.Bot.Exceptions;
 using Kryptoteket.Bot.Interfaces;
 using Kryptoteket.Bot.Models;
 using Kryptoteket.Bot.Services;
+using System;
 using System.Threading.Tasks;
 
 namespace Kryptoteket.Bot.Modules
@@ -12,12 +14,14 @@ namespace Kryptoteket.Bot.Modules
         private readonly IMiraiexAPIService _miraiexService;
         private readonly EmbedService _embedService;
         private readonly ICoinGeckoAPIService _coinGeckoAPI;
+        private readonly INBXAPIService _nBXAPIService;
 
-        public PriceCheckCommands(IMiraiexAPIService miraiexService, EmbedService embedService, ICoinGeckoAPIService coinGeckoAPI)
+        public PriceCheckCommands(IMiraiexAPIService miraiexService, EmbedService embedService, ICoinGeckoAPIService coinGeckoAPI, INBXAPIService nBXAPIService)
         {
             _miraiexService = miraiexService;
             _embedService = embedService;
             _coinGeckoAPI = coinGeckoAPI;
+            _nBXAPIService = nBXAPIService;
         }
 
         [Command("price", RunMode = RunMode.Async)]
@@ -29,20 +33,39 @@ namespace Kryptoteket.Bot.Modules
             var price = new Price();
             var source = "CoinGecko";
 
-            if (!string.IsNullOrEmpty(exchange) && exchange.Trim().ToLower() == "mx")
+            try
             {
-                source = "MiraiEx";
-                price = await _miraiexService.GetPrice(pair.Trim().ToLower());
-                if (price == null) { await ReplyAsync($"The market {pair} is not supported at {source}", false); return; }
+
+
+                if (!string.IsNullOrEmpty(exchange) && exchange.Trim().ToLower() == "mx")
+                {
+                    source = "MiraiEx";
+                    price = await _miraiexService.GetPrice(pair.Trim().ToLower());
+                    if (price == null) { await ReplyAsync($"The market {pair} is not supported at {source}", false); return; }
+                }
+                else if (!string.IsNullOrEmpty(exchange) && exchange.Trim().ToLower() == "nbx")
+                {
+                    source = "NBX";
+                    price = await _nBXAPIService.GetPrice(pair.Trim().ToLower());
+                    if (price == null) { await ReplyAsync($"The market {pair} is not supported at {source}", false); return; }
+                }
+                else
+                {
+                    price = await _coinGeckoAPI.GetPrice(pair.Trim().ToLower());
+                    if (price == null) { await ReplyAsync($"The market {pair} is not supported at {source}", false); return; }
+                }
             }
-            else if (!string.IsNullOrEmpty(exchange) && exchange.Trim().ToLower() == "nbx")
+            catch(ApiException e)
             {
-                await ReplyAsync($"Method not implemented", false); return;
+                await ReplyAsync($"API failed with statuscode: {e.StatusCode}", false); return;
             }
-            else
+            catch(NBXTradesNullException)
             {
-                price = await _coinGeckoAPI.GetPrice(pair.Trim().ToLower());
-                if (price == null) { await ReplyAsync($"The market {pair} is not supported at {source}", false); return; }
+                await ReplyAsync($"No trades last 24h", false); return;
+            }
+            catch (Exception e)
+            {
+                await ReplyAsync($"LOL: {e.Message}", false); return;
             }
 
             var builder = _embedService.EmbedPrice(pair.Trim().ToUpper(), price, source);

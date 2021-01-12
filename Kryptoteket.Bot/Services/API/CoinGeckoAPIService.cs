@@ -74,7 +74,16 @@ namespace Kryptoteket.Bot.Services.API
 
         public async Task<Price> GetPrice(string pair)
         {
-            var supportedCur = await GetSupprtedCurrency(pair);
+            string supportedCur;
+            try
+            {
+                supportedCur = await GetSupprtedCurrency(pair);
+            }
+            catch
+            {
+                supportedCur = null;
+            }
+            supportedCur = await GetSupprtedCurrency(pair);
             if (string.IsNullOrEmpty(supportedCur)) return null;
 
             var first = pair.Substring(0, pair.Length - supportedCur.Length);

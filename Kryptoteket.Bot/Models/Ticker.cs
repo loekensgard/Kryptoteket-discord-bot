@@ -10,6 +10,5 @@ namespace Kryptoteket.Bot.Models
         public string Ask { get; set; }
         [JsonPropertyName("spread")]
         public string Spread { get; set; }
-
     }
 }
