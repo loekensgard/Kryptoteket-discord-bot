@@ -6,10 +6,12 @@ namespace Kryptoteket.Bot.CosmosDB
 {
     public class RegistryContext : DbContext
     {
-        public DbSet<Reflink> Reflinks { get; set; }
+        public DbSet<RefUser> Reflinks { get; set; }
         public DbSet<Bet> Bets { get; set; }
         public DbSet<UserBet> UserBets { get; set; }
         public DbSet<BetWinner> BetWinners { get; set; }
+
+        public DbSet<RefExchange> RefExchanges { get; set; }
 
         public RegistryContext(DbContextOptions options)
         : base(options)
@@ -18,7 +20,10 @@ namespace Kryptoteket.Bot.CosmosDB
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Reflink>()
+            modelBuilder.Entity<RefUser>()
+                .HasKey(r => r.id);
+
+            modelBuilder.Entity<RefExchange>()
                 .HasKey(r => r.id);
 
             modelBuilder.Entity<Bet>()

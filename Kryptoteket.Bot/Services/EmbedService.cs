@@ -61,6 +61,7 @@ namespace Kryptoteket.Bot.Services
             return builder;
         }
 
+
         public EmbedBuilder EmbedTopGainers(List<Gainers> topGainers, int top, string timePeriod)
         {
             EmbedBuilder builder = new EmbedBuilder();
@@ -98,12 +99,29 @@ namespace Kryptoteket.Bot.Services
             return builder;
         }
 
-        public EmbedBuilder EmbedOwnRef(Reflink reflink)
+        public EmbedBuilder EmbedOwnRef(List<RefExchange> refExchanges)
+        {
+            EmbedBuilder builder = new EmbedBuilder();
+            StringBuilder sb = new StringBuilder();
+
+            foreach (var refex in refExchanges)
+            {
+                sb.AppendLine($"**{refex.Name}**: {refex.Link}");
+            }
+
+            builder.WithTitle($"Reflinks");
+            builder.WithDescription(sb.ToString());
+            builder.WithColor(Color.DarkBlue);
+
+            return builder;
+        }
+
+        public EmbedBuilder EmbedOwnRef(RefUser reflink)
         {
             EmbedBuilder builder = new EmbedBuilder();
             builder.WithTitle(reflink.Name);
             builder.AddField("Approved", reflink.Approved.ToString());
-            builder.AddField("Link", reflink.Link);
+            //builder.AddField("Link", reflink.Link);
 
             if (!reflink.Approved)
             {
@@ -179,19 +197,26 @@ namespace Kryptoteket.Bot.Services
             return !check ? "Error parsing" : result.ToString("G29");
         }
 
-        public EmbedBuilder EmbedAllReflinks(List<Reflink> reflinks)
+        public EmbedBuilder EmbedAllReflinks(List<RefUser> refusers, List<RefExchange> reflinks)
         {
-            var content = "";
-            foreach (var link in reflinks.OrderByDescending(r => r.Approved))
+            EmbedBuilder builder = new EmbedBuilder();
+            StringBuilder sb = new StringBuilder();
+
+            foreach(var user in refusers.OrderByDescending(r => r.Approved))
             {
                 var approved = "Not Approved";
-                if (link.Approved) approved = "Approved";
-                content += $"**{link.Name}**: {link.Link} : **{approved}**{Environment.NewLine}";
+                if (user.Approved) approved = "Approved";
+                sb.AppendLine($"**{user.Name}** : *{approved}*");
+                foreach (var reflink in reflinks.Where(x => x.UserId == user.id))
+                {
+                    sb.AppendLine(reflink.Link);
+                }
+                sb.AppendLine();
             }
 
-            EmbedBuilder builder = new EmbedBuilder();
-            builder.AddField("Reflinks", $"{content}");
-            builder.WithFooter(footer => footer.Text = "Add your link with !addref <link>");
+            builder.WithTitle($"Reflinks");
+            builder.WithDescription(sb.ToString());
+            builder.WithColor(Color.DarkBlue);
 
             return builder;
         }

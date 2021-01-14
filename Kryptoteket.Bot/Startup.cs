@@ -104,7 +104,8 @@ namespace Kryptoteket.Bot
             services.AddTransient<HttpResponseService>();
             services.AddTransient<EmbedService>();
 
-            services.AddScoped<IReflinkRepository, ReflinkRepository>();
+            services.AddScoped<IRefUserRepository, RefUserRepository>();
+            services.AddScoped<IRefExchangeRepository, RefExchangeRepository>();
             services.AddScoped<IBetRepository, BetRepository>();
             services.AddScoped<IUserBetRepository, UserBetRepository>();
             services.AddScoped<IBetWinnersRepository, BetWinnersRepository>();
