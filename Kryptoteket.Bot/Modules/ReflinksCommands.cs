@@ -58,7 +58,7 @@ namespace Kryptoteket.Bot.Modules
             if (await _refExchangeRepository.Exists($"{identifier}{user.Id}")) { await ReplyAsync($"Reflink is already in list"); return; }
 
             await _refExchangeRepository.CreateReflink($"{identifier}{user.Id}", exchange, reflink.Trim(), userId);
-            await ReplyAsync($"Reflink was submitted for approval");
+            await ReplyAsync($"Reflink was added");
         }
 
         [Command("getrefs", RunMode = RunMode.Async)]
