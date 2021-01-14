@@ -56,7 +56,7 @@ namespace Kryptoteket.Bot.CosmosDB.Repositories
             var cosmosSuck = await query.ToListAsync();
             if (exchange != null)
             {
-                cosmosSuck.Where(x => x.Name.ToLower() == exchange.ToLower());
+                cosmosSuck.RemoveAll(x => x.Name.ToLower() != exchange.ToLower());
             }
 
             return cosmosSuck;
