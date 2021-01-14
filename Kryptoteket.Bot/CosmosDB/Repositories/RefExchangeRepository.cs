@@ -51,10 +51,15 @@ namespace Kryptoteket.Bot.CosmosDB.Repositories
         {
             var query = _set.AsQueryable();
 
-            if (exchange != null) query = query.Where(x => x.Name.ToLower() == exchange.ToLower());
             if (userId != null) query = query.Where(x => x.UserId == userId);
 
-            return await query.ToListAsync();
+            var cosmosSuck = await query.ToListAsync();
+            if (exchange != null)
+            {
+                cosmosSuck.Where(x => x.Name.ToLower() == exchange.ToLower());
+            }
+
+            return cosmosSuck;
         }
 
         public async Task UpdateRefExchanges(string id, RefExchange reflink)
