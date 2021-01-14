@@ -172,23 +172,5 @@ namespace Kryptoteket.Bot.Modules
                 await ReplyAsync($"{user.Username} is already removed from the approved list");
             }
         }
-
-        [Command("fix", RunMode = RunMode.Async)]
-        public async Task RejectRef()
-        {
-
-            var allu = await _reflinkRepository.GetRefUsers();
-            
-            foreach(var u in allu)
-            {
-                if (!u.Approved)
-                {
-                    u.Approved = true;
-                    await _reflinkRepository.Update(u.id, u);
-                }
-            }
-
-        }
-
     }
 }
