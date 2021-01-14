@@ -29,6 +29,7 @@ namespace Kryptoteket.Bot.Modules
         }
 
         [Command("price", RunMode = RunMode.Async)]
+        [Alias("pris")]
         [Summary("Get price for pair from Miraiex")]
         public async Task GetPriceMiraiex(string pair, string exchange = null)
         {

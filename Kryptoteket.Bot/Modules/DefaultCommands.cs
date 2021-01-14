@@ -15,6 +15,7 @@ namespace Kryptoteket.Bot.Modules
         }
 
         [Command("help", RunMode = RunMode.Async)]
+        [Alias("wtf", "info")]
         [Summary("Get help")]
         public async Task GetHelpText()
         {

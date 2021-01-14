@@ -23,6 +23,7 @@ namespace Kryptoteket.Bot.Modules
         }
 
         [Command("serverinfo", RunMode = RunMode.Async)]
+        [Alias("serverstats")]
         [Summary("Get serverinfo")]
         public async Task GetServerInfo()
         {
@@ -33,6 +34,7 @@ namespace Kryptoteket.Bot.Modules
         }
 
         [Command("userinfo", RunMode = RunMode.Async)]
+        [Alias("userstats")]
         [Summary("Get serverinfo")]
         public async Task GetMyInfo()
         {

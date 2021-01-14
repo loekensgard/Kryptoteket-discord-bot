@@ -24,6 +24,7 @@ namespace Kryptoteket.Bot.Modules
         }
 
         [Command("reflink", RunMode = RunMode.Async)]
+        [Alias("ref","referal")]
         [Summary("Get random reflink")]
         public async Task GetReflink(string exchange)
         {
