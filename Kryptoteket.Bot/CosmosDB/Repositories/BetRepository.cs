@@ -1,6 +1,7 @@
 ﻿using Kryptoteket.Bot.Exceptions;
 using Kryptoteket.Bot.Interfaces;
 using Kryptoteket.Bot.Models;
+using Kryptoteket.Bot.Models.Bets;
 using Microsoft.Azure.Cosmos;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -10,9 +11,9 @@ namespace Kryptoteket.Bot.CosmosDB.Repositories
 {
     public class BetRepository : IBetRepository
     {
-        private readonly RegistryContext _context;
+        private readonly KryptoteketContext _context;
         private readonly DbSet<Bet> _set;
-        public BetRepository(RegistryContext context)
+        public BetRepository(KryptoteketContext context)
         {
             _context = context;
             _set = _context.Bets;
@@ -47,9 +48,9 @@ namespace Kryptoteket.Bot.CosmosDB.Repositories
             }
         }
 
-        public async Task<Bet> Getbet(string shortName)
-        {
-            return await _set.FirstAsync(b => b.id == shortName);
-        }
+        //public async Task<Bet> Getbet(string shortName)
+        //{
+        //    return await _set.FirstAsync(b => b.id == shortName);
+        //}
     }
 }

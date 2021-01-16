@@ -2,9 +2,11 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using Kryptoteket.Bot.Interfaces;
+using Kryptoteket.Bot.Models.Reflinks;
 using Kryptoteket.Bot.Services;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Kryptoteket.Bot.Modules
@@ -12,32 +14,100 @@ namespace Kryptoteket.Bot.Modules
     [Name("CovidCommands")]
     public class ReflinksCommands : ModuleBase<SocketCommandContext>
     {
-        private readonly IRefUserRepository _reflinkRepository;
+        private readonly IRefUserRepository _refUserRepository;
         private readonly EmbedService _embedService;
         private readonly IRefExchangeRepository _refExchangeRepository;
+        private readonly IReflinkRepository _reflinkRepository;
 
-        public ReflinksCommands(IRefUserRepository reflinkRepository, EmbedService embedService, IRefExchangeRepository refExchangeRepository)
+        public ReflinksCommands(IRefUserRepository refUserRepository, EmbedService embedService, IRefExchangeRepository refExchangeRepository, IReflinkRepository reflinkRepository)
         {
-            _reflinkRepository = reflinkRepository;
+            _refUserRepository = refUserRepository;
             _embedService = embedService;
             _refExchangeRepository = refExchangeRepository;
+            _reflinkRepository = reflinkRepository;
         }
 
+        //COMMANDS FOR ADMINISTARTION OF REFLINK EXCHANGES
+        [Command("addex", RunMode = RunMode.Async)]
+        [Summary("Add reflink")]
+        [RequireUserPermission(GuildPermission.BanMembers)]
+        public async Task AddRefExchange(string exchange)
+        {
+            if (string.IsNullOrEmpty(exchange)) { await ReplyAsync($"Exchange cannot be null"); return; }
+
+            if (!await _refExchangeRepository.Exists(exchange))
+            {
+                await _refExchangeRepository.CreateRefExchange(new RefExchange
+                {
+                    Name = exchange.ToLower()
+                });
+                await ReplyAsync($"Exchange added");
+            }
+            else
+            {
+                await ReplyAsync($"Exchange already exists");
+            }
+        }
+
+        [Command("approve", RunMode = RunMode.Async)]
+        [RequireUserPermission(GuildPermission.BanMembers)]
+        [Summary("Approve reflink")]
+        public async Task ApproveRef(SocketGuildUser user)
+        {
+            if (user == null) { await ReplyAsync($"Found no user"); return; }
+            var refuser = await _refUserRepository.GetRefUser(user.Id);
+
+            if (!refuser.Approved)
+            {
+                refuser.Approved = true;
+                await _refUserRepository.UpdateUser(refuser);
+                await ReplyAsync($"{user.Username} is approved");
+            }
+            else
+            {
+                await ReplyAsync($"{user.Username} is already approved");
+            }
+        }
+
+        [Command("reject", RunMode = RunMode.Async)]
+        [RequireUserPermission(GuildPermission.BanMembers)]
+        [Summary("Reject reflink")]
+        public async Task RejectRef(SocketGuildUser user)
+        {
+            if (user == null) { await ReplyAsync($"Found no user"); return; }
+            var refuser = await _refUserRepository.GetRefUser(user.Id);
+
+            if (refuser.Approved)
+            {
+                refuser.Approved = false;
+                await _refUserRepository.UpdateUser(refuser);
+                await ReplyAsync($"{user.Username} is rejected");
+            }
+            else
+            {
+                await ReplyAsync($"{user.Username} is already rejected");
+            }
+        }
+        //END
+
+
         [Command("reflink", RunMode = RunMode.Async)]
-        [Alias("ref","referal")]
+        [Alias("ref", "referal")]
         [Summary("Get random reflink")]
         public async Task GetReflink(string exchange)
         {
-            var reflinks = await _refExchangeRepository.GetRefExchanges(exchange: exchange);
+            var exchanges = await _refExchangeRepository.GetRefExchanges(exchange);
+            if (exchanges.Count == 0) { await ReplyAsync($"Could not find any reflinks"); return; }
 
-            if (reflinks.Count == 0) { await ReplyAsync($"Could not find any reflinks"); return; }
+            var links = exchanges.SelectMany(x => x.Reflinks);
 
             var random = new Random();
-            var index = random.Next(reflinks.Count);
+            var index = random.Next(links.Count());
 
-            var luckyLink = reflinks[index];
+            var luckyLink = links.ElementAt(index);
             await ReplyAsync($"<{luckyLink.Link}>");
         }
+
 
         [Command("addref", RunMode = RunMode.Async)]
         [Summary("Add reflink")]
@@ -46,18 +116,29 @@ namespace Kryptoteket.Bot.Modules
             if (string.IsNullOrEmpty(exchange)) { await ReplyAsync($"Exchange cannot be null"); return; }
             if (string.IsNullOrEmpty(reflink)) { await ReplyAsync($"Reflink cannot be null"); return; }
 
+            var refexch = await _refExchangeRepository.GetRefExchange(exchange);
+            if (refexch == null) { await ReplyAsync($"Exchange not supported"); return; }
+
             var user = Context.User as SocketGuildUser;
 
-            var userId = $"ref{user.Id}";
-            if (!await _reflinkRepository.Exists(userId))
+            var refUser = await _refUserRepository.GetRefUser(user.Id);
+            if (refUser == null)
             {
-                await _reflinkRepository.CreateRefUser(userId, user.Username);
+                var ex = new List<RefExchange>
+                {
+                    refexch
+                };
+                refUser = await _refUserRepository.CreateRefUser(new RefUser
+                {
+                    RefUserId = user.Id,
+                    Name = user.Username,
+                    RefExchanges = ex
+                });
             }
 
-            var identifier = exchange.Substring(0, 4).ToLower();
-            if (await _refExchangeRepository.Exists($"{identifier}{user.Id}")) { await ReplyAsync($"Reflink is already in list"); return; }
+            if (await _reflinkRepository.Exist(user.Id, refexch.RefExchangeId, reflink)) { await ReplyAsync($"Reflink is already in list"); return; }
+            await _reflinkRepository.CreateReflink(new RefLink { Link = reflink.Trim(), RefExchangeId = refexch.RefExchangeId, RefUserId = refUser.RefUserId, Name = refexch.Name });
 
-            await _refExchangeRepository.CreateReflink($"{identifier}{user.Id}", exchange, reflink.Trim(), userId);
             await ReplyAsync($"Reflink was added");
         }
 
@@ -65,9 +146,10 @@ namespace Kryptoteket.Bot.Modules
         [Summary("Request all reflinks")]
         public async Task GetReflinks(string exchange = null)
         {
-            var refusers = await _reflinkRepository.GetRefUsers(exchange);
-            var reflinks = await _refExchangeRepository.GetRefExchanges(exchange);
-            await ReplyAsync(null, false, _embedService.EmbedAllReflinks(refusers, reflinks).Build());
+            var refExchanges = await _refExchangeRepository.GetRefExchanges(exchange);
+            if (!refExchanges.Any()) { await ReplyAsync($"Could not find any reflinks"); return; }
+
+            await ReplyAsync(null, false, _embedService.EmbedAllReflinks(refExchanges).Build());
         }
 
         [Command("getref", RunMode = RunMode.Async)]
@@ -76,14 +158,11 @@ namespace Kryptoteket.Bot.Modules
         {
             if (user == null) user = Context.User as SocketGuildUser;
 
-            var refuser = await _reflinkRepository.GetRefUser($"ref{user.Id}");
+            var refuser = await _refUserRepository.GetRefUser(user.Id);
             if (refuser == null) { await ReplyAsync($"Could not find your reflinks"); return; }
 
-            var refExchanges = await _refExchangeRepository.GetRefExchanges(userId: refuser.id);
-
-            if(refExchanges.Count == 0) { await ReplyAsync($"Could not find your reflinks"); return; }
-
-            await ReplyAsync(null, false, _embedService.EmbedOwnRef(refExchanges).Build());
+            if (refuser.Reflinks.Count == 0) { await ReplyAsync($"Could not find your reflinks"); return; }
+            await ReplyAsync(null, false, _embedService.EmbedOwnRef(refuser).Build());
         }
 
         [Command("updateref", RunMode = RunMode.Async)]
@@ -92,17 +171,16 @@ namespace Kryptoteket.Bot.Modules
         {
             var user = Context.User as SocketGuildUser;
 
-            var refuser = await _reflinkRepository.GetRefUser($"ref{user.Id}");
+            var refuser = await _refUserRepository.GetRefUser(user.Id);
             if (refuser == null) { await ReplyAsync($"Could not find your reflinks"); return; }
 
+            var link = refuser.Reflinks.FirstOrDefault(x => x.Name.ToLower() == exchange.ToLower().Trim());
+            if (link == null) { await ReplyAsync($"Could not find your reflinks"); return; }
 
-            var refexchangeId = $"{exchange.Substring(0, 4).ToLower()}{user.Id}";
-            var refExchange = await _refExchangeRepository.GetRefExchange(refexchangeId);
+            if (link.Link != reflink)
+                link.Link = reflink;
 
-            if (refExchange.Link != reflink)
-                refExchange.Link = reflink;
-
-            await _refExchangeRepository.UpdateRefExchanges(refexchangeId, refExchange);
+            await _reflinkRepository.UpdateReflink(link);
             await ReplyAsync($"Reflink was updated");
         }
 
@@ -120,58 +198,14 @@ namespace Kryptoteket.Bot.Modules
                 user = guildUser;
             }
 
-            var refuser = await _reflinkRepository.GetRefUser($"ref{user.Id}");
+            var refuser = await _refUserRepository.GetRefUser(user.Id);
             if (refuser == null) { await ReplyAsync($"Could not find your reflinks"); return; }
 
-            await _refExchangeRepository.DeleteReflink($"{exchange.Substring(0, 4).ToLower()}{user.Id}");
+            var link = refuser.Reflinks.FirstOrDefault(x => x.Name.ToLower() == exchange.ToLower().Trim());
+            if (link == null) { await ReplyAsync($"Could not find your reflinks"); return; }
+
+            await _reflinkRepository.DeleteReflink(link.Id);
             await ReplyAsync($"Reflink was deleted");
-        }
-
-        [Command("approve", RunMode = RunMode.Async)]
-        [Summary("Approve reflink")]
-        public async Task ApproveRef(SocketGuildUser user)
-        {
-            var approver = Context.User as SocketGuildUser;
-            if (!approver.GuildPermissions.KickMembers && approver.Id != 396311377247207434) { await ReplyAsync($"You don't have permissions to do that"); return; }
-            if (user == null) { await ReplyAsync($"Found no user"); return; }
-
-            var refuserId = $"ref{user.Id}";
-            var reflink = await _reflinkRepository.GetRefUser(refuserId);
-
-            if (!reflink.Approved)
-            {
-                reflink.Approved = true;
-                await _reflinkRepository.Update(refuserId, reflink);
-                await ReplyAsync($"{user.Username} is approved");
-            }
-            else
-            {
-                await ReplyAsync($"{user.Username} is already approved");
-            }
-        }
-
-        [Command("reject", RunMode = RunMode.Async)]
-        [Summary("Reject reflink")]
-        public async Task RejectRef(SocketGuildUser user)
-        {
-            var approver = Context.User as SocketGuildUser;
-            if (!approver.GuildPermissions.KickMembers && approver.Id != 396311377247207434) { await ReplyAsync($"You don't have permissions to do that"); return; }
-
-            if (user == null) { await ReplyAsync($"Found no user"); return; }
-
-            var refuserId = $"ref{user.Id}";
-            var reflink = await _reflinkRepository.GetRefUser(refuserId);
-
-            if (reflink.Approved)
-            {
-                reflink.Approved = false;
-                await _reflinkRepository.Update(refuserId, reflink);
-                await ReplyAsync($"{user.Username} is removed from the approved list");
-            }
-            else
-            {
-                await ReplyAsync($"{user.Username} is already removed from the approved list");
-            }
         }
     }
 }

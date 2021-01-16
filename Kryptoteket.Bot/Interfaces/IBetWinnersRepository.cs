@@ -9,7 +9,7 @@ namespace Kryptoteket.Bot.Interfaces
 {
     public interface IBetWinnersRepository
     {
-        Task AddWinner(BetWinner betWinner);
-        Task<BetWinner> GetBetWinner(string id);
+        //Task AddWinner(BetWinner betWinner);
+        //Task<BetWinner> GetBetWinner(string id);
     }
 }

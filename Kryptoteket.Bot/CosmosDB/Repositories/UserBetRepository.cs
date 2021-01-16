@@ -11,25 +11,25 @@ namespace Kryptoteket.Bot.CosmosDB.Repositories
 {
     public class UserBetRepository : IUserBetRepository
     {
-        private readonly RegistryContext _context;
-        private readonly DbSet<UserBet> _set;
-        public UserBetRepository(RegistryContext context)
-        {
-            _context = context;
-            _set = _context.UserBets;
-        }
+        //private readonly KryptoteketContext _context;
+        //private readonly DbSet<PlacedBet> _set;
+        //public UserBetRepository(KryptoteketContext context)
+        //{
+        //    _context = context;
+        //    _set = _context.UserBets;
+        //}
 
-        public async Task AddUserBet(UserBet userBet)
-        {
-            _set.Add(userBet);
-            await _context.SaveChangesAsync();
-        }
+        //public async Task AddUserBet(PlacedBet userBet)
+        //{
+        //    _set.Add(userBet);
+        //    await _context.SaveChangesAsync();
+        //}
 
-        public async Task<List<UserBet>> GetUserBets(string id)
-        {
-            var list = _set.AsAsyncEnumerable().Where(r => r.BetId == id);
+        //public async Task<List<PlacedBet>> GetUserBets(string id)
+        //{
+        //    var list = _set.AsAsyncEnumerable().Where(r => r.BetId == id);
 
-            return await list.ToListAsync();
-        }
+        //    return await list.ToListAsync();
+        //}
     }
 }

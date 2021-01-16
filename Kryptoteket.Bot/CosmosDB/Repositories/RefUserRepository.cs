@@ -1,57 +1,44 @@
 ﻿using Kryptoteket.Bot.Interfaces;
-using Kryptoteket.Bot.Models;
+using Kryptoteket.Bot.Models.Reflinks;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Kryptoteket.Bot.CosmosDB.Repositories
 {
     public class RefUserRepository : IRefUserRepository
     {
-        private readonly RegistryContext _context;
+        private readonly KryptoteketContext _context;
         private readonly DbSet<RefUser> _set;
 
-        public RefUserRepository(RegistryContext context)
+        public RefUserRepository(KryptoteketContext context)
         {
             _context = context;
-            _set = _context.Reflinks;
+            _set = _context.RefUsers;
         }
 
-        public async Task CreateRefUser(string id, string name)
+        public async Task<RefUser> CreateRefUser(RefUser refUser)
         {
-            _set.Add(new RefUser { id = id, Name = name, Approved = false});
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task<bool> Exists(string id)
-        {
-            try {
-                var entity = await _set.FindAsync(id);
-                return entity != null;
-            }
-            catch
+            if(refUser != null)
             {
-                return false;
+                _set.Add(refUser);
+                await _context.SaveChangesAsync();
             }
+
+            return refUser;
         }
 
-        public async Task<RefUser> GetRefUser(string id)
+        public async Task<RefUser> GetRefUser(ulong id)
         {
-            return await _set.AsQueryable().FirstOrDefaultAsync(r => r.id == id);
+            return await _set.Include(x => x.Reflinks).FirstOrDefaultAsync(x => x.RefUserId == id);
         }
 
-        public async Task<List<RefUser>> GetRefUsers(string exchange = null)
+        public async Task UpdateUser(RefUser refuser)
         {
-            return await _set.AsQueryable().ToListAsync();
-        }
+            var entity = await _set.FindAsync(refuser.RefUserId);
 
-        public async Task Update(string id, RefUser reflink)
-        {
-            var entity = await _set.AsQueryable().FirstOrDefaultAsync(r => r.id == id);
             if (entity != null)
             {
-                _context.Entry(entity).CurrentValues.SetValues(reflink);
+                _context.Entry(entity).CurrentValues.SetValues(refuser);
                 await _context.SaveChangesAsync();
             }
         }

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Kryptoteket.Bot.CosmosDB;
+using Microsoft.EntityFrameworkCore.Design;
+using System;
 
 namespace Kryptoteket.Bot
 {

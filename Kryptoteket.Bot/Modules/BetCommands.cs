@@ -3,6 +3,7 @@ using Discord.WebSocket;
 using Kryptoteket.Bot.Exceptions;
 using Kryptoteket.Bot.Interfaces;
 using Kryptoteket.Bot.Models;
+using Kryptoteket.Bot.Models.Bets;
 using Kryptoteket.Bot.Services;
 using Serilog;
 using System;
@@ -36,25 +37,25 @@ namespace Kryptoteket.Bot.Modules
             DateTimeOffset dateDTO;
             if (!DateTimeOffset.TryParse(date, CultureInfo.GetCultureInfo("nb-NO"), DateTimeStyles.None, out dateDTO)) { await ReplyAsync($"Dateformat is incorrect"); return; }
 
-            var bet = new Bet
-            {
-                id = shortName.ToLower().Trim(),
-                Date = dateDTO,
-                ShortName = shortName,
-                AddedBy = approver.Username,
-                Users = new List<UserBet>()
-            };
+            //var bet = new Bet
+            //{
+            //    id = shortName.ToLower().Trim(),
+            //    Date = dateDTO,
+            //    ShortName = shortName,
+            //    AddedBy = approver.Username,
+            //    Users = new List<PlacedBet>()
+            //};
 
-            try
-            {
-                await _betRepository.CreateBet(bet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(e, e.Message);
-                await ReplyAsync($"Bet already exists");
-                return;
-            }
+            //try
+            //{
+            //    await _betRepository.CreateBet(bet);
+            //}
+            //catch (Exception e)
+            //{
+            //    Log.Error(e, e.Message);
+            //    await ReplyAsync($"Bet already exists");
+            //    return;
+            //}
             await ReplyAsync($"{shortName} added");
         }
 
@@ -65,7 +66,7 @@ namespace Kryptoteket.Bot.Modules
             var approver = Context.User as SocketGuildUser;
             if (!approver.GuildPermissions.KickMembers && approver.Id != 396311377247207434) { await ReplyAsync($"You don't have permissions to do that"); return; }
 
-            await _betRepository.DeleteBet(shortName.ToLower().Trim());
+            //await _betRepository.DeleteBet(shortName.ToLower().Trim());
 
             await ReplyAsync($"{shortName} deleted");
         }
@@ -74,51 +75,51 @@ namespace Kryptoteket.Bot.Modules
         [Summary("Bet on a bet")]
         public async Task Bet(string shortName, string price)
         {
-            var user = Context.User as SocketGuildUser;
-            var bet = await _betRepository.Getbet(shortName.ToLower().Trim());
-            if (bet == null) { await ReplyAsync($"Bet Doesn't exist"); return; }
+            //var user = Context.User as SocketGuildUser;
+            //var bet = await _betRepository.Getbet(shortName.ToLower().Trim());
+            //if (bet == null) { await ReplyAsync($"Bet Doesn't exist"); return; }
 
-            if (!int.TryParse(price.Trim(), out int priceDTO)) { await ReplyAsync($"Price is incorrect"); return; }
+            //if (!int.TryParse(price.Trim(), out int priceDTO)) { await ReplyAsync($"Price is incorrect"); return; }
 
-            var userBet = new UserBet
-            {
-                Price = price.Trim(),
-                id = bet.id + user.Id.ToString(),
-                Name = user.Username,
-                BetId = bet.id,
-                BetPlaced = DateTimeOffset.Now
-            };
+            //var userBet = new PlacedBet
+            //{
+            //    Price = price.Trim(),
+            //    id = bet.id + user.Id.ToString(),
+            //    Name = user.Username,
+            //    BetId = bet.id,
+            //    BetPlaced = DateTimeOffset.Now
+            //};
 
-            try
-            {
-                await _userBetRepository.AddUserBet(userBet);
-            }
-            catch (BetExistsException e)
-            {
-                Log.Error(e, e.Message);
-                await ReplyAsync($"Bet already exists");
-                return;
-            }
-            catch (Exception e)
-            {
-                Log.Error(e, e.Message);
-                await ReplyAsync($"Error: {e.Message}");
-                return;
-            }
-            await ReplyAsync($"**{userBet.Name}** | Price: ${priceDTO:#,##0} at {bet.Date.ToString("dd/M/yyyy", CultureInfo.GetCultureInfo("nb-NO"))}");
+            //try
+            //{
+            //    await _userBetRepository.AddUserBet(userBet);
+            //}
+            //catch (BetExistsException e)
+            //{
+            //    Log.Error(e, e.Message);
+            //    await ReplyAsync($"Bet already exists");
+            //    return;
+            //}
+            //catch (Exception e)
+            //{
+            //    Log.Error(e, e.Message);
+            //    await ReplyAsync($"Error: {e.Message}");
+            //    return;
+            //}
+            //await ReplyAsync($"**{userBet.Name}** | Price: ${priceDTO:#,##0} at {bet.Date.ToString("dd/M/yyyy", CultureInfo.GetCultureInfo("nb-NO"))}");
         }
 
         [Command("getbet", RunMode = RunMode.Async)]
         [Summary("Get a bet")]
         public async Task GetBet(string shortName)
         {
-            var bet = await _betRepository.Getbet(shortName.Trim().ToLower());
-            if (bet == null) { await ReplyAsync($"Bet doesn't exist"); return; }
-            var userbets = await _userBetRepository.GetUserBets(bet.id);
+            //var bet = await _betRepository.Getbet(shortName.Trim().ToLower());
+            //if (bet == null) { await ReplyAsync($"Bet doesn't exist"); return; }
+            //var userbets = await _userBetRepository.GetUserBets(bet.id);
 
-            if (userbets.Count == 0) { await ReplyAsync($"No bets are placed"); return; }
+            //if (userbets.Count == 0) { await ReplyAsync($"No bets are placed"); return; }
 
-            await ReplyAsync(null, false, _embedService.EmbedBets(bet).Build());
+            //await ReplyAsync(null, false, _embedService.EmbedBets(bet).Build());
         }
     }
 }

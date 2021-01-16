@@ -1,6 +1,8 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using Kryptoteket.Bot.Models;
+using Kryptoteket.Bot.Models.Bets;
+using Kryptoteket.Bot.Models.Reflinks;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -83,30 +85,30 @@ namespace Kryptoteket.Bot.Services
         public EmbedBuilder EmbedBets(Bet bet)
         {
             EmbedBuilder builder = new EmbedBuilder();
-            StringBuilder sb = new StringBuilder();
+            //StringBuilder sb = new StringBuilder();
 
-            builder.WithTitle($"{bet.Date.ToString("dd/M/yyyy", CultureInfo.GetCultureInfo("nb-NO"))}");
-            foreach (var userBet in bet.Users.OrderByDescending(p => int.Parse(p.Price)))
-            {
-                int price;
-                if (int.TryParse(userBet.Price, out price))
-                    sb.AppendLine($"**{userBet.Name}:** ${price:#,##0}");
-            }
+            //builder.WithTitle($"{bet.Date.ToString("dd/M/yyyy", CultureInfo.GetCultureInfo("nb-NO"))}");
+            //foreach (var userBet in bet.Users.OrderByDescending(p => int.Parse(p.Price)))
+            //{
+            //    int price;
+            //    if (int.TryParse(userBet.Price, out price))
+            //        sb.AppendLine($"**{userBet.Name}:** ${price:#,##0}");
+            //}
 
-            builder.WithDescription(sb.ToString());
-            builder.WithColor(Color.DarkBlue);
+            //builder.WithDescription(sb.ToString());
+            //builder.WithColor(Color.DarkBlue);
 
             return builder;
         }
 
-        public EmbedBuilder EmbedOwnRef(List<RefExchange> refExchanges)
+        public EmbedBuilder EmbedOwnRef(RefUser refuser)
         {
             EmbedBuilder builder = new EmbedBuilder();
             StringBuilder sb = new StringBuilder();
 
-            foreach (var refex in refExchanges)
+            foreach (var reflink in refuser.Reflinks)
             {
-                sb.AppendLine($"**{refex.Name}**: {refex.Link}");
+              sb.AppendLine($"**{reflink.Name}**: {reflink.Link}");
             }
 
             builder.WithTitle($"Reflinks");
@@ -116,20 +118,6 @@ namespace Kryptoteket.Bot.Services
             return builder;
         }
 
-        public EmbedBuilder EmbedOwnRef(RefUser reflink)
-        {
-            EmbedBuilder builder = new EmbedBuilder();
-            builder.WithTitle(reflink.Name);
-            builder.AddField("Approved", reflink.Approved.ToString());
-            //builder.AddField("Link", reflink.Link);
-
-            if (!reflink.Approved)
-            {
-                builder.WithFooter(footer => footer.Text = "Mods and admins can approve");
-            }
-
-            return builder;
-        }
 
         public EmbedBuilder EmbedTopLosers(List<Gainers> topGainers, int top, string timePeriod)
         {
@@ -197,19 +185,25 @@ namespace Kryptoteket.Bot.Services
             return !check ? "Error parsing" : result.ToString("G29");
         }
 
-        public EmbedBuilder EmbedAllReflinks(List<RefUser> refusers, List<RefExchange> reflinks)
+        public EmbedBuilder EmbedAllReflinks(List<RefExchange> refExchanges)
         {
             EmbedBuilder builder = new EmbedBuilder();
             StringBuilder sb = new StringBuilder();
 
-            foreach(var user in refusers.OrderByDescending(r => r.Approved))
+            foreach(var refExchange in refExchanges)
             {
-                var approved = "Not Approved";
-                if (user.Approved) approved = "Approved";
-                sb.AppendLine($"**{user.Name}** : *{approved}*");
-                foreach (var reflink in reflinks.Where(x => x.UserId == user.id))
+                sb.AppendLine($"**{refExchange.Name}**");
+
+                foreach(var user in refExchange.RefUsers)
                 {
-                    sb.AppendLine(reflink.Link);
+                    if (user.Approved)
+                    {
+                        var reflink = user.Reflinks.FirstOrDefault(x => x.RefExchangeId == refExchange.RefExchangeId);
+                        if (reflink != null)
+                        {
+                            sb.AppendLine($"*{user.Name} : {reflink.Link}*");
+                        }
+                    }
                 }
                 sb.AppendLine();
             }
@@ -248,56 +242,56 @@ namespace Kryptoteket.Bot.Services
             return builder;
         }
 
-        public EmbedBuilder EmbedMyInfo(SocketGuild guild, SocketGuildUser user, BetWinner points = null)
-        {
-            var sortedJoinedMembers = guild.Users.OrderBy(x => x.JoinedAt).ToList();
-            int index = sortedJoinedMembers.FindIndex(x => x.Id == user.Id);
-            var roles = user.Roles.Where(x => !x.IsEveryone);
+        //public EmbedBuilder EmbedMyInfo(SocketGuild guild, SocketGuildUser user, BetWinner points = null)
+        //{
+        //    var sortedJoinedMembers = guild.Users.OrderBy(x => x.JoinedAt).ToList();
+        //    int index = sortedJoinedMembers.FindIndex(x => x.Id == user.Id);
+        //    var roles = user.Roles.Where(x => !x.IsEveryone);
 
-            EmbedBuilder builder = new EmbedBuilder();
-            StringBuilder sb = new StringBuilder();
+        //    EmbedBuilder builder = new EmbedBuilder();
+        //    StringBuilder sb = new StringBuilder();
 
-            sb.AppendLine($"Name: **{user.Username}#{user.Discriminator}**");
-            sb.Append($"Roles: ");
+        //    sb.AppendLine($"Name: **{user.Username}#{user.Discriminator}**");
+        //    sb.Append($"Roles: ");
 
-            if (!roles.Any())
-                sb.Append("**None**");
-            else
-            {
-                sb.Append("**");
-                foreach (var role in roles)
-                {
-                    var ro = role.Name.Replace("@", String.Empty);
-                    sb.Append($"{StringExtensions.FirstCharToUpper(ro)} ");
-                }
-                sb.Append("**");
-            }
+        //    if (!roles.Any())
+        //        sb.Append("**None**");
+        //    else
+        //    {
+        //        sb.Append("**");
+        //        foreach (var role in roles)
+        //        {
+        //            var ro = role.Name.Replace("@", String.Empty);
+        //            sb.Append($"{StringExtensions.FirstCharToUpper(ro)} ");
+        //        }
+        //        sb.Append("**");
+        //    }
 
-            sb.AppendLine();
-            sb.AppendLine($"Nickname: **{user.Nickname ?? "None"}**");
-            sb.AppendLine($"Account Created: **{user.CreatedAt:dd.MM.yy}**");
-            sb.Append($"Server Joined: **{user.JoinedAt?.ToString("dd.MM.yy")}** **`(#{index + 1})`**");
-            sb.AppendLine();
-            if (points != null)
-            {
-                sb.AppendLine();
-                sb.AppendLine("**Bets**");
-                sb.Append("Top 3: ");
-                foreach (var bet in points.BetsWon.ToList())
-                    sb.Append($"**{bet}** ");
-                sb.AppendLine();
-                sb.AppendLine($"Stonks: **{points.Points}**");
-            }
+        //    sb.AppendLine();
+        //    sb.AppendLine($"Nickname: **{user.Nickname ?? "None"}**");
+        //    sb.AppendLine($"Account Created: **{user.CreatedAt:dd.MM.yy}**");
+        //    sb.Append($"Server Joined: **{user.JoinedAt?.ToString("dd.MM.yy")}** **`(#{index + 1})`**");
+        //    sb.AppendLine();
+        //    if (points != null)
+        //    {
+        //        sb.AppendLine();
+        //        sb.AppendLine("**Bets**");
+        //        sb.Append("Top 3: ");
+        //        foreach (var bet in points.BetsWon.ToList())
+        //            sb.Append($"**{bet}** ");
+        //        sb.AppendLine();
+        //        sb.AppendLine($"Stonks: **{points.Points}**");
+        //    }
 
-            if (user.Username.ToLower() == "bredesen")
-                sb.AppendLine("Big PP: **Yes**");
+        //    if (user.Username.ToLower() == "bredesen")
+        //        sb.AppendLine("Big PP: **Yes**");
 
-            builder.WithTitle($"Userinfo about {user.Username}");
-            builder.WithDescription(sb.ToString());
-            builder.WithThumbnailUrl(user.GetAvatarUrl());
-            builder.WithColor(Color.Gold);
+        //    builder.WithTitle($"Userinfo about {user.Username}");
+        //    builder.WithDescription(sb.ToString());
+        //    builder.WithThumbnailUrl(user.GetAvatarUrl());
+        //    builder.WithColor(Color.Gold);
 
-            return builder;
-        }
+        //    return builder;
+        //}
     }
 }

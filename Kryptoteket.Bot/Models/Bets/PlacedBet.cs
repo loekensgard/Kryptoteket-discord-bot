@@ -2,12 +2,12 @@
 
 namespace Kryptoteket.Bot.Models
 {
-    public class UserBet
+    public class PlacedBet
     {
-        public string id { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
         public string Price { get; set; }
-        public string BetId { get; set; }
+        public int BetId { get; set; }
         public DateTimeOffset? BetPlaced { get; set; }
     }
 }

@@ -8,8 +8,8 @@ namespace Kryptoteket.Bot.Interfaces
 {
     public interface IBetRepository
     {
-        Task CreateBet(Bet bet);
-        Task DeleteBet(string shortName);
-        Task<Bet> Getbet(string shortName);
+        //Task CreateBet(Bet bet);
+        //Task DeleteBet(string shortName);
+        //Task<Bet> Getbet(string shortName);
     }
 }

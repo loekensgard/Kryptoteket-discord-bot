@@ -38,13 +38,13 @@ namespace Kryptoteket.Bot.Modules
         [Summary("Get serverinfo")]
         public async Task GetMyInfo()
         {
-            var guild = Context.Guild;
-            var user = Context.User as SocketGuildUser;
-            await guild.DownloadUsersAsync();
+            //var guild = Context.Guild;
+            //var user = Context.User as SocketGuildUser;
+            //await guild.DownloadUsersAsync();
 
-            var points = await _betWinnersRepository.GetBetWinner(user.Id.ToString() + "bet");
+            //var points = await _betWinnersRepository.GetBetWinner(user.Id.ToString() + "bet");
 
-            await ReplyAsync(null, false, _embedService.EmbedMyInfo(guild, user, points).Build());
+            //await ReplyAsync(null, false, _embedService.EmbedMyInfo(guild, user, points).Build());
         }
 
     }

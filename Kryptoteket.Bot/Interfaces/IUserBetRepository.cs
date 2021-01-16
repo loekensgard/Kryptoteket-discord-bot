@@ -8,7 +8,7 @@ namespace Kryptoteket.Bot.Interfaces
 {
     public interface IUserBetRepository
     {
-        Task AddUserBet(UserBet userBet);
-        Task<List<UserBet>> GetUserBets(string id);
+        //Task AddUserBet(PlacedBet userBet);
+        //Task<List<PlacedBet>> GetUserBets(string id);
     }
 }

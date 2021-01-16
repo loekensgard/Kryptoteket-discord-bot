@@ -1,4 +1,5 @@
 ﻿using Kryptoteket.Bot.Models;
+using Kryptoteket.Bot.Models.Reflinks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +10,10 @@ namespace Kryptoteket.Bot.Interfaces
 {
     public interface IRefExchangeRepository
     {
+        Task<RefExchange> GetRefExchange(string exchange);
         Task<bool> Exists(string exchange);
-        Task CreateReflink(string refId, string exchange, string reflink, string userId);
-        Task<List<RefExchange>> GetRefExchanges(string userId = null, string exchange = null);
-        Task<RefExchange> GetRefExchange(string id);
-        Task UpdateRefExchanges(string id, RefExchange reflink);
-        Task DeleteReflink(string id);
+        Task CreateRefExchange(RefExchange refExchange);
+        Task<List<RefExchange>> GetRefExchanges(string exchange = null);
+        Task<RefExchange> UpdateExchange(RefExchange refexch);
     }
 }

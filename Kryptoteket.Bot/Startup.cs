@@ -10,6 +10,7 @@ using Kryptoteket.Bot.Services.API;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
@@ -20,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace Kryptoteket.Bot
 {
-    public class Startup
+    public class Startup : IDesignTimeDbContextFactory<KryptoteketContext>
     {
         private IConfiguration _configuration { get; set; }
 
@@ -104,16 +105,19 @@ namespace Kryptoteket.Bot
             services.AddTransient<HttpResponseService>();
             services.AddTransient<EmbedService>();
 
+            services.AddScoped<IReflinkRepository, ReflinkRepository>();
             services.AddScoped<IRefUserRepository, RefUserRepository>();
             services.AddScoped<IRefExchangeRepository, RefExchangeRepository>();
             services.AddScoped<IBetRepository, BetRepository>();
             services.AddScoped<IUserBetRepository, UserBetRepository>();
             services.AddScoped<IBetWinnersRepository, BetWinnersRepository>();
 
-            services.AddDbContext<RegistryContext>(options => options.UseCosmos(
-                _configuration.GetSection("Cosmos-Kryptoteket")["EndpointUri"],
-                _configuration.GetSection("Cosmos-Kryptoteket")["PrimaryKey"],
-                _configuration.GetSection("Cosmos-Kryptoteket")["DatabaseName"]));
+            //services.AddDbContext<KryptoteketContext>(options => options.UseCosmos(
+                //_configuration.GetSection("Cosmos-Kryptoteket")["EndpointUri"],
+                //_configuration.GetSection("Cosmos-Kryptoteket")["PrimaryKey"],
+                //_configuration.GetSection("Cosmos-Kryptoteket")["DatabaseName"]));
+
+            services.AddDbContext<KryptoteketContext>(options => options.UseSqlServer(_configuration.GetConnectionString("Default")));
 
             services.Configure<ExchangesConfiguration>(options => _configuration.GetSection("Exchanges").Bind(options));
             services.Configure<DiscordConfiguration>(options => _configuration.GetSection("Discord-Kryptoteket").Bind(options));
@@ -125,5 +129,20 @@ namespace Kryptoteket.Bot
             return services;
         }
 
+        public KryptoteketContext CreateDbContext(string[] args)
+        {
+            var _builder = new ConfigurationBuilder()
+               .SetBasePath(Directory.GetCurrentDirectory())
+               .AddJsonFile("appsettings.json")
+               .AddJsonFile($"appsettings.development.json", optional: true)
+               .AddEnvironmentVariables();
+
+            _configuration = _builder.Build();
+
+            DbContextOptionsBuilder<KryptoteketContext> optionsBuilder = new DbContextOptionsBuilder<KryptoteketContext>()
+                .UseSqlServer(_configuration.GetConnectionString("Default"));
+
+            return new KryptoteketContext(optionsBuilder.Options);
+        }
     }
 }
