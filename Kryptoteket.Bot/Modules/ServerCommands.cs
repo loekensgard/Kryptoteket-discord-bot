@@ -35,16 +35,16 @@ namespace Kryptoteket.Bot.Modules
 
         [Command("userinfo", RunMode = RunMode.Async)]
         [Alias("userstats")]
-        [Summary("Get serverinfo")]
+        [Summary("Get userinfo")]
         public async Task GetMyInfo()
         {
-            //var guild = Context.Guild;
-            //var user = Context.User as SocketGuildUser;
-            //await guild.DownloadUsersAsync();
+            var guild = Context.Guild;
+            var user = Context.User as SocketGuildUser;
+            await guild.DownloadUsersAsync();
 
-            //var points = await _betWinnersRepository.GetBetWinner(user.Id.ToString() + "bet");
+            var points = await _betWinnersRepository.GetBetWins(user.Id);
 
-            //await ReplyAsync(null, false, _embedService.EmbedMyInfo(guild, user, points).Build());
+            await ReplyAsync(null, false, _embedService.EmbedMyInfo(guild, user, points).Build());
         }
 
     }

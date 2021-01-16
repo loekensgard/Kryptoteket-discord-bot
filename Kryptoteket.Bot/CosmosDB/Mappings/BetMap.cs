@@ -9,6 +9,7 @@ namespace Kryptoteket.Bot.CosmosDB.Mappings
         public void Configure(EntityTypeBuilder<Bet> builder)
         {
             builder.HasKey(x => x.BetId);
+            builder.HasIndex(x => x.ShortName).IsUnique();
             builder.HasMany(x => x.PlacedBets).WithOne().HasForeignKey(x => x.BetId);
         }
     }

@@ -4,14 +4,16 @@ using Kryptoteket.Bot.CosmosDB;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Kryptoteket.Bot.Migrations
 {
     [DbContext(typeof(KryptoteketContext))]
-    partial class KryptoteketContextModelSnapshot : ModelSnapshot
+    [Migration("20210116221053_unique")]
+    partial class unique
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -75,8 +77,8 @@ namespace Kryptoteket.Bot.Migrations
                     b.Property<decimal>("BetUserId")
                         .HasColumnType("decimal(20,0)");
 
-                    b.Property<int>("Place")
-                        .HasColumnType("int");
+                    b.Property<string>("Place")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -98,14 +100,14 @@ namespace Kryptoteket.Bot.Migrations
                     b.Property<DateTimeOffset?>("BetPlaced")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<decimal>("BetUserId")
+                    b.Property<decimal?>("BetUserId")
                         .HasColumnType("decimal(20,0)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Price")
-                        .HasColumnType("int");
+                    b.Property<string>("Price")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -211,9 +213,7 @@ namespace Kryptoteket.Bot.Migrations
 
                     b.HasOne("Kryptoteket.Bot.Models.Bets.BetUser", null)
                         .WithMany("PlacedBets")
-                        .HasForeignKey("BetUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("BetUserId");
                 });
 
             modelBuilder.Entity("Kryptoteket.Bot.Models.Reflinks.RefLink", b =>

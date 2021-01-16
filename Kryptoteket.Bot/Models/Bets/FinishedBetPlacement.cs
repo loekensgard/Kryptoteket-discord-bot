@@ -10,7 +10,7 @@ namespace Kryptoteket.Bot.Models.Bets
     {
         public int Id { get; set; }
         public int BetId { get; set; }
-        public string Place { get; set; }
+        public int Place { get; set; }
         public ulong BetUserId { get; set; }
     }
 }

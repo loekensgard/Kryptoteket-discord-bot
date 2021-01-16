@@ -41,7 +41,6 @@ namespace Kryptoteket.Bot.Services
             return builder;
         }
 
-
         public EmbedBuilder EmbedSparkline(ChartResult result)
         {
             EmbedBuilder builder = new EmbedBuilder();
@@ -85,18 +84,16 @@ namespace Kryptoteket.Bot.Services
         public EmbedBuilder EmbedBets(Bet bet)
         {
             EmbedBuilder builder = new EmbedBuilder();
-            //StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
 
-            //builder.WithTitle($"{bet.Date.ToString("dd/M/yyyy", CultureInfo.GetCultureInfo("nb-NO"))}");
-            //foreach (var userBet in bet.Users.OrderByDescending(p => int.Parse(p.Price)))
-            //{
-            //    int price;
-            //    if (int.TryParse(userBet.Price, out price))
-            //        sb.AppendLine($"**{userBet.Name}:** ${price:#,##0}");
-            //}
+            builder.WithTitle($"{bet.Date.ToString("dd/M/yyyy", CultureInfo.GetCultureInfo("nb-NO"))}");
+            foreach (var userBet in bet.PlacedBets.OrderByDescending(p => p.Price))
+            {
+                sb.AppendLine($"**{userBet.Name}:** ${userBet.Price:#,##0}");
+            }
 
-            //builder.WithDescription(sb.ToString());
-            //builder.WithColor(Color.DarkBlue);
+            builder.WithDescription(sb.ToString());
+            builder.WithColor(Color.DarkBlue);
 
             return builder;
         }
@@ -267,56 +264,55 @@ namespace Kryptoteket.Bot.Services
             return builder;
         }
 
-        //public EmbedBuilder EmbedMyInfo(SocketGuild guild, SocketGuildUser user, BetWinner points = null)
-        //{
-        //    var sortedJoinedMembers = guild.Users.OrderBy(x => x.JoinedAt).ToList();
-        //    int index = sortedJoinedMembers.FindIndex(x => x.Id == user.Id);
-        //    var roles = user.Roles.Where(x => !x.IsEveryone);
+        public EmbedBuilder EmbedMyInfo(SocketGuild guild, SocketGuildUser user, List<FinishedBetPlacement> points)
+        {
+            var sortedJoinedMembers = guild.Users.OrderBy(x => x.JoinedAt).ToList();
+            int index = sortedJoinedMembers.FindIndex(x => x.Id == user.Id);
+            var roles = user.Roles.Where(x => !x.IsEveryone);
 
-        //    EmbedBuilder builder = new EmbedBuilder();
-        //    StringBuilder sb = new StringBuilder();
+            EmbedBuilder builder = new EmbedBuilder();
+            StringBuilder sb = new StringBuilder();
 
-        //    sb.AppendLine($"Name: **{user.Username}#{user.Discriminator}**");
-        //    sb.Append($"Roles: ");
+            sb.AppendLine($"Name: **{user.Username}#{user.Discriminator}**");
+            sb.Append($"Roles: ");
 
-        //    if (!roles.Any())
-        //        sb.Append("**None**");
-        //    else
-        //    {
-        //        sb.Append("**");
-        //        foreach (var role in roles)
-        //        {
-        //            var ro = role.Name.Replace("@", String.Empty);
-        //            sb.Append($"{StringExtensions.FirstCharToUpper(ro)} ");
-        //        }
-        //        sb.Append("**");
-        //    }
+            if (!roles.Any())
+                sb.Append("**None**");
+            else
+            {
+                sb.Append("**");
+                foreach (var role in roles)
+                {
+                    var ro = role.Name.Replace("@", String.Empty);
+                    sb.Append($"{StringExtensions.FirstCharToUpper(ro)} ");
+                }
+                sb.Append("**");
+            }
 
-        //    sb.AppendLine();
-        //    sb.AppendLine($"Nickname: **{user.Nickname ?? "None"}**");
-        //    sb.AppendLine($"Account Created: **{user.CreatedAt:dd.MM.yy}**");
-        //    sb.Append($"Server Joined: **{user.JoinedAt?.ToString("dd.MM.yy")}** **`(#{index + 1})`**");
-        //    sb.AppendLine();
-        //    if (points != null)
-        //    {
-        //        sb.AppendLine();
-        //        sb.AppendLine("**Bets**");
-        //        sb.Append("Top 3: ");
-        //        foreach (var bet in points.BetsWon.ToList())
-        //            sb.Append($"**{bet}** ");
-        //        sb.AppendLine();
-        //        sb.AppendLine($"Stonks: **{points.Points}**");
-        //    }
+            sb.AppendLine();
+            sb.AppendLine($"Nickname: **{user.Nickname ?? "None"}**");
+            sb.AppendLine($"Account Created: **{user.CreatedAt:dd.MM.yy}**");
+            sb.Append($"Server Joined: **{user.JoinedAt?.ToString("dd.MM.yy")}** **`(#{index + 1})`**");
+            sb.AppendLine();
+            if (points != null)
+            {
+                sb.AppendLine();
+                sb.AppendLine("**Bets**");
+                sb.AppendLine($"1th: {points.Where(x => x.Place == 1).Count()}");
+                sb.AppendLine($"2th: {points.Where(x => x.Place == 2).Count()}");
+                sb.AppendLine($"3th: {points.Where(x => x.Place == 3).Count()}");
+                sb.AppendLine();
+            }
 
-        //    if (user.Username.ToLower() == "bredesen")
-        //        sb.AppendLine("Big PP: **Yes**");
+            if (user.Username.ToLower() == "bredesen")
+                sb.AppendLine("Big PP: **Yes**");
 
-        //    builder.WithTitle($"Userinfo about {user.Username}");
-        //    builder.WithDescription(sb.ToString());
-        //    builder.WithThumbnailUrl(user.GetAvatarUrl());
-        //    builder.WithColor(Color.Gold);
+            builder.WithTitle($"Userinfo about {user.Username}");
+            builder.WithDescription(sb.ToString());
+            builder.WithThumbnailUrl(user.GetAvatarUrl());
+            builder.WithColor(Color.Gold);
 
-        //    return builder;
-        //}
+            return builder;
+        }
     }
 }

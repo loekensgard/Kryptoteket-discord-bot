@@ -109,7 +109,7 @@ namespace Kryptoteket.Bot
             services.AddScoped<IRefUserRepository, RefUserRepository>();
             services.AddScoped<IRefExchangeRepository, RefExchangeRepository>();
             services.AddScoped<IBetRepository, BetRepository>();
-            services.AddScoped<IUserBetRepository, UserBetRepository>();
+            services.AddScoped<IPlacedUserBetRepository, PlacedUserBetRepository>();
             services.AddScoped<IBetWinnersRepository, BetWinnersRepository>();
 
             //services.AddDbContext<KryptoteketContext>(options => options.UseCosmos(

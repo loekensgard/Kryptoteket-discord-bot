@@ -1,10 +1,6 @@
-﻿using Kryptoteket.Bot.Exceptions;
-using Kryptoteket.Bot.Interfaces;
-using Kryptoteket.Bot.Models;
+﻿using Kryptoteket.Bot.Interfaces;
 using Kryptoteket.Bot.Models.Bets;
-using Microsoft.Azure.Cosmos;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Threading.Tasks;
 
 namespace Kryptoteket.Bot.CosmosDB.Repositories
@@ -21,21 +17,8 @@ namespace Kryptoteket.Bot.CosmosDB.Repositories
 
         public async Task CreateBet(Bet bet)
         {
-            try
-            {
-                _set.Add(bet);
-                await _context.SaveChangesAsync();
-            }
-            catch(CosmosException ex)
-            {
-                if (ex.StatusCode == System.Net.HttpStatusCode.Conflict)
-                    throw new BetExistsException();
-
-            }
-            catch(Exception)
-            {
-                throw;
-            }
+            _set.Add(bet);
+            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteBet(string shortName)
@@ -48,9 +31,9 @@ namespace Kryptoteket.Bot.CosmosDB.Repositories
             }
         }
 
-        //public async Task<Bet> Getbet(string shortName)
-        //{
-        //    return await _set.FirstAsync(b => b.id == shortName);
-        //}
+        public async Task<Bet> Getbet(string shortName)
+        {
+            return await _set.Include(x => x.PlacedBets).FirstOrDefaultAsync(x => x.ShortName == shortName);
+        }
     }
 }

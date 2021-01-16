@@ -1,4 +1,5 @@
 ﻿using Kryptoteket.Bot.Models;
+using Kryptoteket.Bot.Models.Bets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,6 @@ namespace Kryptoteket.Bot.Interfaces
 {
     public interface IBetWinnersRepository
     {
-        //Task AddWinner(BetWinner betWinner);
-        //Task<BetWinner> GetBetWinner(string id);
+        Task<List<FinishedBetPlacement>> GetBetWins(ulong userId);
     }
 }
