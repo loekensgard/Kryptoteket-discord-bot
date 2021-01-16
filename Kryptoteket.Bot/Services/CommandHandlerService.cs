@@ -1,4 +1,5 @@
-﻿using Discord.Commands;
+﻿using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
 using Kryptoteket.Bot.Configurations;
 using Microsoft.Extensions.Options;
@@ -24,7 +25,18 @@ namespace Kryptoteket.Bot.Services
             _discordOptions = discordOptions.Value;
 
             _discordSocketClient.MessageReceived += OnMessageReceivedAsync;
+            _discordSocketClient.ReactionAdded += OnMessageReactionAdd;
             _discordSocketClient.Ready += ReadyAsync;
+        }
+
+        private Task OnMessageReactionAdd(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel, SocketReaction reaction)
+        {
+            if (!message.HasValue) return null;
+            if (message.HasValue && message.Value.Source != MessageSource.Bot) return null;
+
+
+
+            return null;
         }
 
         private Task ReadyAsync()

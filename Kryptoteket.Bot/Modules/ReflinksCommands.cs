@@ -94,10 +94,16 @@ namespace Kryptoteket.Bot.Modules
         [Command("reflink", RunMode = RunMode.Async)]
         [Alias("ref", "referal")]
         [Summary("Get random reflink")]
-        public async Task GetReflink(string exchange)
+        public async Task GetReflink(string exchange = null)
         {
             var exchanges = await _refExchangeRepository.GetRefExchanges(exchange);
             if (exchanges.Count == 0) { await ReplyAsync($"Could not find any reflinks"); return; }
+
+            if(exchanges.Count >= 2)
+            {
+                await ReplyAsync(null, false, _embedService.CreateReactMessage(exchanges).Build());
+                return;
+            }
 
             var links = exchanges.SelectMany(x => x.Reflinks);
 
