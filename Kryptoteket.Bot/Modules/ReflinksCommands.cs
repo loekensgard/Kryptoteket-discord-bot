@@ -31,15 +31,18 @@ namespace Kryptoteket.Bot.Modules
         [Command("addex", RunMode = RunMode.Async)]
         [Summary("Add reflink")]
         [RequireUserPermission(GuildPermission.BanMembers)]
-        public async Task AddRefExchange(string exchange)
+        public async Task AddRefExchange(string exchange, SocketReaction reaction)
         {
             if (string.IsNullOrEmpty(exchange)) { await ReplyAsync($"Exchange cannot be null"); return; }
+            if (reaction == null) { await ReplyAsync($"Reaction cannot be null"); return; }
 
             if (!await _refExchangeRepository.Exists(exchange))
             {
+                var emoji = reaction.Emote as Emote;
                 await _refExchangeRepository.CreateRefExchange(new RefExchange
                 {
-                    Name = exchange.ToLower()
+                    Name = exchange.ToLower(),
+                    EmojiId = emoji.Id
                 });
                 await ReplyAsync($"Exchange added");
             }
