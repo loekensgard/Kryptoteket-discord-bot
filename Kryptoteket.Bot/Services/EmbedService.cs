@@ -98,22 +98,16 @@ namespace Kryptoteket.Bot.Services
             return builder;
         }
 
-        public EmbedBuilder CreateReactMessage(List<RefExchange> exchanges)
+        public EmbedBuilder CreateReactMessage(List<RefExchange> exchanges, IReadOnlyCollection<GuildEmote> emotes)
         {
             EmbedBuilder builder = new EmbedBuilder();
             StringBuilder sb = new StringBuilder();
 
             foreach (var exchange in exchanges)
             {
-                if (exchange.RefExchangeId == 1)
-                    sb.AppendLine("React with 🙂 for MiraiEx");
-                if (exchange.RefExchangeId == 2)
-                    sb.AppendLine("React with 😄 for Binance");
-                if (exchange.RefExchangeId == 3)
-                    sb.AppendLine("React with 😁 for ByBit");
-
+                var emojii = emotes.FirstOrDefault(x => x.Id == exchange.EmojiId);
+                sb.AppendLine($"React with {emojii} for {exchange.Name}");
                 sb.AppendLine();
-                sb.AppendLine("Currently not working");
             }
 
             builder.WithTitle($"Pick an exchange");

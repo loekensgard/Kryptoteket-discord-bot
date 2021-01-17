@@ -4,14 +4,16 @@ using Kryptoteket.Bot.CosmosDB;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Kryptoteket.Bot.Migrations
 {
     [DbContext(typeof(KryptoteketContext))]
-    partial class KryptoteketContextModelSnapshot : ModelSnapshot
+    [Migration("20210117185202_addedemojifield")]
+    partial class addedemojifield
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -123,8 +125,8 @@ namespace Kryptoteket.Bot.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<decimal>("EmojiId")
-                        .HasColumnType("decimal(20,0)");
+                    b.Property<string>("Emoji")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");

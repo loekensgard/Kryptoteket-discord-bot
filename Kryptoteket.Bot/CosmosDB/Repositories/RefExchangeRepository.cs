@@ -36,11 +36,16 @@ namespace Kryptoteket.Bot.CosmosDB.Repositories
             return await _set.AsQueryable().Include(x => x.RefUsers).ThenInclude(x => x.Reflinks).FirstOrDefaultAsync(x => x.Name.ToLower() == exchange.ToLower());
         }
 
+        public async Task<RefExchange> GetRefExchangeFromEmoji(ulong id)
+        {
+            return await _set.AsQueryable().FirstOrDefaultAsync(x => x.EmojiId == id);
+        }
+
         public async Task<List<RefExchange>> GetRefExchanges(string exchange = null)
         {
             var query = _set.AsQueryable();
 
-            if (!string.IsNullOrEmpty(exchange)) query = query.Where(x => x.Name.ToLower() == exchange.ToLower());
+            if (!string.IsNullOrEmpty(exchange)) query = query.Where(x => x.Name.ToLower().StartsWith(exchange));
 
             return await query.Include(x => x.RefUsers).ThenInclude(x => x.Reflinks).ToListAsync();
         }

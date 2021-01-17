@@ -2,9 +2,11 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using Kryptoteket.Bot.Configurations;
+using Kryptoteket.Bot.Interfaces;
 using Microsoft.Extensions.Options;
 using Serilog;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Kryptoteket.Bot.Services
@@ -14,14 +16,21 @@ namespace Kryptoteket.Bot.Services
         private readonly DiscordSocketClient _discordSocketClient;
         private readonly CommandService _commandService;
         private readonly IServiceProvider _services;
+        private readonly IRefExchangeRepository _refExchangeRepository;
         private readonly DiscordConfiguration _discordOptions;
         private const string _messageErrorTemplate = "Discord Error {reasonType} {reasonDescription} {message}";
 
-        public CommandHandlerService(DiscordSocketClient discordSocketClient, CommandService commandService, IServiceProvider services, IOptions<DiscordConfiguration> discordOptions)
+        public CommandHandlerService(
+            DiscordSocketClient discordSocketClient,
+            CommandService commandService,
+            IServiceProvider services,
+            IOptions<DiscordConfiguration> discordOptions,
+            IRefExchangeRepository refExchangeRepository)
         {
             _discordSocketClient = discordSocketClient;
             _commandService = commandService;
             _services = services;
+            _refExchangeRepository = refExchangeRepository;
             _discordOptions = discordOptions.Value;
 
             _discordSocketClient.MessageReceived += OnMessageReceivedAsync;
@@ -29,14 +38,32 @@ namespace Kryptoteket.Bot.Services
             _discordSocketClient.Ready += ReadyAsync;
         }
 
-        private Task OnMessageReactionAdd(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel, SocketReaction reaction)
+        private async Task OnMessageReactionAdd(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel, SocketReaction reaction)
         {
-            if (!message.HasValue) return null;
-            if (message.HasValue && message.Value.Source != MessageSource.Bot) return null;
+            if (!message.HasValue) return;
+            if (message.HasValue && message.Value.Source != MessageSource.Bot) return;
 
+            var chnl = channel as SocketGuildChannel;
+            var guildEmojies = chnl.Guild.Emotes;
 
+            if (!guildEmojies.Any(x => x.Name == reaction.Emote.Name)) return;
 
-            return null;
+            var emote = reaction.Emote as Emote;
+            var emojiFromExchange = await _refExchangeRepository.GetRefExchangeFromEmoji(emote.Id);
+
+            if (emojiFromExchange == null) return;
+
+            var links = emojiFromExchange.Reflinks;
+
+            if (!links.Any()) return;
+
+            var random = new Random();
+            var index = random.Next(links.Count);
+
+            var luckyLink = links.ElementAt(index);
+
+            var user = await channel.GetUserAsync(reaction.UserId);
+            await channel.SendMessageAsync($"{user.Mention}: <{luckyLink.Link}>");
         }
 
         private Task ReadyAsync()

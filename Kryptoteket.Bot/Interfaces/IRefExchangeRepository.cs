@@ -15,5 +15,6 @@ namespace Kryptoteket.Bot.Interfaces
         Task CreateRefExchange(RefExchange refExchange);
         Task<List<RefExchange>> GetRefExchanges(string exchange = null);
         Task<RefExchange> UpdateExchange(RefExchange refexch);
+        Task<RefExchange> GetRefExchangeFromEmoji(ulong id);
     }
 }

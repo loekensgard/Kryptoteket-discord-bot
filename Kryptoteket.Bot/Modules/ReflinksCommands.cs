@@ -101,7 +101,8 @@ namespace Kryptoteket.Bot.Modules
 
             if(exchanges.Count >= 2)
             {
-                await ReplyAsync(null, false, _embedService.CreateReactMessage(exchanges).Build());
+                var emotes = Context.Guild.Emotes;
+                await ReplyAsync(null, false, _embedService.CreateReactMessage(exchanges, emotes).Build());
                 return;
             }
 

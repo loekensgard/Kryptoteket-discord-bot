@@ -4,14 +4,16 @@ using Kryptoteket.Bot.CosmosDB;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Kryptoteket.Bot.Migrations
 {
     [DbContext(typeof(KryptoteketContext))]
-    partial class KryptoteketContextModelSnapshot : ModelSnapshot
+    [Migration("20210117191743_emojiId")]
+    partial class emojiId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
