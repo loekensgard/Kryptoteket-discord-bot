@@ -21,8 +21,17 @@ namespace Kryptoteket.Bot.CosmosDB.Repositories
 
         public async Task AddPlacedBet(PlacedBet userBet)
         {
-            _set.Add(userBet);
-            await _context.SaveChangesAsync();
+            try
+            {
+
+                _set.Add(userBet);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                var s = e;
+            }
+
         }
 
         public async Task<bool> GetPlacedBet(int betId, ulong id)

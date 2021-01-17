@@ -11,11 +11,11 @@ using System.Threading.Tasks;
 
 namespace Kryptoteket.Bot.CosmosDB.Repositories
 {
-    public class BetWinnersRepository : IBetWinnersRepository
+    public class FinishedBetPlacementsRepository : IBetWinnersRepository
     {
         private readonly KryptoteketContext _context;
         private readonly DbSet<FinishedBetPlacement> _set;
-        public BetWinnersRepository(KryptoteketContext context)
+        public FinishedBetPlacementsRepository(KryptoteketContext context)
         {
             _context = context;
             _set = _context.FinishedBetPlacements;

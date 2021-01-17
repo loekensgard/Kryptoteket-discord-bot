@@ -20,12 +20,14 @@ namespace Kryptoteket.Bot.Modules
         private readonly IBetRepository _betRepository;
         private readonly IPlacedUserBetRepository _placedUserBetRepository;
         private readonly EmbedService _embedService;
+        private readonly IBetUserRepository _betUserRepository;
 
-        public BetCommands(IBetRepository betRepository, IPlacedUserBetRepository placedUserBetRepository, EmbedService embedService)
+        public BetCommands(IBetRepository betRepository, IPlacedUserBetRepository placedUserBetRepository, EmbedService embedService, IBetUserRepository betUserRepository)
         {
             _betRepository = betRepository;
             _placedUserBetRepository = placedUserBetRepository;
             _embedService = embedService;
+            _betUserRepository = betUserRepository;
         }
 
         [Command("addbet", RunMode = RunMode.Async)]
@@ -70,6 +72,9 @@ namespace Kryptoteket.Bot.Modules
 
             var exists = await _placedUserBetRepository.GetPlacedBet(bet.BetId, user.Id);
             if(exists) { await ReplyAsync($"You can't bet twice"); return; }
+
+            var userExists = await _betUserRepository.GetBetUser(user.Id);
+            if (userExists == null) await _betUserRepository.AddBetUser(new BetUser { BetUserId = user.Id, Name = user.Username, Points = 0 });
 
             var userBet = new PlacedBet
             {

@@ -14,12 +14,12 @@ namespace Kryptoteket.Bot.Modules
     public class ServerCommands : ModuleBase<SocketCommandContext>
     {
         private readonly EmbedService _embedService;
-        private readonly IBetWinnersRepository _betWinnersRepository;
+        private readonly IBetUserRepository _betUserRepository;
 
-        public ServerCommands(EmbedService embedService, IBetWinnersRepository betWinnersRepository)
+        public ServerCommands(EmbedService embedService, IBetUserRepository betUserRepositroy)
         {
             _embedService = embedService;
-            _betWinnersRepository = betWinnersRepository;
+            _betUserRepository = betUserRepositroy;
         }
 
         [Command("serverinfo", RunMode = RunMode.Async)]
@@ -42,9 +42,9 @@ namespace Kryptoteket.Bot.Modules
             var user = Context.User as SocketGuildUser;
             await guild.DownloadUsersAsync();
 
-            var points = await _betWinnersRepository.GetBetWins(user.Id);
+            var pointsbetUser = await _betUserRepository.GetBetUser(user.Id);
 
-            await ReplyAsync(null, false, _embedService.EmbedMyInfo(guild, user, points).Build());
+            await ReplyAsync(null, false, _embedService.EmbedMyInfo(guild, user, pointsbetUser).Build());
         }
 
     }

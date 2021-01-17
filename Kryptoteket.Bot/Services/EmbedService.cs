@@ -264,7 +264,7 @@ namespace Kryptoteket.Bot.Services
             return builder;
         }
 
-        public EmbedBuilder EmbedMyInfo(SocketGuild guild, SocketGuildUser user, List<FinishedBetPlacement> points)
+        public EmbedBuilder EmbedMyInfo(SocketGuild guild, SocketGuildUser user, BetUser betUser)
         {
             var sortedJoinedMembers = guild.Users.OrderBy(x => x.JoinedAt).ToList();
             int index = sortedJoinedMembers.FindIndex(x => x.Id == user.Id);
@@ -294,13 +294,20 @@ namespace Kryptoteket.Bot.Services
             sb.AppendLine($"Account Created: **{user.CreatedAt:dd.MM.yy}**");
             sb.Append($"Server Joined: **{user.JoinedAt?.ToString("dd.MM.yy")}** **`(#{index + 1})`**");
             sb.AppendLine();
-            if (points != null)
+            if (betUser != null && betUser.Points > 0)
             {
                 sb.AppendLine();
                 sb.AppendLine("**Bets**");
-                sb.AppendLine($"1th: {points.Where(x => x.Place == 1).Count()}");
-                sb.AppendLine($"2th: {points.Where(x => x.Place == 2).Count()}");
-                sb.AppendLine($"3th: {points.Where(x => x.Place == 3).Count()}");
+                sb.AppendLine($"Stonks: {betUser.Points}");
+                if(betUser.Placements != null)
+                {
+                    if(betUser.Placements.Any(x => x.Place == 1))
+                        sb.AppendLine($"First Places: {betUser.Placements.Where(x => x.Place == 1).Count()} time(s)");
+                    if(betUser.Placements.Any(x => x.Place == 2))
+                        sb.AppendLine($"Second Places: {betUser.Placements.Where(x => x.Place == 2).Count()} time(s)");
+                    if(betUser.Placements.Any(x => x.Place == 3))
+                        sb.AppendLine($"Third Places: {betUser.Placements.Where(x => x.Place == 3).Count()} times(s)");
+                }
                 sb.AppendLine();
             }
 
