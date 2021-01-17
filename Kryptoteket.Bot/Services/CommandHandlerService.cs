@@ -40,30 +40,38 @@ namespace Kryptoteket.Bot.Services
 
         private async Task OnMessageReactionAdd(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel, SocketReaction reaction)
         {
-            if (!message.HasValue) return;
-            if (message.HasValue && message.Value.Source != MessageSource.Bot) return;
+            try
+            {
+                if (!message.HasValue) return;
+                if (message.HasValue && message.Value.Source != MessageSource.Bot) return;
+                if (reaction.User.Value.IsBot) return;
 
-            var chnl = channel as SocketGuildChannel;
-            var guildEmojies = chnl.Guild.Emotes;
+                var chnl = channel as SocketGuildChannel;
+                var guildEmojies = chnl.Guild.Emotes;
 
-            if (!guildEmojies.Any(x => x.Name == reaction.Emote.Name)) return;
+                if (!guildEmojies.Any(x => x.Name == reaction.Emote.Name)) return;
 
-            var emote = reaction.Emote as Emote;
-            var emojiFromExchange = await _refExchangeRepository.GetRefExchangeFromEmoji(emote.Id);
+                var emote = reaction.Emote as Emote;
+                var emojiFromExchange = await _refExchangeRepository.GetRefExchangeFromEmoji(emote.Id);
 
-            if (emojiFromExchange == null) return;
+                if (emojiFromExchange == null) return;
 
-            var links = emojiFromExchange.Reflinks;
+                var links = emojiFromExchange.Reflinks;
 
-            if (!links.Any()) return;
+                if (!links.Any()) return;
 
-            var random = new Random();
-            var index = random.Next(links.Count);
+                var random = new Random();
+                var index = random.Next(links.Count);
 
-            var luckyLink = links.ElementAt(index);
+                var luckyLink = links.ElementAt(index);
 
-            var user = await channel.GetUserAsync(reaction.UserId);
-            await channel.SendMessageAsync($"{user.Mention}: <{luckyLink.Link}>");
+                var user = await channel.GetUserAsync(reaction.UserId);
+                await channel.SendMessageAsync($"{user.Mention}: <{luckyLink.Link}>");
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "Failed Excetuing command async");
+            }
         }
 
         private Task ReadyAsync()
