@@ -7,6 +7,7 @@ using Kryptoteket.Bot.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Kryptoteket.Bot.Modules
@@ -31,14 +32,18 @@ namespace Kryptoteket.Bot.Modules
         [Command("addex", RunMode = RunMode.Async)]
         [Summary("Add reflink")]
         [RequireUserPermission(GuildPermission.BanMembers)]
-        public async Task AddRefExchange(string exchange, SocketReaction reaction)
+        public async Task AddRefExchange(string exchange, string inputEmoji)
         {
             if (string.IsNullOrEmpty(exchange)) { await ReplyAsync($"Exchange cannot be null"); return; }
-            if (reaction == null) { await ReplyAsync($"Reaction cannot be null"); return; }
+            if (string.IsNullOrEmpty(inputEmoji)) { await ReplyAsync($"Emoji cannot be null"); return; }
 
+            var stripped = Regex.Replace(inputEmoji, "[^0-9]", "");
+
+            var emoji = await Context.Guild.GetEmoteAsync(ulong.Parse(stripped));
+
+            if(emoji == null) { await ReplyAsync($"Could not find emoji in Guild emotes"); return; }
             if (!await _refExchangeRepository.Exists(exchange))
             {
-                var emoji = reaction.Emote as Emote;
                 await _refExchangeRepository.CreateRefExchange(new RefExchange
                 {
                     Name = exchange.ToLower(),
