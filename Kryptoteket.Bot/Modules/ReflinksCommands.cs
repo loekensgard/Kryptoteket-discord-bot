@@ -38,6 +38,7 @@ namespace Kryptoteket.Bot.Modules
             if (string.IsNullOrEmpty(inputEmoji)) { await ReplyAsync($"Emoji cannot be null"); return; }
 
             var stripped = Regex.Replace(inputEmoji, "[^0-9]", "");
+            if(string.IsNullOrEmpty(stripped)) { await ReplyAsync($"Default emotes are not valid"); return; }
 
             var emoji = await Context.Guild.GetEmoteAsync(ulong.Parse(stripped));
 
@@ -151,6 +152,9 @@ namespace Kryptoteket.Bot.Modules
                     RefExchanges = ex
                 });
             }
+
+            refexch.RefUsers.Add(refUser);
+            await _refExchangeRepository.UpdateExchange(refexch);
 
             if (await _reflinkRepository.Exist(user.Id, refexch.RefExchangeId, reflink)) { await ReplyAsync($"Reflink is already in list"); return; }
             await _reflinkRepository.CreateReflink(new RefLink { Link = reflink.Trim(), RefExchangeId = refexch.RefExchangeId, RefUserId = refUser.RefUserId, Name = refexch.Name });
