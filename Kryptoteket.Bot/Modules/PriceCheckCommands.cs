@@ -6,6 +6,8 @@ using Kryptoteket.Bot.Models;
 using Kryptoteket.Bot.Services;
 using Microsoft.Extensions.Options;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Kryptoteket.Bot.Modules
@@ -39,16 +41,18 @@ namespace Kryptoteket.Bot.Modules
             var source = "CoinGecko";
             string thumbnail; ;
 
+            var chosenExchange = GetChosenExchange(exchange?.ToLower());
+
             try
             {
-                if (!string.IsNullOrEmpty(exchange) && exchange.Trim().ToLower() == "mx")
+                if (!string.IsNullOrEmpty(exchange) && chosenExchange == "MiraiEx")
                 {
                     source = "MiraiEx";
                     thumbnail = _options.MiraiexIMG;
                     price = await _miraiexService.GetPrice(pair.Trim().ToLower());
                     if (price == null) { await ReplyAsync($"The market {pair} is not supported at {source}", false); return; }
                 }
-                else if (!string.IsNullOrEmpty(exchange) && exchange.Trim().ToLower() == "nbx")
+                else if (!string.IsNullOrEmpty(exchange) && chosenExchange == "NBX")
                 {
                     source = "NBX";
                     thumbnail = _options.NBXIMG;
@@ -99,6 +103,20 @@ namespace Kryptoteket.Bot.Modules
 
             var builder = _embedService.EmbedTopLosers(topGainers, top, timePeriod.Trim().ToLower());
             await ReplyAsync(null, false, builder.Build());
+        }
+
+        private static string GetChosenExchange(string exchange)
+        {
+            if (string.IsNullOrEmpty(exchange)) return "";
+
+            var exchnages = new List<string>
+            {
+                "MiraiEx",
+                "NBX",
+                "Bitmynt"
+            };
+
+            return exchnages.FirstOrDefault(x => x.ToLower().StartsWith(exchange));
         }
 
     }

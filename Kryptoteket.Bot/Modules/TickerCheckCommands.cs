@@ -6,6 +6,8 @@ using Kryptoteket.Bot.Models;
 using Kryptoteket.Bot.Services;
 using Microsoft.Extensions.Options;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Kryptoteket.Bot.Modules
@@ -39,21 +41,23 @@ namespace Kryptoteket.Bot.Modules
             string source = "";
             string thumbnail = "";
 
+            var chosenExchange = GetChosenExchange(exchange.ToLower());
+
             try
             {
-                if (exchange.Trim().ToLower() == "mx")
+                if (chosenExchange == "MiraiEx")
                 {
                     source = "MiraiEx";
                     thumbnail = _options.MiraiexIMG;
                     ticker = await _miraiexService.GetTicker(pair.Trim().ToLower());
                 }
-                else if (exchange.Trim().ToLower() == "nbx")
+                else if (chosenExchange == "NBX")
                 {
                     source = "NBX";
                     thumbnail = _options.NBXIMG;
                     ticker = await _nBXAPIService.GetTicker(pair.Trim().ToLower());
                 }
-                else if(exchange.Trim().ToLower() == "bitmynt")
+                else if(chosenExchange == "Bitmynt")
                 {
                     source = "Bitmynt";
                     thumbnail = _options.BitmyntIMG;
@@ -61,7 +65,7 @@ namespace Kryptoteket.Bot.Modules
                 }
                 else
                 {
-                    await ReplyAsync($"WTF is {exchange}?", false);
+                    await ReplyAsync($"The exchange {exchange} is not supported", false);
                     return;
                 }
             }
@@ -78,6 +82,20 @@ namespace Kryptoteket.Bot.Modules
 
             var builder = _embedService.EmbedTicker(pair.Trim().ToUpper(), ticker, source, thumbnail);
             await ReplyAsync(null, false, builder.Build());
+        }
+
+        private static string GetChosenExchange(string exchange)
+        {
+            if (string.IsNullOrEmpty(exchange)) return "";
+
+            var exchnages = new List<string>
+            {
+                "MiraiEx",
+                "NBX",
+                "Bitmynt"
+            };
+
+            return exchnages.FirstOrDefault(x => x.ToLower().StartsWith(exchange));
         }
     }
 }

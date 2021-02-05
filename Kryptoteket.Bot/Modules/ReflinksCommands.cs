@@ -134,7 +134,7 @@ namespace Kryptoteket.Bot.Modules
             if (string.IsNullOrEmpty(reflink)) { await ReplyAsync($"Reflink cannot be null"); return; }
 
             var refexch = await _refExchangeRepository.GetRefExchange(exchange);
-            if (refexch == null) { await ReplyAsync($"Exchange not supported"); return; }
+            if (refexch == null) { await ReplyAsync("https://tenor.com/view/we-dont-do-that-here-black-panther-tchalla-bruce-gif-16558003"); return; }
 
             var user = Context.User as SocketGuildUser;
 
