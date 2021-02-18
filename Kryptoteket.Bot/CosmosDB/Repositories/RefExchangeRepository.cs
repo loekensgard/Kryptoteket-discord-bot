@@ -33,7 +33,6 @@ namespace Kryptoteket.Bot.CosmosDB.Repositories
 
         public async Task<RefExchange> GetRefExchange(string exchange)
         {
-            return null;
             return await _set.AsQueryable().Include(x => x.RefUsers).ThenInclude(x => x.Reflinks).FirstOrDefaultAsync(x => x.Name.ToLower() == exchange.ToLower());
         }
 
