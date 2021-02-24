@@ -87,6 +87,7 @@ namespace Kryptoteket.Bot.Services
             StringBuilder sb = new StringBuilder();
 
             builder.WithTitle($"{bet.Date.ToString("dd/M/yyyy", CultureInfo.GetCultureInfo("nb-NO"))}");
+            sb.AppendLine($"Bet will be locked at {bet.Locked.ToString("dd/M/yyyy", CultureInfo.GetCultureInfo("nb-NO"))}\n");
             foreach (var userBet in bet.PlacedBets.OrderByDescending(p => p.Price))
             {
                 sb.AppendLine($"**{userBet.Name}:** ${userBet.Price:#,##0}");

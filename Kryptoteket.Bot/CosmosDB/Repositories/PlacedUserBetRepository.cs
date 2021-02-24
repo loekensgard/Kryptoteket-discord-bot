@@ -34,7 +34,7 @@ namespace Kryptoteket.Bot.CosmosDB.Repositories
 
         }
 
-        public async Task<bool> GetPlacedBet(int betId, ulong id)
+        public async Task<bool> PlacedBetExists(int betId, ulong id)
         {
             var entity = await _set.AsQueryable().FirstOrDefaultAsync(x => x.BetId == betId && x.BetUserId == id);
             return entity != null; 
@@ -43,6 +43,22 @@ namespace Kryptoteket.Bot.CosmosDB.Repositories
         public async Task<List<PlacedBet>> GetPlacedBets(int betId)
         {
             return await _set.AsQueryable().Where(x => x.BetId == betId).ToListAsync();
+        }
+
+        public async Task<PlacedBet> GetPlacedBet(int betId, ulong id)
+        {
+            return await _set.AsQueryable().FirstOrDefaultAsync(x => x.BetId == betId && x.BetUserId == id);
+        }
+
+        public async Task UpdatePlacedBet(PlacedBet userBet)
+        {
+            var entity = await _set.FindAsync(userBet.Id);
+
+            if(entity != null)
+            {
+                _context.Entry(entity).CurrentValues.SetValues(userBet);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

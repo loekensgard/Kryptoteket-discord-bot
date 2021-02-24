@@ -44,11 +44,20 @@ namespace Kryptoteket.Bot.Modules
             {
                 Date = dateDTO,
                 ShortName = shortName.ToLower().Trim(),
-                AddedBy = user.Username
+                AddedBy = user.Username,
+                Created = DateTimeOffset.Now,
+                Locked = GetLockedDate(dateDTO, DateTimeOffset.Now)
             };
 
             await _betRepository.CreateBet(bet);
             await ReplyAsync($"{shortName} added");
+        }
+
+        private static DateTimeOffset GetLockedDate(DateTimeOffset end, DateTimeOffset start)
+        {
+            var diff = (end - start);
+            var oneThird = TimeSpan.FromTicks(diff.Ticks / 3);
+            return end.Subtract(oneThird);
         }
 
         [Command("deletebet", RunMode = RunMode.Async)]
@@ -67,10 +76,12 @@ namespace Kryptoteket.Bot.Modules
             var user = Context.User as SocketGuildUser;
             var bet = await _betRepository.Getbet(shortName.ToLower().Trim());
             if (bet == null) { await ReplyAsync($"Bet Doesn't exist"); return; }
+            if (bet.Date < DateTimeOffset.Now) { await ReplyAsync($"Bet is already finished"); return; }
+            if (bet.Locked < DateTimeOffset.Now) { await ReplyAsync($"Bet is locked"); return; }
 
             if (!int.TryParse(price.Trim(), out int priceDTO)) { await ReplyAsync($"Price is incorrect"); return; }
 
-            var exists = await _placedUserBetRepository.GetPlacedBet(bet.BetId, user.Id);
+            var exists = await _placedUserBetRepository.PlacedBetExists(bet.BetId, user.Id);
             if(exists) { await ReplyAsync($"You can't bet twice"); return; }
 
             var userExists = await _betUserRepository.GetBetUser(user.Id);
@@ -88,6 +99,29 @@ namespace Kryptoteket.Bot.Modules
             await _placedUserBetRepository.AddPlacedBet(userBet);
             await ReplyAsync($"**{userBet.Name}** | Price: ${priceDTO:#,##0} at {bet.Date.ToString("dd/M/yyyy", CultureInfo.GetCultureInfo("nb-NO"))}");
         }
+
+        [Command("updatebet", RunMode = RunMode.Async)]
+        [Summary("Update a bet")]
+        public async Task UpdateBet(string shortName, string price)
+        {
+            var user = Context.User as SocketGuildUser;
+            var bet = await _betRepository.Getbet(shortName.ToLower().Trim());
+            if (bet == null) { await ReplyAsync($"Bet Doesn't exist"); return; }
+            if (bet.Date < DateTimeOffset.Now) { await ReplyAsync($"Bet is already finished"); return; }
+            if (bet.Locked < DateTimeOffset.Now) { await ReplyAsync($"Bet is locked"); return; }
+
+            if (!int.TryParse(price.Trim(), out int priceDTO)) { await ReplyAsync($"Price is incorrect"); return; }
+
+            var userBet = await _placedUserBetRepository.GetPlacedBet(bet.BetId, user.Id);
+            if (userBet == null) { await ReplyAsync($"You need to place a bet first"); return; }
+
+            userBet.BetPlaced = DateTimeOffset.Now;
+            userBet.Price = priceDTO;
+
+            await _placedUserBetRepository.UpdatePlacedBet(userBet);
+            await ReplyAsync($"**{userBet.Name}** | Price: ${priceDTO:#,##0} at {bet.Date.ToString("dd/M/yyyy", CultureInfo.GetCultureInfo("nb-NO"))}");
+        }
+
 
         [Command("getbet", RunMode = RunMode.Async)]
         [Summary("Get a bet")]
