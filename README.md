@@ -5,7 +5,9 @@ Discord bot for retrieving crypto prices and tickers at [Kryptotekets discord](h
 
 1. Create your own discord bot by following this [guide](https://discordpy.readthedocs.io/en/latest/discord.html).
 2. Copy your bot token and past it in [AppSettings](https://github.com/loekensgard/kryptoteket-crypto-bot/blob/master/Kryptoteket.Bot/appsettings.json) under token.
-3. Run the project in your favorite .net IDE.
+3. You will also need to setup a local SQL database or an SQL database, and add the connectionstring to [AppSettings](https://github.com/loekensgard/kryptoteket-crypto-bot/blob/master/Kryptoteket.Bot/appsettings.json) under ConnectionStrings.
+4. From the terminal you should be able to run Update-Database and get all the database models into your database.
+5. Run the project in your favorite .net IDE.
 
 ## Discord commands
 
@@ -28,38 +30,40 @@ Discord bot for retrieving crypto prices and tickers at [Kryptotekets discord](h
 ### Reflink roulette
 
 ```
-!reflink             | get random reflink from pool
-!getref <@user>      | get reflink for user
-!getrefs             | get all reflinks
-!addref <reflink>    | add reflink to pool
-!updateref <reflink> | update reflink
-!deleteref           | delete reflink
+!reflink                    | get random reflink from pool
+!getref <@user>             | get reflink for user
+!getrefs                    | get all reflinks
+!addref <reflink>           | add reflink to pool
+!updateref <reflink>        | update reflink
+!deleteref                  | delete reflink
 
-!approve <@user>     | Approve reflink for user
-!reject <@user>      | Reject reflink for user
+!approve <@user>            | Approve reflink for user
+!reject <@user>             | Reject reflink for user
 ```
 
 ### Bets
 
 ```
-!getbet <name>
-!addbet <name> <date>
-!deletebet <name>
-!bet <name> <price>
+!bet <name> <price>         | Bet on a named bet
+!updatebet <name> <price>   | Change your bet
+
+!getbet <name>              | Get all bets in a named bet
+!addbet <name> <date>       | Create a new named bet
+!deletebet <name>           | Delete bet
 ```
 
 ### Info/Stats
 
 ```
-!serverinfo
-!userinfo
+!serverinfo                 | Get serverinfo
+!userinfo                   | Get userinfo
 ```
 
 ### Misc
 
 ```
-!help
-!support
+!help                       | Show all commands
+!support                    | How to support me
 ```
 
 These can be found under the Modules folder.
