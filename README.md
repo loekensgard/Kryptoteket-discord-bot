@@ -5,7 +5,7 @@ Discord bot for retrieving crypto prices and tickers at [Kryptotekets discord](h
 
 1. Create your own discord bot by following this [guide](https://discordpy.readthedocs.io/en/latest/discord.html).
 2. Copy your bot token and past it in [AppSettings](https://github.com/loekensgard/kryptoteket-crypto-bot/blob/master/Kryptoteket.Bot/appsettings.json) under token.
-3. You will also need to setup a local SQL database or an SQL database, and add the connectionstring to [AppSettings](https://github.com/loekensgard/kryptoteket-crypto-bot/blob/master/Kryptoteket.Bot/appsettings.json) under ConnectionStrings.
+3. You will also need to setup a local SQL database or a SQL database, and add the connectionstring to [AppSettings](https://github.com/loekensgard/kryptoteket-crypto-bot/blob/master/Kryptoteket.Bot/appsettings.json) under ConnectionStrings.
 4. From the terminal you should be able to run Update-Database and get all the database models into your database.
 5. Run the project in your favorite .net IDE.
 
