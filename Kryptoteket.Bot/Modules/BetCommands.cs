@@ -137,14 +137,16 @@ namespace Kryptoteket.Bot.Modules
             await ReplyAsync(null, false, _embedService.EmbedBets(bet).Build());
         }
 
-        [Command("leaderboard", RunMode = RunMode.Async)]
+        [Command("leader", RunMode = RunMode.Async)]
         [Summary("Get leaderboard")]
         public async Task GetLeaderboard()
         {
             var betUsers = await _betUserRepository.GetUsers();
-            if(betUsers.Any(x => x.Points < 0)) { await ReplyAsync($"No one has won, yet"); return; }
-            
-            await ReplyAsync(null, false, _embedService.EmbedLeaderboard(betUsers.Where(x => x.Points < 0)).Build());
+
+            var usersWithPoints = betUsers.Where(x => x.Points > 0);
+            if (!usersWithPoints.Any()) { await ReplyAsync($"No winners yet"); return; }
+
+            await ReplyAsync(null, false, _embedService.EmbedLeaderboard(usersWithPoints).Build());
         }
     }
 }
