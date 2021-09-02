@@ -25,5 +25,11 @@ namespace Kryptoteket.Bot.CosmosDB.Repositories
         {
             return await _set.AsQueryable().Where(x => x.BetUserId == userId).ToListAsync();
         }
+
+        public async Task<IEnumerable<FinishedBetPlacement>> GetWins()
+        {
+            return await _set.AsQueryable().ToListAsync();
+        }
+
     }
 }

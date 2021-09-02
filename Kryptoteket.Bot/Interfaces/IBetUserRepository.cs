@@ -1,4 +1,5 @@
 ﻿using Kryptoteket.Bot.Models.Bets;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Kryptoteket.Bot.Interfaces
@@ -7,5 +8,6 @@ namespace Kryptoteket.Bot.Interfaces
     {
         Task<BetUser> GetBetUser(ulong id);
         Task AddBetUser(BetUser betUser);
+        Task<IEnumerable<BetUser>> GetUsers();
     }
 }

@@ -11,5 +11,6 @@ namespace Kryptoteket.Bot.Interfaces
     public interface IBetWinnersRepository
     {
         Task<List<FinishedBetPlacement>> GetBetWins(ulong userId);
+        Task<IEnumerable<FinishedBetPlacement>> GetWins();
     }
 }

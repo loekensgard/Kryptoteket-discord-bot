@@ -1,6 +1,7 @@
 ﻿using Kryptoteket.Bot.Interfaces;
 using Kryptoteket.Bot.Models.Bets;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Kryptoteket.Bot.CosmosDB.Repositories
@@ -25,6 +26,11 @@ namespace Kryptoteket.Bot.CosmosDB.Repositories
         public async Task<BetUser> GetBetUser(ulong id)
         {
             return await _set.Include(x => x.Placements).FirstOrDefaultAsync(x => x.BetUserId == id);
+        }
+
+        public async Task<IEnumerable<BetUser>> GetUsers()
+        {
+            return await _set.ToListAsync();
         }
     }
 }

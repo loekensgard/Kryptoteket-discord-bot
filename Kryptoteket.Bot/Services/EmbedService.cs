@@ -154,6 +154,24 @@ namespace Kryptoteket.Bot.Services
             return builder;
         }
 
+        public EmbedBuilder EmbedLeaderboard(IEnumerable<BetUser> betUsers)
+        {
+            EmbedBuilder builder = new EmbedBuilder();
+            StringBuilder sb = new StringBuilder();
+
+            builder.WithTitle($"Leaderboard");
+            foreach (var winner in betUsers.OrderByDescending(x => x.Points))
+            {
+                sb.AppendLine($"{winner.Name}: **{winner.Points}**");
+            }
+
+
+            builder.WithDescription(sb.ToString());
+            builder.WithColor(Color.DarkBlue);
+
+            return builder;
+        }
+
         public EmbedBuilder EmbedCovidStats(string title, long totalCases, long totalNewCasesToday, long totalDeaths, long totalNewDeathsToday, long totalRecovered, long updated, long? totaltCasesYesterday = null)
         {
             EmbedBuilder builder = new EmbedBuilder();

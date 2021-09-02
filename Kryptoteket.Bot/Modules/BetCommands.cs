@@ -10,6 +10,7 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Kryptoteket.Bot.Modules
@@ -21,13 +22,15 @@ namespace Kryptoteket.Bot.Modules
         private readonly IPlacedUserBetRepository _placedUserBetRepository;
         private readonly EmbedService _embedService;
         private readonly IBetUserRepository _betUserRepository;
+        private readonly IBetWinnersRepository _winnersRepository;
 
-        public BetCommands(IBetRepository betRepository, IPlacedUserBetRepository placedUserBetRepository, EmbedService embedService, IBetUserRepository betUserRepository)
+        public BetCommands(IBetRepository betRepository, IPlacedUserBetRepository placedUserBetRepository, EmbedService embedService, IBetUserRepository betUserRepository, IBetWinnersRepository winnersRepository)
         {
             _betRepository = betRepository;
             _placedUserBetRepository = placedUserBetRepository;
             _embedService = embedService;
             _betUserRepository = betUserRepository;
+            _winnersRepository = winnersRepository;
         }
 
         [Command("addbet", RunMode = RunMode.Async)]
@@ -132,6 +135,16 @@ namespace Kryptoteket.Bot.Modules
             if (bet.PlacedBets.Count == 0) { await ReplyAsync($"No bets are placed"); return; }
 
             await ReplyAsync(null, false, _embedService.EmbedBets(bet).Build());
+        }
+
+        [Command("leaderboard", RunMode = RunMode.Async)]
+        [Summary("Get leaderboard")]
+        public async Task GetLeaderboard()
+        {
+            var betUsers = await _betUserRepository.GetUsers();
+            if(betUsers.Any(x => x.Points < 0)) { await ReplyAsync($"No one has won, yet"); return; }
+            
+            await ReplyAsync(null, false, _embedService.EmbedLeaderboard(betUsers.Where(x => x.Points < 0)).Build());
         }
     }
 }
