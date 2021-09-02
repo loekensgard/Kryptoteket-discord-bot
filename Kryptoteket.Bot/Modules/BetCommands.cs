@@ -137,7 +137,8 @@ namespace Kryptoteket.Bot.Modules
             await ReplyAsync(null, false, _embedService.EmbedBets(bet).Build());
         }
 
-        [Command("leader", RunMode = RunMode.Async)]
+        [Command("leaderboard", RunMode = RunMode.Async)]
+        [Alias("leader", "scoreboard")]
         [Summary("Get leaderboard")]
         public async Task GetLeaderboard()
         {
