@@ -227,5 +227,6 @@ namespace Kryptoteket.Bot.Modules
             await _reflinkRepository.DeleteReflink(link.Id);
             await ReplyAsync($"Reflink was deleted");
         }
+
     }
 }

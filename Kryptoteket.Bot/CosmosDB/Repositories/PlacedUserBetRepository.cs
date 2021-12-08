@@ -60,5 +60,22 @@ namespace Kryptoteket.Bot.CosmosDB.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task<List<PlacedBet>> GetAllPlacedBets()
+        {
+            return await _set.AsQueryable().ToListAsync();
+        }
+
+        public async Task UpdateName(ulong betUserId, string username)
+        {
+            var entity = await _set.AsQueryable().FirstOrDefaultAsync(x => x.BetUserId == betUserId);
+
+            if (entity != null)
+            {
+                entity.Name = username;
+                await _context.SaveChangesAsync();
+            }
+
+        }
     }
 }

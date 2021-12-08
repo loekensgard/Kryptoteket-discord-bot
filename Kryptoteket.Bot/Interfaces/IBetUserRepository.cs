@@ -9,5 +9,6 @@ namespace Kryptoteket.Bot.Interfaces
         Task<BetUser> GetBetUser(ulong id);
         Task AddBetUser(BetUser betUser);
         Task<IEnumerable<BetUser>> GetUsers();
+        Task UpdateName(ulong betUserId, string username);
     }
 }

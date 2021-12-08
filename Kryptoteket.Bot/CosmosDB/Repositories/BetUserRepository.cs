@@ -32,5 +32,17 @@ namespace Kryptoteket.Bot.CosmosDB.Repositories
         {
             return await _set.ToListAsync();
         }
+
+        public async Task UpdateName(ulong betUserId, string username)
+        {
+            var entity = await _set.FindAsync(betUserId);
+
+            if (entity != null)
+            {
+                entity.Name = username;
+                await _context.SaveChangesAsync();
+            }
+
+        }
     }
 }
