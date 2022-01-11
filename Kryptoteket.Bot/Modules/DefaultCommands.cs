@@ -38,6 +38,13 @@ namespace Kryptoteket.Bot.Modules
             await ReplyAsync(null, false, _embedService.EmbedSupportMe().Build());
         }
 
+        [Command("hello", RunMode = RunMode.Async)]
+        public async Task CheckIfUp()
+        {
+            var user = Context.User;
+            await ReplyAsync($"Hello {user.Username}", false, null);
+        }
+
         [RequireUserPermission(GuildPermission.BanMembers)]
         [Command("updateusers", RunMode = RunMode.Async)]
         [Summary("Update usernames")]
